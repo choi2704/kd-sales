@@ -33,13 +33,15 @@ table{width:100%;border-collapse:collapse}th{background:var(--n);color:white}th,
 <body>
 <div class="shell">
 <aside class="side">
- <div class="logo">KD SALES ERP<small>강동자바라 온라인 예상견적 시스템 V2.2</small></div>
+ <div class="logo">KD SALES ERP<small>강동자바라 온라인 예상견적 시스템 V3.0</small></div>
  <div class="nav">
   <button class="on" data-mod="dash">대시보드</button>
   <button data-mod="jabara">자바라</button>
   <button data-mod="ladder">사다리</button>
   <button data-mod="handrail">핸드레일</button>
   <button data-mod="guard">방범창</button>
+  <button data-mod="lexan">렉산</button>
+  <button data-mod="security">방범창 자바라</button>
   <button class="off">난간대 준비중</button>
   <button class="off">폴딩도어 준비중</button>
  </div>
@@ -93,7 +95,7 @@ table{width:100%;border-collapse:collapse}th{background:var(--n);color:white}th,
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script>
 const $=id=>document.getElementById(id),won=n=>Math.round(Number(n)||0).toLocaleString('ko-KR')+'원';
-let prices={},alWindow={},items=[],mod='dash',ladderType='safe',ladderMat='201',guardMat='알루미늄',alPriceType='consumer';
+let prices={},alWindow={},lexanData={},securityData={},items=[],mod='dash',ladderType='safe',ladderMat='201',guardMat='알루미늄',alPriceType='consumer',lexanThickness='2T',lexanColor='블루',securityProduct='알루미늄 방범자바라',securityOpening='편개형',securityColor='화이트';
 const jRates={
   '일반형':{
     '201':{'1200':85000,'1500':125000},
@@ -122,6 +124,10 @@ document.addEventListener('DOMContentLoaded',async()=>{
   catch(e){toast('파이프 단가표 오류')}
   try{alWindow=await fetch('data/aluminum-window-options.json',{cache:'no-store'}).then(r=>r.json())}
   catch(e){toast('알루미늄 방범창 옵션 데이터 오류')}
+  try{lexanData=await fetch('data/lexan.json',{cache:'no-store'}).then(r=>r.json())}
+  catch(e){toast('렉산 가격 데이터 오류')}
+  try{securityData=await fetch('data/security-jabara.json',{cache:'no-store'}).then(r=>r.json())}
+  catch(e){toast('방범창 자바라 가격 데이터 오류')}
   bind();render('dash');drawList()
 });
 function bind(){
@@ -133,8 +139,8 @@ function bind(){
   };
   document.querySelectorAll('.nav button[data-mod]').forEach(b=>b.onclick=()=>render(b.dataset.mod));document.querySelectorAll('.x').forEach(b=>b.onclick=()=>b.closest('.modal').classList.add('hidden'));makeQuote.onclick=openSheet;print.onclick=()=>window.print();jpg.onclick=saveJpg;extraBtn.onclick=()=>extraModal.classList.remove('hidden');extraAdd.onclick=addExtra;newQuote.onclick=resetAll;saveQuote.onclick=saveNow;loadQuote.onclick=openSaved}
 function toast(s){toast.textContent=s;toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),1600)}
-function render(m){mod=m;document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('on',b.dataset.mod===m));const map={dash:['대시보드','제품을 선택해 통합 견적을 작성하세요.'],jabara:['자바라','본체와 하우스를 자동 계산합니다.'],ladder:['사다리','최소 3m와 로스 올림을 적용합니다.'],handrail:['핸드레일','파이프 단가와 부속을 계산합니다.'],guard:['방범창','규격별 계산칸수를 자동 산출합니다.']};title.textContent=map[m][0];subtitle.textContent=map[m][1];module.innerHTML=m==='dash'?dashTpl():m==='jabara'?jTpl():m==='ladder'?lTpl():m==='handrail'?hTpl():gTpl();module.querySelectorAll('[data-go]').forEach(x=>x.onclick=()=>render(x.dataset.go));if(m==='jabara')bindJ();if(m==='ladder')bindL();if(m==='handrail')bindH();if(m==='guard')bindG()}
-function dashTpl(){return `<div class="card"><h2>제품 선택</h2><p class="desc">온라인 판매단가로 서로 다른 제품을 한 예상 견적에 함께 추가할 수 있습니다.</p><div class="dash"><div data-go="jabara"><h3>자바라</h3><p>형태·재질·높이·길이·하우스</p></div><div data-go="ladder"><h3>사다리</h3><p>안전망·밴딩·일자형·옵션</p></div><div data-go="handrail"><h3>핸드레일</h3><p>원/사각파이프·규격·두께</p></div><div data-go="guard"><h3>방범창</h3><p>스마트스토어 알루미늄 옵션 · SUS201 · SUS304</p></div><div class="disabled"><h3>난간대</h3><p>다음 버전</p></div><div class="disabled"><h3>폴딩도어</h3><p>다음 버전</p></div></div></div>`}
+function render(m){mod=m;document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('on',b.dataset.mod===m));const map={dash:['대시보드','제품을 선택해 통합 견적을 작성하세요.'],jabara:['자바라','본체와 하우스를 자동 계산합니다.'],ladder:['사다리','최소 3m와 로스 올림을 적용합니다.'],handrail:['핸드레일','파이프 단가와 부속을 계산합니다.'],guard:['방범창','규격별 계산칸수를 자동 산출합니다.'],lexan:['렉산','입력 사이즈보다 큰 원판 규격 기준으로 계산합니다.'],security:['방범창 자바라','평수 반올림과 최소 20평 기준을 적용합니다.']};title.textContent=map[m][0];subtitle.textContent=map[m][1];module.innerHTML=m==='dash'?dashTpl():m==='jabara'?jTpl():m==='ladder'?lTpl():m==='handrail'?hTpl():m==='guard'?gTpl():m==='lexan'?lexanTpl():securityTpl();module.querySelectorAll('[data-go]').forEach(x=>x.onclick=()=>render(x.dataset.go));if(m==='jabara')bindJ();if(m==='ladder')bindL();if(m==='handrail')bindH();if(m==='guard')bindG();if(m==='lexan')bindLexan();if(m==='security')bindSecurity()}
+function dashTpl(){return `<div class="card"><h2>제품 선택</h2><p class="desc">온라인 판매단가로 서로 다른 제품을 한 예상 견적에 함께 추가할 수 있습니다.</p><div class="dash"><div data-go="jabara"><h3>자바라</h3><p>형태·재질·높이·길이·하우스</p></div><div data-go="ladder"><h3>사다리</h3><p>안전망·밴딩·일자형·옵션</p></div><div data-go="handrail"><h3>핸드레일</h3><p>원/사각파이프·규격·두께</p></div><div data-go="guard"><h3>방범창</h3><p>스마트스토어 알루미늄 옵션 · SUS201 · SUS304</p></div><div data-go="lexan"><h3>렉산</h3><p>원판 규격 기준 · 2T/3T · 색상 선택</p></div><div data-go="security"><h3>방범창 자바라</h3><p>알루미늄/스텐 · 최소 20평</p></div><div class="disabled"><h3>난간대</h3><p>다음 버전</p></div><div class="disabled"><h3>폴딩도어</h3><p>다음 버전</p></div></div></div>`}
 function jTpl(){return `<div class="card"><h2>스텐 자바라</h2><p class="desc">최소 주문 3m · 100파이 우레탄바퀴 +5,000원/m</p><div class="grid g4"><label>형태<select id="jt"><option>일반형</option><option>고급형</option></select></label><label>재질<select id="jm"><option value="201">SUS201</option><option value="304">SUS304</option></select></label><label>높이<select id="jh"><option value="1200">1200</option><option value="1500">1500</option></select></label><label>길이(m)<input id="jl" type="number" value="3" step=".1"></label><label>수량<input id="jq" type="number" value="1"></label><label>개폐<select id="ji"><option>편개형</option><option>양개형</option></select></label><label>바퀴<select id="jw"><option>우레탄바퀴</option><option>레일바퀴</option><option>100파이 우레탄바퀴</option></select></label><label>비고<input id="jn"></label></div><div class="house"><div class="househead"><b>자바라 하우스</b><label class="switch"><input id="hu" type="checkbox"> 추가</label></div><div id="hf" class="grid g4 hidden"><label>높이<select id="hh"><option>1350</option><option>1650</option></select></label><label>재질<select id="hm"><option value="201">SUS201</option><option value="304">SUS304</option></select></label><label>수량<input id="hq" readonly></label><label>깊이<input id="hd" readonly></label></div><div id="hi"></div></div><div class="result"><div><small>사양</small><b id="js"></b></div><div><small>적용길이</small><b id="ja"></b></div><div><small>단가</small><b id="jr"></b></div><div><small>총금액</small><b id="jtotal"></b></div></div><button id="jadd" class="btn primary" style="width:100%">+ 견적목록 추가</button></div>`}
 function tier(l){if(l<=7.5)return{idx:0,d:'1000mm',r:'~7.5m'};if(l<=10)return{idx:1,d:'1300mm',r:'8.5~10m'};if(l<=13)return{idx:2,d:'1700mm',r:'11~13m'};if(l<=16)return{idx:3,d:'2000mm',r:'14~16m'};return{idx:4,d:'별도문의',r:'17~20m'}}
 function bindJ(){['jt','jm','jh','jl','jq','ji','jw','hh','hm'].forEach(id=>$(id).oninput=upJ);hu.onchange=()=>{hf.classList.toggle('hidden',!hu.checked);upJ()};jadd.onclick=addJ;upJ()}
@@ -381,6 +387,170 @@ function totalsCalc(){
         total=supply+tax;
   return{raw,rate,discount,supply,tax,total}
 }
+
+function lexanApplied(arr,val){
+  for(const v of arr) if(val<=v) return v;
+  return null
+}
+function lexanUnitPrice(th,bw,bh){
+  const x=lexanData.widths.indexOf(bw),y=lexanData.heights.indexOf(bh);
+  return x<0||y<0?null:lexanData.prices[th][y][x]
+}
+function lexanTpl(){
+  return `<div class="card">
+    <h2>렉산 판재</h2>
+    <p class="desc">입력 사이즈보다 큰 원판 규격을 적용합니다. 배송비는 착불입니다.</p>
+    <div class="tabs" id="lexanThicknessTabs">
+      ${(lexanData.thicknesses||[]).map(v=>`<button class="${v===lexanThickness?'on':''}" data-v="${v}">${v}</button>`).join('')}
+    </div>
+    <div class="tabs" id="lexanColorTabs">
+      ${(lexanData.colors||[]).map(v=>`<button class="${v===lexanColor?'on':''}" data-v="${v}">${v}</button>`).join('')}
+    </div>
+    <div class="grid g4">
+      <label>가로(mm)<input id="lexW" type="number" min="1"></label>
+      <label>세로(mm)<input id="lexH" type="number" min="1"></label>
+      <label>수량<input id="lexQty" type="number" value="1" min="1"></label>
+      <label>비고<input id="lexNote"></label>
+    </div>
+    <div class="result">
+      <div><small>입력 사이즈</small><b id="lexInput">-</b></div>
+      <div><small>적용 원판</small><b id="lexBoard">-</b></div>
+      <div><small>장당 금액</small><b id="lexUnit">0원</b></div>
+      <div><small>총금액</small><b id="lexTotal">0원</b></div>
+    </div>
+    <div id="lexGuide" class="notice">가로와 세로를 입력해주세요.</div>
+    <button id="lexAdd" class="btn primary" style="width:100%">+ 견적목록 추가</button>
+  </div>`
+}
+function bindLexan(){
+  document.querySelectorAll('#lexanThicknessTabs button').forEach(b=>b.onclick=()=>{
+    lexanThickness=b.dataset.v;
+    document.querySelectorAll('#lexanThicknessTabs button').forEach(x=>x.classList.toggle('on',x===b));
+    upLexan()
+  });
+  document.querySelectorAll('#lexanColorTabs button').forEach(b=>b.onclick=()=>{
+    lexanColor=b.dataset.v;
+    document.querySelectorAll('#lexanColorTabs button').forEach(x=>x.classList.toggle('on',x===b));
+    upLexan()
+  });
+  ['lexW','lexH','lexQty'].forEach(id=>$(id).oninput=upLexan);
+  lexAdd.onclick=addLexan;
+  upLexan()
+}
+function lexanCalc(){
+  const w=+lexW.value||0,h=+lexH.value||0,qty=Math.max(1,+lexQty.value||1),
+        boardW=w?lexanApplied(lexanData.widths,w):null,
+        boardH=h?lexanApplied(lexanData.heights,h):null,
+        unit=boardW&&boardH?lexanUnitPrice(lexanThickness,boardW,boardH):0,
+        usage=boardW&&boardH?Math.min(100,(w*h)/(boardW*boardH)*100):0;
+  return{w,h,qty,boardW,boardH,unit,total:unit*qty,usage,note:lexNote.value}
+}
+function upLexan(){
+  const c=lexanCalc();
+  lexInput.textContent=c.w&&c.h?`${c.w}×${c.h}mm`:'-';
+  if(c.w&&c.h&&!c.boardW){
+    lexBoard.textContent='규격 초과';
+    lexUnit.textContent='별도문의';
+    lexTotal.textContent='별도문의';
+    lexGuide.textContent='기본 원판 규격을 초과했습니다. 별도 문의가 필요합니다.';
+    return
+  }
+  lexBoard.textContent=c.boardW?`${c.boardW}×${c.boardH}mm`:'-';
+  lexUnit.textContent=won(c.unit);
+  lexTotal.textContent=won(c.total);
+  lexGuide.textContent=c.boardW?`원판 사용률 ${c.usage.toFixed(1)}% · ${lexanThickness} · ${lexanColor} · 배송비 착불`:'가로와 세로를 입력해주세요.'
+}
+function addLexan(){
+  const c=lexanCalc();
+  if(!c.w||!c.h)return alert('가로와 세로를 입력해주세요.');
+  if(!c.boardW||!c.boardH)return alert('기본 원판 규격을 초과했습니다. 별도 문의가 필요합니다.');
+  items.push({
+    name:'렉산 판재',
+    spec:`${lexanThickness} / ${lexanColor} / 주문 ${c.w}×${c.h}mm / 원판 ${c.boardW}×${c.boardH}mm`,
+    qty:c.qty,
+    unit:c.unit,
+    amount:c.total,
+    note:c.note||'배송비 착불'
+  });
+  drawList();toast('렉산 견적을 추가했습니다.')
+}
+
+function securityTpl(){
+  return `<div class="card">
+    <h2>방범창 자바라</h2>
+    <p class="desc">가로×세로÷90,000 후 반올림하며 최소 20평을 적용합니다.</p>
+    <div class="tabs" id="secProductTabs">
+      ${(securityData.products||[]).map(v=>`<button class="${v.name===securityProduct?'on':''}" data-v="${v.name}">${v.name}</button>`).join('')}
+    </div>
+    <div class="tabs" id="secOpeningTabs">
+      ${(securityData.openings||[]).map(v=>`<button class="${v===securityOpening?'on':''}" data-v="${v}">${v}</button>`).join('')}
+    </div>
+    <div class="tabs" id="secColorTabs">
+      ${(securityData.colors||[]).map(v=>`<button class="${v===securityColor?'on':''}" data-v="${v}">${v}</button>`).join('')}
+    </div>
+    <div class="grid g4">
+      <label>가로(mm)<input id="secW" type="number" min="1"></label>
+      <label>세로(mm)<input id="secH" type="number" min="1"></label>
+      <label>수량<input id="secQty" type="number" value="1" min="1"></label>
+      <label>비고<input id="secNote"></label>
+    </div>
+    <div class="result">
+      <div><small>계산 평수</small><b id="secRaw">0평</b></div>
+      <div><small>적용 평수</small><b id="secApplied">20평</b></div>
+      <div><small>개당 금액</small><b id="secUnit">0원</b></div>
+      <div><small>총금액</small><b id="secTotal">0원</b></div>
+    </div>
+    <div id="secGuide" class="notice">가로와 세로를 입력해주세요.</div>
+    <button id="secAdd" class="btn primary" style="width:100%">+ 견적목록 추가</button>
+  </div>`
+}
+function bindSecurity(){
+  document.querySelectorAll('#secProductTabs button').forEach(b=>b.onclick=()=>{
+    securityProduct=b.dataset.v;document.querySelectorAll('#secProductTabs button').forEach(x=>x.classList.toggle('on',x===b));upSecurity()
+  });
+  document.querySelectorAll('#secOpeningTabs button').forEach(b=>b.onclick=()=>{
+    securityOpening=b.dataset.v;document.querySelectorAll('#secOpeningTabs button').forEach(x=>x.classList.toggle('on',x===b));upSecurity()
+  });
+  document.querySelectorAll('#secColorTabs button').forEach(b=>b.onclick=()=>{
+    securityColor=b.dataset.v;document.querySelectorAll('#secColorTabs button').forEach(x=>x.classList.toggle('on',x===b));upSecurity()
+  });
+  ['secW','secH','secQty'].forEach(id=>$(id).oninput=upSecurity);
+  secAdd.onclick=addSecurity;upSecurity()
+}
+function securityCalc(){
+  const w=+secW.value||0,h=+secH.value||0,qty=Math.max(1,+secQty.value||1),
+        calcW=Math.max(w,h),calcH=Math.min(w,h),
+        raw=w&&h?(calcW*calcH)/(securityData.divisor||90000):0,
+        rounded=Math.round(raw),
+        applied=w&&h?Math.max(securityData.minPyeong||20,rounded):(securityData.minPyeong||20),
+        product=(securityData.products||[]).find(x=>x.name===securityProduct)||securityData.products?.[0]||{rate:0},
+        rate=product.rate||0,unit=w&&h?applied*rate:0;
+  return{w,h,calcW,calcH,qty,raw,applied,rate,unit,total:unit*qty,note:secNote.value}
+}
+function upSecurity(){
+  const c=securityCalc();
+  secRaw.textContent=c.w&&c.h?`${c.raw.toFixed(1)}평`:'0평';
+  secApplied.textContent=c.w&&c.h?`${c.applied}평`:`${securityData.minPyeong||20}평`;
+  secUnit.textContent=won(c.unit);
+  secTotal.textContent=won(c.total);
+  secGuide.textContent=c.w&&c.h
+    ?`${securityProduct} · ${securityOpening} · ${securityColor} · ${won(c.rate)}/평${Math.round(c.raw)<(securityData.minPyeong||20)?' · 최소 20평 적용':''}`
+    :'가로와 세로를 입력해주세요.'
+}
+function addSecurity(){
+  const c=securityCalc();
+  if(!c.w||!c.h)return alert('가로와 세로를 입력해주세요.');
+  items.push({
+    name:securityProduct,
+    spec:`${securityOpening} / ${securityColor} / ${c.w}×${c.h}mm / ${c.applied}평`,
+    qty:c.qty,
+    unit:c.unit,
+    amount:c.total,
+    note:c.note||'운임·시공비 별도'
+  });
+  drawList();toast('방범창 자바라 견적을 추가했습니다.')
+}
+
 function drawList(){
   count.textContent=items.length;
   qlist.innerHTML=items.length
