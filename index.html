@@ -33,7 +33,7 @@ table{width:100%;border-collapse:collapse}th{background:var(--n);color:white}th,
 <body>
 <div class="shell">
 <aside class="side">
- <div class="logo">KD SALES ERP<small>강동자바라 온라인 예상견적 시스템 V3.0</small></div>
+ <div class="logo">KD SALES ERP<small>강동자바라 온라인 예상견적 시스템 V3.1</small></div>
  <div class="nav">
   <button class="on" data-mod="dash">대시보드</button>
   <button data-mod="jabara">자바라</button>
@@ -211,7 +211,7 @@ function gTpl(){
   const sizes=Object.keys(alWindow.widthOptions||{}).map(Number).sort((a,b)=>a-b);
   return `<div class="card">
     <h2>방범창</h2>
-    <p class="desc">알루미늄은 스마트스토어 옵션 가격을 그대로 적용합니다.</p>
+    <p class="desc">알루미늄 소비자용은 가로·세로 숫자를 직접 입력하면 동일한 스마트스토어 옵션가격을 적용합니다.</p>
     <div class="tabs" id="gmt">
       <button class="on" data-m="알루미늄">알루미늄 · 스마트스토어</button>
       <button data-m="SUS201">SUS201</button>
@@ -224,8 +224,12 @@ function gTpl(){
         <button data-mode="business">업체용 · 4,000원 단가</button>
       </div>
       <div class="grid g4">
-        ${optionSelect('gw','가로사이즈',sizes)}
-        ${optionSelect('gh','세로사이즈',sizes)}
+        <label>가로사이즈(cm)
+          <input id="gw" type="number" min="60" max="220" step="1" value="60" inputmode="numeric" placeholder="60~220">
+        </label>
+        <label>세로사이즈(cm)
+          <input id="gh" type="number" min="60" max="220" step="1" value="60" inputmode="numeric" placeholder="60~220">
+        </label>
         <label id="assemblyLabel">조립요청
           <select id="gAssembly">
             <option value="0">미조립</option>
@@ -241,7 +245,7 @@ function gTpl(){
         </label>
       </div>
       <div id="consumerPriceNotice" class="notice">
-        소비자용: 기본가 ${won(alWindow.basePrice||0)} + 가로 옵션 추가금 + 세로 옵션 추가금 + 조립비
+        소비자용: 60~220cm 사이의 정수 입력 · 입력값과 정확히 일치하는 스마트스토어 옵션가격 적용
       </div>
       <div id="businessPriceNotice" class="notice hidden">
         업체용: 가로(mm) × 세로(mm) ÷ 90,000을 올림한 계산칸수 × ${won(alWindow.businessUnitPrice||4000)}
@@ -288,28 +292,47 @@ function bindG(){
   gadd.onclick=addG;
   upG()
 }
+function exactAluminumOption(value, options){
+  const number=Number(value);
+  if(!Number.isInteger(number)) return null;
+  if(number<60||number>220) return null;
+  return Object.prototype.hasOwnProperty.call(options||{},String(number))?number:null
+}
 function gcalc(){
   if(guardMat==='알루미늄'){
-    const w=+gw.value||60,
-          h=+gh.value||60,
-          q=Math.max(1,+gq.value||1);
+    const rawW=gw.value,
+          rawH=gh.value,
+          w=exactAluminumOption(rawW,alWindow.widthOptions),
+          h=exactAluminumOption(rawH,alWindow.heightOptions),
+          q=Math.max(1,+gq.value||1),
+          valid=w!==null&&h!==null;
     if(alPriceType==='business'){
-      const widthMm=w*10,
-            heightMm=h*10,
-            cells=Math.ceil((widthMm*heightMm)/90000),
+      const businessW=Number(rawW)||0,
+            businessH=Number(rawH)||0,
+            widthMm=businessW*10,
+            heightMm=businessH*10,
+            cells=businessW&&businessH?Math.ceil((widthMm*heightMm)/90000):0,
             rate=alWindow.businessUnitPrice||4000,
             unit=cells*rate;
       return{
-        mode:'business',w,h,q,cells,rate,
+        mode:'business',w:businessW,h:businessH,q,cells,rate,
+        valid:businessW>0&&businessH>0,
         unit,amount:unit*q,note:gn.value
       }
     }
-    const widthExtra=+(alWindow.widthOptions?.[String(w)]||0),
-          heightExtra=+(alWindow.heightOptions?.[String(h)]||0),
+    if(!valid){
+      return{
+        mode:'smartstore',w:Number(rawW)||0,h:Number(rawH)||0,q,
+        valid:false,widthExtra:0,heightExtra:0,assembly:0,
+        unit:0,amount:0,note:gn.value
+      }
+    }
+    const widthExtra=+(alWindow.widthOptions[String(w)]||0),
+          heightExtra=+(alWindow.heightOptions[String(h)]||0),
           assembly=gAssembly.value==='1'?(alWindow.assemblyPrice||0):0,
           unit=(alWindow.basePrice||0)+widthExtra+heightExtra+assembly;
     return{
-      mode:'smartstore',w,h,q,
+      mode:'smartstore',w,h,q,valid:true,
       widthExtra,heightExtra,assembly,
       unit,amount:unit*q,
       note:gn.value
@@ -327,10 +350,10 @@ function upG(){
   const c=gcalc();
   gm.textContent=guardMat;
   if(c.mode==='smartstore'){
-    gDetailLabel.textContent='옵션 추가금';
-    gc.textContent=won(c.widthExtra+c.heightExtra+c.assembly);
-    gr.textContent=won(c.unit);
-    gt.textContent=won(c.amount)
+    gDetailLabel.textContent=c.valid?'옵션 추가금':'입력 확인';
+    gc.textContent=c.valid?won(c.widthExtra+c.heightExtra+c.assembly):'60~220cm 정수';
+    gr.textContent=c.valid?won(c.unit):'계산 불가';
+    gt.textContent=c.valid?won(c.amount):'계산 불가'
   }else if(c.mode==='business'){
     gDetailLabel.textContent='계산칸수';
     gc.textContent=c.cells+'칸';
@@ -345,6 +368,9 @@ function upG(){
 }
 function addG(){
   const c=gcalc();
+  if(c.mode==='smartstore'&&!c.valid){
+    return alert('소비자용은 가로와 세로를 60~220cm 사이의 정수로 정확히 입력해주세요. 예: 123');
+  }
   if(!c.w||!c.h)return alert('규격을 입력해주세요.');
   if(c.mode==='smartstore'){
     const assemblyText=c.assembly?'조립':'미조립';
