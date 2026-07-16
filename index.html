@@ -18,7 +18,7 @@ label{display:flex;flex-direction:column;gap:6px;font-size:12px;font-weight:800}
 .result{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--l);border-radius:11px;overflow:hidden;margin:16px 0}.result div{padding:13px;border-right:1px solid var(--l)}.result div:last-child{border:0;background:var(--b)}.result small{display:block;color:var(--m);margin-bottom:5px}.result b{font-size:16px}
 .house{border:1px solid var(--l);border-radius:11px;padding:13px;margin-top:13px;background:#fbfdff}.househead{display:flex;justify-content:space-between}.switch{display:flex;flex-direction:row;align-items:center}.switch input{width:auto;height:auto}
 .pipe{display:grid;grid-template-columns:1fr 1fr 1.1fr .7fr .8fr .9fr 38px;gap:6px;align-items:end;border:1px solid var(--l);border-radius:10px;padding:9px;margin-bottom:7px;background:#fbfdff}.del{border:0;background:#fde6e6;color:#a83232;border-radius:7px;height:39px;cursor:pointer}
-.quote{position:sticky;top:92px;height:fit-content;overflow:hidden}.qhead{padding:15px;border-bottom:1px solid var(--l);display:flex;justify-content:space-between}.qlist{padding:9px;max-height:410px;overflow:auto}.empty{text-align:center;color:var(--m);padding:45px 10px;line-height:1.8}.qi{border:1px solid var(--l);border-radius:10px;padding:10px;margin-bottom:8px}.qihead{display:flex;justify-content:space-between;gap:8px}.qi h4{margin:0;font-size:13px}.qi p{margin:5px 0 0;color:var(--m);font-size:11px}.qiact button{border:0;border-radius:6px;padding:5px 7px;margin-top:7px;font-size:10px;cursor:pointer}.summary{border-top:1px solid var(--l);padding:12px}.summary div{display:flex;justify-content:space-between;padding:6px}.summary .grand{font-size:16px;border-top:1px dashed var(--l);margin-top:5px;padding-top:11px}.quote>.btn{margin:0 12px 12px;width:calc(100% - 24px)}
+.quote{position:sticky;top:92px;height:fit-content;overflow:hidden}.qhead{padding:15px;border-bottom:1px solid var(--l);display:flex;justify-content:space-between}.qlist{padding:9px;max-height:410px;overflow:auto}.empty{text-align:center;color:var(--m);padding:45px 10px;line-height:1.8}.qi{border:1px solid var(--l);border-radius:10px;padding:10px;margin-bottom:8px}.qihead{display:flex;justify-content:space-between;gap:8px}.qi h4{margin:0;font-size:13px}.qi p{margin:5px 0 0;color:var(--m);font-size:11px}.qiact button{border:0;border-radius:6px;padding:5px 7px;margin-top:7px;font-size:10px;cursor:pointer}.summary{border-top:1px solid var(--l);padding:12px}.summary div{display:flex;justify-content:space-between;padding:6px}.summary .grand{font-size:16px;border-top:1px dashed var(--l);margin-top:5px;padding-top:11px}.discount-row{align-items:center}.discount-input{display:flex;flex-direction:row;align-items:center;gap:5px}.discount-input input{width:78px;height:34px;text-align:right}.discount-input em{font-style:normal;font-weight:900}.quote>.btn{margin:0 12px 12px;width:calc(100% - 24px)}
 .dash{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.dash div{border:1px solid var(--l);border-radius:12px;padding:17px;cursor:pointer}.dash h3{margin:0 0 6px}.dash p{margin:0;color:var(--m);font-size:12px}.dash .disabled{opacity:.5;cursor:not-allowed}
 .hidden{display:none!important}.modal{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:30;display:flex;justify-content:center;align-items:flex-start;padding:35px 15px;overflow:auto}.modalcard{background:white;width:min(650px,100%);border-radius:14px;padding:20px}.modalhead{display:flex;justify-content:space-between}.x{border:0;border-radius:7px;width:32px;height:32px;cursor:pointer}
 #sheet{background:white;width:794px;min-height:1123px;padding:30px;color:#111}#sheet h1{text-align:center;letter-spacing:14px}.infogrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.box{border:1px solid #b9c8d5}.box div{display:grid;grid-template-columns:100px 1fr;border-bottom:1px solid #b9c8d5}.box div:last-child{border:0}.box b,.box span{padding:8px}.box b{background:#fff0f6;text-align:center}.totalbar{border:2px solid var(--n);padding:13px;margin:16px 0;display:flex;justify-content:space-between;font-weight:900}
@@ -33,7 +33,7 @@ table{width:100%;border-collapse:collapse}th{background:var(--n);color:white}th,
 <body>
 <div class="shell">
 <aside class="side">
- <div class="logo">KD SALES ERP<small>강동자바라 온라인 예상견적 시스템 V2.1</small></div>
+ <div class="logo">KD SALES ERP<small>강동자바라 온라인 예상견적 시스템 V2.2</small></div>
  <div class="nav">
   <button class="on" data-mod="dash">대시보드</button>
   <button data-mod="jabara">자바라</button>
@@ -72,7 +72,17 @@ table{width:100%;border-collapse:collapse}th{background:var(--n);color:white}th,
 </section>
  <section class="layout">
   <div id="module"></div>
-  <aside class="quote"><div class="qhead"><b>온라인 견적목록</b><span><b id="count">0</b>개</span></div><div id="qlist" class="qlist"></div><div class="summary"><div><span>공급가액</span><b id="sub">0원</b></div><div><span>부가세</span><b id="vat">0원</b></div><div class="grand"><span>최종금액</span><b id="grand">0원</b></div></div><button id="extraBtn" class="btn soft">+ 기타 비용</button></aside>
+  <aside class="quote"><div class="qhead"><b>온라인 견적목록</b><span><b id="count">0</b>개</span></div><div id="qlist" class="qlist"></div><div class="summary">
+  <div><span>상품 합계</span><b id="rawSub">0원</b></div>
+  <div class="discount-row">
+    <span>할인율</span>
+    <label class="discount-input"><input id="discountRate" type="number" min="0" max="100" step="0.1" value="0"><em>%</em></label>
+  </div>
+  <div><span>할인금액</span><b id="discountAmount">-0원</b></div>
+  <div><span>할인 후 공급가액</span><b id="sub">0원</b></div>
+  <div><span>부가세</span><b id="vat">0원</b></div>
+  <div class="grand"><span>최종금액</span><b id="grand">0원</b></div>
+</div><button id="extraBtn" class="btn soft">+ 기타 비용</button></aside>
  </section>
 </main>
 </div>
@@ -84,8 +94,26 @@ table{width:100%;border-collapse:collapse}th{background:var(--n);color:white}th,
 <script>
 const $=id=>document.getElementById(id),won=n=>Math.round(Number(n)||0).toLocaleString('ko-KR')+'원';
 let prices={},alWindow={},items=[],mod='dash',ladderType='safe',ladderMat='201',guardMat='알루미늄',alPriceType='consumer';
-const jRates={'일반형':{'201':{'1200':80000,'1500':100000},'304':{'1200':120000,'1500':140000}},'고급형':{'201':{'1200':110000,'1500':130000},'304':{'1200':150000,'1500':170000}}};
-const hRates={'1350':{'201':[250000,350000,450000,500000,600000],'304':[300000,450000,550000,600000,700000]},'1650':{'201':[300000,450000,550000,600000,700000],'304':[350000,500000,600000,650000,750000]}};
+const jRates={
+  '일반형':{
+    '201':{'1200':85000,'1500':125000},
+    '304':{'1200':125000,'1500':170000}
+  },
+  '고급형':{
+    '201':{'1200':140000,'1500':180000},
+    '304':{'1200':160000,'1500':200000}
+  }
+};
+const hRates={
+  '1350':{
+    '201':[300000,400000,500000,600000,null],
+    '304':[350000,500000,600000,700000,null]
+  },
+  '1650':{
+    '201':[350000,500000,600000,700000,null],
+    '304':[400000,550000,650000,750000,null]
+  }
+};
 const lRates={safe:{label:'안전망사다리',201:65000,304:75000},bending:{label:'밴딩사다리',201:45000,304:55000},straight:{label:'일자사다리',304:52000}};
 const gRates={'알루미늄':4000,'SUS201':4700,'SUS304':5700};
 document.addEventListener('DOMContentLoaded',async()=>{
@@ -96,7 +124,14 @@ document.addEventListener('DOMContentLoaded',async()=>{
   catch(e){toast('알루미늄 방범창 옵션 데이터 오류')}
   bind();render('dash');drawList()
 });
-function bind(){copyMessage.onclick=copyCustomerMessage;document.querySelectorAll('.nav button[data-mod]').forEach(b=>b.onclick=()=>render(b.dataset.mod));document.querySelectorAll('.x').forEach(b=>b.onclick=()=>b.closest('.modal').classList.add('hidden'));makeQuote.onclick=openSheet;print.onclick=()=>window.print();jpg.onclick=saveJpg;extraBtn.onclick=()=>extraModal.classList.remove('hidden');extraAdd.onclick=addExtra;newQuote.onclick=resetAll;saveQuote.onclick=saveNow;loadQuote.onclick=openSaved}
+function bind(){
+  copyMessage.onclick=copyCustomerMessage;
+  discountRate.oninput=()=>{
+    let v=Math.max(0,Math.min(100,+discountRate.value||0));
+    if(+discountRate.value!==v) discountRate.value=v;
+    drawList()
+  };
+  document.querySelectorAll('.nav button[data-mod]').forEach(b=>b.onclick=()=>render(b.dataset.mod));document.querySelectorAll('.x').forEach(b=>b.onclick=()=>b.closest('.modal').classList.add('hidden'));makeQuote.onclick=openSheet;print.onclick=()=>window.print();jpg.onclick=saveJpg;extraBtn.onclick=()=>extraModal.classList.remove('hidden');extraAdd.onclick=addExtra;newQuote.onclick=resetAll;saveQuote.onclick=saveNow;loadQuote.onclick=openSaved}
 function toast(s){toast.textContent=s;toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),1600)}
 function render(m){mod=m;document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('on',b.dataset.mod===m));const map={dash:['대시보드','제품을 선택해 통합 견적을 작성하세요.'],jabara:['자바라','본체와 하우스를 자동 계산합니다.'],ladder:['사다리','최소 3m와 로스 올림을 적용합니다.'],handrail:['핸드레일','파이프 단가와 부속을 계산합니다.'],guard:['방범창','규격별 계산칸수를 자동 산출합니다.']};title.textContent=map[m][0];subtitle.textContent=map[m][1];module.innerHTML=m==='dash'?dashTpl():m==='jabara'?jTpl():m==='ladder'?lTpl():m==='handrail'?hTpl():gTpl();module.querySelectorAll('[data-go]').forEach(x=>x.onclick=()=>render(x.dataset.go));if(m==='jabara')bindJ();if(m==='ladder')bindL();if(m==='handrail')bindH();if(m==='guard')bindG()}
 function dashTpl(){return `<div class="card"><h2>제품 선택</h2><p class="desc">온라인 판매단가로 서로 다른 제품을 한 예상 견적에 함께 추가할 수 있습니다.</p><div class="dash"><div data-go="jabara"><h3>자바라</h3><p>형태·재질·높이·길이·하우스</p></div><div data-go="ladder"><h3>사다리</h3><p>안전망·밴딩·일자형·옵션</p></div><div data-go="handrail"><h3>핸드레일</h3><p>원/사각파이프·규격·두께</p></div><div data-go="guard"><h3>방범창</h3><p>스마트스토어 알루미늄 옵션 · SUS201 · SUS304</p></div><div class="disabled"><h3>난간대</h3><p>다음 버전</p></div><div class="disabled"><h3>폴딩도어</h3><p>다음 버전</p></div></div></div>`}
@@ -126,8 +161,8 @@ function calcJ(){
       spec:`H${hh.value} / 제작기준 ${splitLength}m × ${cnt}EA / 깊이 ${t.d} / ${t.r}`,
       qty:cnt,
       unit:u,
-      amount:u*cnt,
-      note:ji.value==='양개형'?'양개형 분할 자동계산':'편개형 자동계산'
+      amount:u===null?0:u*cnt,
+      note:u===null?'하우스 별도문의':(ji.value==='양개형'?'양개형 분할 자동계산':'편개형 자동계산')
     }
   }
   return{l,splitLength,rate,body,house}
@@ -141,10 +176,10 @@ function upJ(){
   js.textContent=`${jt.value}/SUS${jm.value}/H${jh.value}`;
   ja.textContent=ji.value==='양개형'?`총 ${c.l}m → ${c.splitLength}m × 2짝`:`${c.l}m`;
   jr.textContent=won(c.rate)+'/m';
-  jtotal.textContent=won(c.body.amount+(c.house?c.house.amount:0));
-  hi.textContent=c.house?`하우스 제작기준 ${c.splitLength}m × ${cnt}EA · ${t.r} · 깊이 ${t.d} · ${won(c.house.amount)}`:''
+  jtotal.textContent=c.house&&c.house.unit===null?'하우스 별도문의':won(c.body.amount+(c.house?c.house.amount:0));
+  hi.textContent=c.house?`하우스 제작기준 ${c.splitLength}m × ${cnt}EA · ${t.r} · 깊이 ${t.d} · ${c.house.unit===null?'별도문의':won(c.house.amount)}`:''
 }
-function addJ(){let c=calcJ();items.push(c.body);if(c.house)items.push(c.house);drawList();toast('자바라 추가')}
+function addJ(){let c=calcJ();items.push(c.body);if(c.house&&c.house.unit!==null)items.push(c.house);else if(c.house&&c.house.unit===null)toast('17~20m 하우스는 별도문의입니다.');drawList();toast('자바라 추가')}
 function opt(n,p,cls){return `<div class="opt"><label><input class="${cls}" type="checkbox" data-name="${n}" data-price="${p}"> ${n}</label><input class="${cls}q" type="number" value="1" min="1"><small>${won(p)}/개</small></div>`}
 function lTpl(){return `<div class="card"><h2>사다리</h2><p class="desc">로스 적용 시 최소 3m, 1m 단위 올림</p><div class="tabs" id="ltab"><button class="on" data-t="safe">안전망</button><button data-t="bending">밴딩</button><button data-t="straight">일자</button></div><div class="tabs" id="lmat"><button class="on" data-m="201">SUS201</button><button data-m="304">SUS304</button></div><div class="grid g4"><label>주문높이(mm)<input id="lh" type="number"></label><label>수량<input id="lq" type="number" value="1"></label><label>단가<input id="lr" readonly></label><label>본체금액<input id="lb" readonly></label></div><label class="switch" style="margin-top:12px"><input id="loss" type="checkbox" checked> 로스 적용</label><div class="opts">${opt('엘보',5000,'lo')}${opt('빠찌',5000,'lo')}${opt('베이스판',10000,'lo')}${opt('구름다리',80000,'lo')}${opt('시건장치',80000,'lo')}</div><div class="result"><div><small>제품</small><b id="lname"></b></div><div><small>주문/계산</small><b id="llen"></b></div><div><small>옵션</small><b id="lopt"></b></div><div><small>총금액</small><b id="ltotal"></b></div></div><button id="ladd" class="btn primary" style="width:100%">+ 견적목록 추가</button></div>`}
 function bindL(){document.querySelectorAll('#ltab button').forEach(b=>b.onclick=()=>{ladderType=b.dataset.t;document.querySelectorAll('#ltab button').forEach(x=>x.classList.toggle('on',x===b));if(ladderType==='straight'){ladderMat='304';document.querySelector('[data-m="201"]').style.display='none';document.querySelectorAll('#lmat button').forEach(x=>x.classList.toggle('on',x.dataset.m==='304'))}else document.querySelector('[data-m="201"]').style.display='';upL()});document.querySelectorAll('#lmat button').forEach(b=>b.onclick=()=>{ladderMat=b.dataset.m;document.querySelectorAll('#lmat button').forEach(x=>x.classList.toggle('on',x===b));upL()});['lh','lq','loss'].forEach(id=>$(id).oninput=upL);document.querySelectorAll('.lo,.loq').forEach(x=>x.oninput=upL);ladd.onclick=addL;upL()}
@@ -337,16 +372,38 @@ function addG(){
   drawList();
   toast('방범창 추가')
 }
-function drawList(){count.textContent=items.length;qlist.innerHTML=items.length?items.map((x,i)=>`<div class="qi"><div class="qihead"><div><h4>${x.name}</h4><p>${x.spec}</p></div><b>${won(x.amount)}</b></div><div class="qiact"><button onclick="copyI(${i})">복사</button> <button onclick="delI(${i})">삭제</button></div></div>`).join(''):`<div class="empty">제품을 계산한 후<br><b>견적목록 추가</b>를 눌러주세요.</div>`;let s=items.reduce((a,b)=>a+b.amount,0),v=Math.round(s*.1);sub.textContent=won(s);vat.textContent=won(v);grand.textContent=won(s+v)}
+function totalsCalc(){
+  const raw=items.reduce((a,b)=>a+b.amount,0),
+        rate=Math.max(0,Math.min(100,+discountRate.value||0)),
+        discount=Math.round(raw*rate/100),
+        supply=Math.max(0,raw-discount),
+        tax=Math.round(supply*.1),
+        total=supply+tax;
+  return{raw,rate,discount,supply,tax,total}
+}
+function drawList(){
+  count.textContent=items.length;
+  qlist.innerHTML=items.length
+    ?items.map((x,i)=>`<div class="qi"><div class="qihead"><div><h4>${x.name}</h4><p>${x.spec}</p></div><b>${won(x.amount)}</b></div><div class="qiact"><button onclick="copyI(${i})">복사</button> <button onclick="delI(${i})">삭제</button></div></div>`).join('')
+    :`<div class="empty">제품을 계산한 후<br><b>견적목록 추가</b>를 눌러주세요.</div>`;
+  const t=totalsCalc();
+  rawSub.textContent=won(t.raw);
+  discountAmount.textContent='-'+won(t.discount);
+  sub.textContent=won(t.supply);
+  vat.textContent=won(t.tax);
+  grand.textContent=won(t.total)
+}
 window.copyI=i=>{items.splice(i+1,0,{...items[i]});drawList()};window.delI=i=>{items.splice(i,1);drawList()}
 function addExtra(){let n=extraName.value.trim(),a=+extraAmount.value||0;if(!n||!a)return alert('비용 입력');items.push({name:n,spec:'기타 비용',qty:1,unit:a,amount:a,note:extraNote.value});extraModal.classList.add('hidden');extraName.value=extraAmount.value=extraNote.value='';drawList()}
 async function copyCustomerMessage(){
-  const total=grand.textContent;
+  const t=totalsCalc();
+  const total=won(t.total);
   const name=company.value.trim();
+  const discountLine=t.rate>0?`할인율: ${t.rate}%\n할인금액: ${won(t.discount)}\n`:'';
   const message=`안녕하세요${name?` ${name} 고객님`:''}, 강동자바라입니다.
 
 요청하신 예상 견적을 안내드립니다.
-예상 견적금액: ${total}
+${discountLine}예상 견적금액: ${total}
 
 본 견적은 실제 실측, 현장 조건, 배송 및 시공 여부에 따라 변경될 수 있습니다.
 확인 후 궁금하신 사항은 언제든 문의해 주세요.
@@ -358,12 +415,12 @@ async function copyCustomerMessage(){
     prompt('아래 내용을 복사해 주세요.',message);
   }
 }
-function resetAll(){if(items.length&&!confirm('초기화할까요?'))return;items=[];['company','manager','phone','email','site','consultMemo'].forEach(id=>$(id).value='');consultStatus.value='신규';drawList();render('dash')}
-function saveNow(){let n=prompt('견적 이름',`${company.value||'고객'}_${date.value}`);if(!n)return;let a=JSON.parse(localStorage.getItem('kd-erp')||'[]');a.unshift({id:Date.now(),name:n,cust:getCust(),items,when:new Date().toLocaleString('ko-KR')});localStorage.setItem('kd-erp',JSON.stringify(a.slice(0,100)));toast('저장 완료')}
+function resetAll(){if(items.length&&!confirm('초기화할까요?'))return;items=[];['company','manager','phone','email','site','consultMemo'].forEach(id=>$(id).value='');consultStatus.value='신규';discountRate.value=0;drawList();render('dash')}
+function saveNow(){let n=prompt('견적 이름',`${company.value||'고객'}_${date.value}`);if(!n)return;let a=JSON.parse(localStorage.getItem('kd-erp')||'[]');a.unshift({id:Date.now(),name:n,cust:getCust(),items,discountRate:+discountRate.value||0,when:new Date().toLocaleString('ko-KR')});localStorage.setItem('kd-erp',JSON.stringify(a.slice(0,100)));toast('저장 완료')}
 function openSaved(){let a=JSON.parse(localStorage.getItem('kd-erp')||'[]');savedList.innerHTML=a.length?a.map(x=>`<div class="qi"><div class="qihead"><div><h4>${x.name}</h4><p>${x.when}</p></div><div><button onclick="loadS(${x.id})">불러오기</button> <button onclick="rmS(${x.id})">삭제</button></div></div></div>`).join(''):`<div class="empty">저장된 견적 없음</div>`;savedModal.classList.remove('hidden')}
-window.loadS=id=>{let x=JSON.parse(localStorage.getItem('kd-erp')||'[]').find(y=>y.id===id);if(x){setCust(x.cust);items=x.items||[];drawList();savedModal.classList.add('hidden')}};window.rmS=id=>{let a=JSON.parse(localStorage.getItem('kd-erp')||'[]').filter(x=>x.id!==id);localStorage.setItem('kd-erp',JSON.stringify(a));openSaved()}
+window.loadS=id=>{let x=JSON.parse(localStorage.getItem('kd-erp')||'[]').find(y=>y.id===id);if(x){setCust(x.cust);items=x.items||[];discountRate.value=x.discountRate||0;drawList();savedModal.classList.add('hidden')}};window.rmS=id=>{let a=JSON.parse(localStorage.getItem('kd-erp')||'[]').filter(x=>x.id!==id);localStorage.setItem('kd-erp',JSON.stringify(a));openSaved()}
 function getCust(){return{date:date.value,company:company.value,manager:manager.value,phone:phone.value,email:email.value,site:site.value,consultStatus:consultStatus.value,consultMemo:consultMemo.value}}function setCust(c){Object.keys(c).forEach(k=>{if($(k))$(k).value=c[k]||''})}
-function openSheet(){if(!items.length)return alert('견적 항목 없음');let c=getCust();customerBox.innerHTML=`<div><b>견적일자</b><span>${c.date}</span></div><div><b>고객명</b><span>${c.company}</span></div><div><b>담당자</b><span>${c.manager}</span></div><div><b>연락처</b><span>${c.phone}</span></div><div><b>현장명</b><span>${c.site}</span></div><div><b>상담단계</b><span>${c.consultStatus||''}</span></div>`;sheetItems.innerHTML=items.map((x,i)=>`<tr><td>${i+1}</td><td>${x.name}</td><td>${x.spec}</td><td>${x.qty}</td><td>${won(x.unit)}</td><td>${won(x.amount)}</td><td>${x.note||''}</td></tr>`).join('');let s=items.reduce((a,b)=>a+b.amount,0),v=Math.round(s*.1),g=s+v;sheetGrand.textContent=`총금액 ${won(g)} (V.A.T. 포함)`;sheetTotals.innerHTML=`<div><b>공급가액</b><span>${won(s)}</span></div><div><b>부가세</b><span>${won(v)}</span></div><div><b>총금액</b><span>${won(g)}</span></div>`;quoteModal.classList.remove('hidden')}
+function openSheet(){if(!items.length)return alert('견적 항목 없음');let c=getCust();customerBox.innerHTML=`<div><b>견적일자</b><span>${c.date}</span></div><div><b>고객명</b><span>${c.company}</span></div><div><b>담당자</b><span>${c.manager}</span></div><div><b>연락처</b><span>${c.phone}</span></div><div><b>현장명</b><span>${c.site}</span></div><div><b>상담단계</b><span>${c.consultStatus||''}</span></div>`;sheetItems.innerHTML=items.map((x,i)=>`<tr><td>${i+1}</td><td>${x.name}</td><td>${x.spec}</td><td>${x.qty}</td><td>${won(x.unit)}</td><td>${won(x.amount)}</td><td>${x.note||''}</td></tr>`).join('');let t=totalsCalc();sheetGrand.textContent=`총금액 ${won(t.total)} (V.A.T. 포함)`;sheetTotals.innerHTML=`<div><b>상품 합계</b><span>${won(t.raw)}</span></div>${t.rate>0?`<div><b>할인율</b><span>${t.rate}%</span></div><div><b>할인금액</b><span>-${won(t.discount)}</span></div>`:''}<div><b>공급가액</b><span>${won(t.supply)}</span></div><div><b>부가세</b><span>${won(t.tax)}</span></div><div><b>총금액</b><span>${won(t.total)}</span></div>`;quoteModal.classList.remove('hidden')}
 async function saveJpg(){if(typeof html2canvas==='undefined')return alert('저장모듈 오류');let c=await html2canvas(sheet,{scale:2,backgroundColor:'#fff'}),a=document.createElement('a');a.download=`강동자바라_온라인_예상견적서_${company.value||'고객'}_${date.value}.jpg`;a.href=c.toDataURL('image/jpeg',.95);a.click()}
 </script>
 </body></html>
