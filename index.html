@@ -211,7 +211,7 @@ function gTpl(){
   const sizes=Object.keys(alWindow.widthOptions||{}).map(Number).sort((a,b)=>a-b);
   return `<div class="card">
     <h2>방범창</h2>
-    <p class="desc">알루미늄 소비자용은 가로·세로 숫자를 직접 입력하면 동일한 스마트스토어 옵션가격을 적용합니다.</p>
+    <p class="desc">알루미늄 소비자용은 60×60cm 14,000원부터 시작하며, 면적 계산단위가 늘어날 때마다 4,500원씩 추가됩니다.</p>
     <div class="tabs" id="gmt">
       <button class="on" data-m="알루미늄">알루미늄 · 스마트스토어</button>
       <button data-m="SUS201">SUS201</button>
@@ -245,7 +245,7 @@ function gTpl(){
         </label>
       </div>
       <div id="consumerPriceNotice" class="notice">
-        소비자용: 60~300cm 사이의 정수 입력 · 입력값과 정확히 일치하는 스마트스토어 옵션가격 적용
+        소비자용: 60×60cm 기본 14,000원 · 올림[(가로×세로)÷900]에서 기본 4단위를 뺀 수량 × 4,500원 추가
       </div>
       <div id="businessPriceNotice" class="notice hidden">
         업체용: 가로(mm) × 세로(mm) ÷ 90,000을 올림한 계산칸수 × ${won(alWindow.businessUnitPrice||4000)}
@@ -323,17 +323,19 @@ function gcalc(){
     if(!valid){
       return{
         mode:'smartstore',w:Number(rawW)||0,h:Number(rawH)||0,q,
-        valid:false,widthExtra:0,heightExtra:0,assembly:0,
+        valid:false,cells:0,baseCells:4,extraCells:0,areaExtra:0,assembly:0,
         unit:0,amount:0,note:gn.value
       }
     }
-    const widthExtra=+(alWindow.widthOptions[String(w)]||0),
-          heightExtra=+(alWindow.heightOptions[String(h)]||0),
+    const cells=Math.ceil((w*h)/900),
+          baseCells=alWindow.baseCells||4,
+          extraCells=Math.max(0,cells-baseCells),
+          areaExtra=extraCells*(alWindow.consumerUnitPrice||4500),
           assembly=gAssembly.value==='1'?(alWindow.assemblyPrice||0):0,
-          unit=(alWindow.basePrice||0)+widthExtra+heightExtra+assembly;
+          unit=(alWindow.basePrice||14000)+areaExtra+assembly;
     return{
       mode:'smartstore',w,h,q,valid:true,
-      widthExtra,heightExtra,assembly,
+      cells,baseCells,extraCells,areaExtra,assembly,
       unit,amount:unit*q,
       note:gn.value
     }
@@ -350,8 +352,8 @@ function upG(){
   const c=gcalc();
   gm.textContent=guardMat;
   if(c.mode==='smartstore'){
-    gDetailLabel.textContent=c.valid?'옵션 추가금':'입력 확인';
-    gc.textContent=c.valid?won(c.widthExtra+c.heightExtra+c.assembly):'60~300cm 정수';
+    gDetailLabel.textContent=c.valid?'면적 추가금':'입력 확인';
+    gc.textContent=c.valid?`${c.extraCells}단위 · ${won(c.areaExtra+c.assembly)}`:'60~300cm 정수';
     gr.textContent=c.valid?won(c.unit):'계산 불가';
     gt.textContent=c.valid?won(c.amount):'계산 불가'
   }else if(c.mode==='business'){
@@ -376,11 +378,11 @@ function addG(){
     const assemblyText=c.assembly?'조립':'미조립';
     items.push({
       name:'알루미늄 방범창 · 소비자용',
-      spec:`가로 ${c.w}cm × 세로 ${c.h}cm / ${assemblyText}`,
+      spec:`가로 ${c.w}cm × 세로 ${c.h}cm / ${c.cells}단위 / ${assemblyText}`,
       qty:c.q,
       unit:c.unit,
       amount:c.amount,
-      note:c.note||'스마트스토어 옵션가격 적용'
+      note:c.note||`기본 14,000원 + 면적 ${c.extraCells}단위 추가`
     })
   }else if(c.mode==='business'){
     items.push({
