@@ -212,7 +212,7 @@ function gTpl(){
   const sizes=Object.keys(alWindow.widthOptions||{}).map(Number).sort((a,b)=>a-b);
   return `<div class="card">
     <h2>방범창</h2>
-    <p class="desc">알루미늄 소비자용은 60~220cm 스마트스토어 옵션가격을 적용하고, 221~300cm는 면적단가 4,500원의 맞춤견적으로 계산합니다.</p>
+    <p class="desc">알루미늄 소비자용은 60~220cm 스마트스토어 옵션가격을 적용하고, 221~300cm는 220×220 기준 이후 추가 면적단위당 5,500원의 맞춤견적으로 계산합니다.</p>
     <div class="tabs" id="gmt">
       <button class="on" data-m="알루미늄">알루미늄 · 스마트스토어</button>
       <button data-m="SUS201">SUS201</button>
@@ -246,7 +246,7 @@ function gTpl(){
         </label>
       </div>
       <div id="consumerPriceNotice" class="notice">
-        소비자용: 60~220cm는 스마트스토어 옵션가격 · 221~300cm는 맞춤견적 면적단가 4,500원 적용
+        소비자용: 60~220cm는 스마트스토어 옵션가격 · 221~300cm는 220×220 기준 이후 추가 면적단위당 5,500원 적용
       </div>
       <div id="businessPriceNotice" class="notice hidden">
         업체용: 가로(mm) × 세로(mm) ÷ 90,000을 올림한 계산칸수 × ${won(alWindow.businessUnitPrice||4000)}
@@ -337,7 +337,12 @@ function gcalc(){
           isStoreOption=w<=smartMax&&h<=smartMax,
           widthExtra=isStoreOption?(alWindow.widthOptions?.[String(w)]||0):0,
           heightExtra=isStoreOption?(alWindow.heightOptions?.[String(h)]||0):0,
-          areaExtra=isStoreOption?(widthExtra+heightExtra):(extraCells*(alWindow.consumerUnitPrice||4500)),
+          standardAreaTotal=(alWindow.basePrice||14000)+(extraCells*(alWindow.standardConsumerUnitPrice||4500)),
+          largeAnchorCells=alWindow.largeAnchorCells||54,
+          largeAnchorPrice=alWindow.largeAnchorPrice||239000,
+          largeAreaTotal=largeAnchorPrice+((cells-largeAnchorCells)*(alWindow.consumerUnitPrice||5500)),
+          customAreaTotal=Math.max(standardAreaTotal,largeAreaTotal),
+          areaExtra=isStoreOption?(widthExtra+heightExtra):(customAreaTotal-(alWindow.basePrice||14000)),
           assembly=gAssembly.value==='1'?(alWindow.assemblyPrice||0):0,
           unit=(alWindow.basePrice||14000)+areaExtra+assembly;
     return{
@@ -360,7 +365,7 @@ function upG(){
   gm.textContent=guardMat;
   if(c.mode==='smartstore'){
     gDetailLabel.textContent=c.valid?(c.isStoreOption?'옵션 추가금':'맞춤 추가금'):'입력 확인';
-    gc.textContent=c.valid?(c.isStoreOption?`가로 ${won(c.widthExtra)} + 세로 ${won(c.heightExtra)}${c.assembly?' + 조립 '+won(c.assembly):''}`:`${c.extraCells}단위 · ${won(c.areaExtra+c.assembly)}`):'60~300cm 정수';
+    gc.textContent=c.valid?(c.isStoreOption?`가로 ${won(c.widthExtra)} + 세로 ${won(c.heightExtra)}${c.assembly?' + 조립 '+won(c.assembly):''}`:`${c.cells}단위 · 대형 맞춤단가 ${won(c.areaExtra+c.assembly)}`):'60~300cm 정수';
     gr.textContent=c.valid?won(c.unit):'계산 불가';
     gt.textContent=c.valid?won(c.amount):'계산 불가'
   }else if(c.mode==='business'){

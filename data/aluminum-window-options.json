@@ -335,11 +335,14 @@
     "220": 112500
   },
   "sourceFile": "알루미늄방범창_스마트스토어_업로드용_60-220(1).xlsx",
-  "note": "소비자용 60~220cm: 스마트스토어 옵션가(기본가 14,000원 + 가로 추가금 + 세로 추가금 + 조립비) / 221~300cm: 맞춤견적 면적단가 4,500원 적용 / 업체용: 가로(mm)×세로(mm)÷90,000 올림 × 4,000원",
+  "note": "소비자용 60~220cm: 스마트스토어 옵션가(기본가 14,000원 + 가로 추가금 + 세로 추가금 + 조립비) / 221~300cm: 기존 4,500원 면적가격보다 낮지 않게 유지하며 220×220 기준 이후 추가 면적단위당 5,500원 적용 / 업체용: 가로(mm)×세로(mm)÷90,000 올림 × 4,000원",
   "businessUnitPrice": 4000,
-  "consumerUnitPrice": 4500,
+  "consumerUnitPrice": 5500,
   "baseCells": 4,
   "minSizeCm": 60,
   "maxSizeCm": 300,
-  "smartStoreMaxSizeCm": 220
+  "smartStoreMaxSizeCm": 220,
+  "standardConsumerUnitPrice": 4500,
+  "largeAnchorCells": 54,
+  "largeAnchorPrice": 239000
 }
