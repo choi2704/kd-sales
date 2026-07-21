@@ -8,7 +8,7 @@
 *{box-sizing:border-box}body{margin:0;background:#fff6fa;font-family:Pretendard,"Noto Sans KR",Arial;color:#10243a}button,input,select{font:inherit}
 .shell{display:grid;grid-template-columns:220px 1fr;min-height:100vh}.side{background:var(--n);color:white;padding:20px 14px;display:flex;flex-direction:column}.logo{font-weight:900;font-size:19px;padding:10px 8px 24px}.logo small{display:block;font-size:11px;color:#b8cada;margin-top:5px}
 .nav{display:grid;gap:6px}.nav button{border:0;background:transparent;color:#ffe8f1;text-align:left;padding:13px;border-radius:10px;font-weight:800;cursor:pointer}.nav button.on{background:white;color:var(--n)}.nav button.off{opacity:.45;cursor:not-allowed}.sidefoot{margin-top:auto;display:grid;gap:8px}
-.btn{border:0;border-radius:9px;padding:11px 14px;font-weight:900;cursor:pointer}.primary{background:var(--n);color:white}.soft{background:var(--b);color:var(--n)}.ghost{background:#b83f70;color:white}.green{background:#e85b91;color:white}
+.btn{border:0;border-radius:9px;padding:11px 14px;font-weight:900;cursor:pointer}.primary{background:var(--n);color:white}.soft{background:var(--b);color:var(--n)}.ghost{background:#b83f70;color:white}.green{background:#e85b91;color:white}.quote-blue{background:#1565c0;color:white}.message-blue{background:#e8f1ff;color:#0d55a6;border:1px solid #a9c8ee}
 .main{min-width:0}.top{height:76px;background:white;border-bottom:1px solid var(--l);padding:0 24px;display:flex;align-items:center;justify-content:space-between}.top h1{margin:0;font-size:22px}.top p{margin:4px 0 0;color:var(--m);font-size:12px}
 .customer,.card,.quote{background:white;border:1px solid var(--l);border-radius:15px}.customer{margin:18px 20px 0;padding:16px}.grid{display:grid;gap:10px}.g6{grid-template-columns:repeat(6,1fr)}.g4{grid-template-columns:repeat(4,1fr)}.g3{grid-template-columns:repeat(3,1fr)}.g2{grid-template-columns:repeat(2,1fr)}
 label{display:flex;flex-direction:column;gap:6px;font-size:12px;font-weight:800}input,select{height:41px;border:1px solid var(--l);border-radius:8px;padding:0 10px}
@@ -21,8 +21,8 @@ label{display:flex;flex-direction:column;gap:6px;font-size:12px;font-weight:800}
 .quote{position:sticky;top:92px;height:fit-content;overflow:hidden}.qhead{padding:15px;border-bottom:1px solid var(--l);display:flex;justify-content:space-between}.qlist{padding:9px;max-height:410px;overflow:auto}.empty{text-align:center;color:var(--m);padding:45px 10px;line-height:1.8}.qi{border:1px solid var(--l);border-radius:10px;padding:10px;margin-bottom:8px}.qihead{display:flex;justify-content:space-between;gap:8px}.qi h4{margin:0;font-size:13px}.qi p{margin:5px 0 0;color:var(--m);font-size:11px}.qiact button{border:0;border-radius:6px;padding:5px 7px;margin-top:7px;font-size:10px;cursor:pointer}.summary{border-top:1px solid var(--l);padding:12px}.summary div{display:flex;justify-content:space-between;padding:6px}.summary .grand{font-size:16px;border-top:1px dashed var(--l);margin-top:5px;padding-top:11px}.discount-row{align-items:center}.discount-input{display:flex;flex-direction:row;align-items:center;gap:5px}.discount-input input{width:78px;height:34px;text-align:right}.discount-input em{font-style:normal;font-weight:900}.quote>.btn{margin:0 12px 12px;width:calc(100% - 24px)}
 .dash{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.dash div{border:1px solid var(--l);border-radius:12px;padding:17px;cursor:pointer}.dash h3{margin:0 0 6px}.dash p{margin:0;color:var(--m);font-size:12px}.dash .disabled{opacity:.5;cursor:not-allowed}
 .hidden{display:none!important}.modal{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:30;display:flex;justify-content:center;align-items:flex-start;padding:35px 15px;overflow:auto}.modalcard{background:white;width:min(650px,100%);border-radius:14px;padding:20px}.modalhead{display:flex;justify-content:space-between}.x{border:0;border-radius:7px;width:32px;height:32px;cursor:pointer}
-#sheet{background:white;width:794px;min-height:1123px;padding:30px;color:#111}#sheet h1{text-align:center;letter-spacing:14px}.infogrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.box{border:1px solid #b9c8d5}.box div{display:grid;grid-template-columns:100px 1fr;border-bottom:1px solid #b9c8d5}.box div:last-child{border:0}.box b,.box span{padding:8px}.box b{background:#fff0f6;text-align:center}.totalbar{border:2px solid var(--n);padding:13px;margin:16px 0;display:flex;justify-content:space-between;font-weight:900}
-table{width:100%;border-collapse:collapse}th{background:var(--n);color:white}th,td{border:1px solid #becbd6;padding:8px;text-align:center;font-size:11px}.bottom{display:grid;grid-template-columns:1.3fr .7fr;gap:10px;margin-top:12px}.terms{border:1px solid #becbd6;padding:12px;font-size:11px}
+#sheet{--quote-blue:#1565c0;--quote-light:#eaf3ff;background:white;width:794px;min-height:1123px;padding:30px;color:#111;border-top:8px solid var(--quote-blue)}#sheet h1{text-align:center;letter-spacing:14px;color:var(--quote-blue)}.infogrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.box{border:1px solid #b9c8d5}.box div{display:grid;grid-template-columns:100px 1fr;border-bottom:1px solid #b9c8d5}.box div:last-child{border:0}.box b,.box span{padding:8px}.box b{background:#fff0f6;text-align:center}#sheet .box b{background:var(--quote-light);color:#123c69}#sheet .totalbar{border:2px solid var(--quote-blue)}.totalbar{border:2px solid var(--n);padding:13px;margin:16px 0;display:flex;justify-content:space-between;font-weight:900}
+table{width:100%;border-collapse:collapse}th{background:var(--n);color:white}#sheet th{background:var(--quote-blue)}th,td{border:1px solid #becbd6;padding:8px;text-align:center;font-size:11px}.bottom{display:grid;grid-template-columns:1.3fr .7fr;gap:10px;margin-top:12px}.terms{border:1px solid #becbd6;padding:12px;font-size:11px}
 .toast{position:fixed;right:20px;bottom:20px;background:var(--n);color:white;padding:11px 15px;border-radius:8px;display:none;z-index:60}.toast.show{display:block}
 @media(max-width:1100px){.g6{grid-template-columns:repeat(3,1fr)}.layout{grid-template-columns:1fr}.quote{position:static}.qlist{max-height:none}}
 @media(max-width:720px){.shell{grid-template-columns:1fr}.side{position:static}.nav{grid-template-columns:repeat(3,1fr)}.sidefoot{grid-template-columns:repeat(3,1fr);margin-top:14px}.g4,.g3,.opts,.result{grid-template-columns:1fr 1fr}.pipe{grid-template-columns:1fr 1fr}.infogrid,.bottom{grid-template-columns:1fr}}
@@ -52,7 +52,7 @@ table{width:100%;border-collapse:collapse}th{background:var(--n);color:white}th,
  </div>
 </aside>
 <main class="main">
- <header class="top"><div><h1 id="title">대시보드</h1><p id="subtitle">제품을 선택해 통합 견적을 작성하세요.</p></div><div style="display:flex;gap:8px"><button id="copyMessage" class="btn soft">안내문 복사</button><button id="makeQuote" class="btn primary">예상 견적서 만들기</button></div></header>
+ <header class="top"><div><h1 id="title">대시보드</h1><p id="subtitle">제품을 선택해 통합 견적을 작성하세요.</p></div><div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end"><button id="copyMessage" class="btn soft">안내문 복사</button><button id="copyQuoteMessage" class="btn message-blue">견적내용 메시지 복사</button><button id="makeQuote" class="btn quote-blue">예상 견적서 만들기</button></div></header>
  <section class="customer">
  <div class="grid g6">
   <label>견적일자<input id="date" type="date"></label>
@@ -132,6 +132,7 @@ document.addEventListener('DOMContentLoaded',async()=>{
 });
 function bind(){
   copyMessage.onclick=copyCustomerMessage;
+  copyQuoteMessage.onclick=copyDetailedQuoteMessage;
   discountRate.oninput=()=>{
     let v=Math.max(0,Math.min(100,+discountRate.value||0));
     if(+discountRate.value!==v) discountRate.value=v;
@@ -616,6 +617,29 @@ ${discountLine}예상 견적금액: ${total} (부가세 포함)
     prompt('아래 내용을 복사해 주세요.',message);
   }
 }
+async function copyDetailedQuoteMessage(){
+  if(!items.length)return alert('견적 항목이 없습니다.');
+  const t=totalsCalc();
+  const name=company.value.trim();
+  const lines=items.map((x,i)=>{
+    const note=x.note?` / 비고: ${x.note}`:'';
+    return `${i+1}. ${x.name}\n   규격: ${x.spec}\n   수량: ${x.qty} / 단가: ${won(x.unit)} / 금액: ${won(x.amount)}${note}`;
+  }).join('\n\n');
+  const discountLine=t.rate>0?`\n할인율: ${t.rate}%\n할인금액: -${won(t.discount)}`:'';
+  const customerLine=[
+    company.value.trim()?`고객명: ${company.value.trim()}`:'',
+    manager.value.trim()?`담당자: ${manager.value.trim()}`:'',
+    site.value.trim()?`현장명: ${site.value.trim()}`:''
+  ].filter(Boolean).join(' / ');
+  const message=`안녕하세요${name?` ${name} 고객님`:''}, 강동자바라입니다.\n\n요청하신 예상 견적 내용을 안내드립니다.\n${customerLine?customerLine+'\n':''}견적일자: ${date.value}\n\n[견적 내용]\n${lines}\n\n상품 합계: ${won(t.raw)}${discountLine}\n공급가액: ${won(t.supply)}\n부가세: ${won(t.tax)}\n최종 예상금액: ${won(t.total)} (부가세 포함)\n\n※ 본 견적은 예상 견적으로 실제 실측, 현장 조건, 배송 및 시공 여부에 따라 변경될 수 있습니다.\n※ 배송비·시공비가 별도인 항목은 비고 내용을 확인해 주세요.\n\n감사합니다.`;
+  try{
+    await navigator.clipboard.writeText(message);
+    toast('견적내용 메시지를 복사했습니다.');
+  }catch(e){
+    prompt('아래 내용을 복사해 주세요.',message);
+  }
+}
+
 function resetAll(){if(items.length&&!confirm('초기화할까요?'))return;items=[];['company','manager','phone','email','site','consultMemo'].forEach(id=>$(id).value='');consultStatus.value='신규';discountRate.value=0;drawList();render('dash')}
 function saveNow(){let n=prompt('견적 이름',`${company.value||'고객'}_${date.value}`);if(!n)return;let a=JSON.parse(localStorage.getItem('kd-erp')||'[]');a.unshift({id:Date.now(),name:n,cust:getCust(),items,discountRate:+discountRate.value||0,when:new Date().toLocaleString('ko-KR')});localStorage.setItem('kd-erp',JSON.stringify(a.slice(0,100)));toast('저장 완료')}
 function openSaved(){let a=JSON.parse(localStorage.getItem('kd-erp')||'[]');savedList.innerHTML=a.length?a.map(x=>`<div class="qi"><div class="qihead"><div><h4>${x.name}</h4><p>${x.when}</p></div><div><button onclick="loadS(${x.id})">불러오기</button> <button onclick="rmS(${x.id})">삭제</button></div></div></div>`).join(''):`<div class="empty">저장된 견적 없음</div>`;savedModal.classList.remove('hidden')}
