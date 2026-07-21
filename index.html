@@ -81,7 +81,7 @@ table{width:100%;border-collapse:collapse}th{background:var(--n);color:white}#sh
     <label class="discount-input"><input id="discountRate" type="number" min="0" max="100" step="0.1" value="0"><em>%</em></label>
   </div>
   <div><span>할인금액</span><b id="discountAmount">-0원</b></div>
-  <div class="discount-row"><span>부가세</span><b>포함</b></div>
+  <div class="discount-row"><span>부가세 적용</span><label style="display:flex;align-items:center;gap:7px;font-weight:700;color:#174f86;cursor:pointer"><input id="vatApply" type="checkbox" style="width:18px;height:18px;accent-color:#1769c2"> 부가세 10% 추가</label></div>
   <div><span>공급가액</span><b id="sub">0원</b></div>
   <div><span id="vatLabel">부가세 (포함)</span><b id="vat">0원</b></div>
   <div class="grand"><span>최종금액</span><b id="grand">0원</b></div>
@@ -430,11 +430,10 @@ function totalsCalc(){
         rate=Math.max(0,Math.min(100,+discountRate.value||0)),
         discount=Math.round(raw*rate/100),
         supply=Math.max(0,raw-discount),
-        vatApplied=true,
-        total=supply,
-        netSupply=Math.round(total/1.1),
-        tax=total-netSupply;
-  return{raw,rate,discount,supply:netSupply,tax,total,vatApplied}
+        vatApplied=!!vatApply.checked,
+        tax=vatApplied?Math.round(supply*0.1):0,
+        total=supply+tax;
+  return{raw,rate,discount,supply,tax,total,vatApplied}
 }
 
 function lexanApplied(arr,val){
@@ -610,7 +609,7 @@ function drawList(){
   discountAmount.textContent='-'+won(t.discount);
   sub.textContent=won(t.supply);
   vat.textContent=won(t.tax);
-  vatLabel.textContent='부가세 (포함)';
+  vatLabel.textContent=t.vatApplied?'부가세 (10%)':'부가세 (미적용)';
   grand.textContent=won(t.total)
 }
 window.copyI=i=>{items.splice(i+1,0,{...items[i]});drawList()};window.delI=i=>{items.splice(i,1);drawList()}
@@ -623,7 +622,7 @@ async function copyCustomerMessage(){
   const message=`안녕하세요${name?` ${name} 고객님`:''}, 강동자바라입니다.
 
 요청하신 견적을 안내드립니다.
-${discountLine}견적금액: ${total} (부가세 포함)
+${discountLine}견적금액: ${total} (${t.vatApplied?'부가세 포함':'부가세 미적용'})
 
 본 견적은 실제 실측, 현장 조건, 배송 및 시공 여부에 따라 변경될 수 있습니다.
 확인 후 궁금하신 사항은 언제든 문의해 주세요.
@@ -649,7 +648,7 @@ async function copyDetailedQuoteMessage(){
     manager.value.trim()?`담당자: ${manager.value.trim()}`:'',
     site.value.trim()?`현장명: ${site.value.trim()}`:''
   ].filter(Boolean).join(' / ');
-  const message=`안녕하세요${name?` ${name} 고객님`:''}, 강동자바라입니다.\n\n요청하신 견적 내용을 안내드립니다.\n${customerLine?customerLine+'\n':''}견적일자: ${date.value}\n\n[견적 내용]\n${lines}\n\n상품 합계: ${won(t.raw)}${discountLine}\n공급가액: ${won(t.supply)}\n부가세: ${won(t.tax)}\n최종 견적금액: ${won(t.total)} (부가세 포함)\n\n※ 실제 실측, 현장 조건, 배송 및 시공 여부에 따라 금액이 변경될 수 있습니다.\n※ 배송비·시공비가 별도인 항목은 비고 내용을 확인해 주세요.\n\n감사합니다.`;
+  const message=`안녕하세요${name?` ${name} 고객님`:''}, 강동자바라입니다.\n\n요청하신 견적 내용을 안내드립니다.\n${customerLine?customerLine+'\n':''}견적일자: ${date.value}\n\n[견적 내용]\n${lines}\n\n상품 합계: ${won(t.raw)}${discountLine}\n공급가액: ${won(t.supply)}\n부가세: ${won(t.tax)}\n최종 견적금액: ${won(t.total)} (${t.vatApplied?'부가세 포함':'부가세 미적용'})\n\n※ 실제 실측, 현장 조건, 배송 및 시공 여부에 따라 금액이 변경될 수 있습니다.\n※ 배송비·시공비가 별도인 항목은 비고 내용을 확인해 주세요.\n\n감사합니다.`;
   try{
     await navigator.clipboard.writeText(message);
     toast('견적내용 메시지를 복사했습니다.');
@@ -658,12 +657,13 @@ async function copyDetailedQuoteMessage(){
   }
 }
 
-function resetAll(){if(items.length&&!confirm('초기화할까요?'))return;items=[];['company','manager','phone','email','site','consultMemo'].forEach(id=>$(id).value='');consultStatus.value='신규';discountRate.value=0;drawList();render('dash')}
-function saveNow(){let n=prompt('견적 이름',`${company.value||'고객'}_${date.value}`);if(!n)return;let a=JSON.parse(localStorage.getItem('kd-erp')||'[]');a.unshift({id:Date.now(),name:n,cust:getCust(),items,discountRate:+discountRate.value||0,when:new Date().toLocaleString('ko-KR')});localStorage.setItem('kd-erp',JSON.stringify(a.slice(0,100)));toast('저장 완료')}
+function resetAll(){if(items.length&&!confirm('초기화할까요?'))return;items=[];['company','manager','phone','email','site','consultMemo'].forEach(id=>$(id).value='');consultStatus.value='신규';discountRate.value=0;vatApply.checked=false;drawList();render('dash')}
+function saveNow(){let n=prompt('견적 이름',`${company.value||'고객'}_${date.value}`);if(!n)return;let a=JSON.parse(localStorage.getItem('kd-erp')||'[]');a.unshift({id:Date.now(),name:n,cust:getCust(),items,discountRate:+discountRate.value||0,vatApplied:vatApply.checked,when:new Date().toLocaleString('ko-KR')});localStorage.setItem('kd-erp',JSON.stringify(a.slice(0,100)));toast('저장 완료')}
 function openSaved(){let a=JSON.parse(localStorage.getItem('kd-erp')||'[]');savedList.innerHTML=a.length?a.map(x=>`<div class="qi"><div class="qihead"><div><h4>${x.name}</h4><p>${x.when}</p></div><div><button onclick="loadS(${x.id})">불러오기</button> <button onclick="rmS(${x.id})">삭제</button></div></div></div>`).join(''):`<div class="empty">저장된 견적 없음</div>`;savedModal.classList.remove('hidden')}
-window.loadS=id=>{let x=JSON.parse(localStorage.getItem('kd-erp')||'[]').find(y=>y.id===id);if(x){setCust(x.cust);items=x.items||[];discountRate.value=x.discountRate||0;drawList();savedModal.classList.add('hidden')}};window.rmS=id=>{let a=JSON.parse(localStorage.getItem('kd-erp')||'[]').filter(x=>x.id!==id);localStorage.setItem('kd-erp',JSON.stringify(a));openSaved()}
+window.loadS=id=>{let x=JSON.parse(localStorage.getItem('kd-erp')||'[]').find(y=>y.id===id);if(x){setCust(x.cust);items=x.items||[];discountRate.value=x.discountRate||0;vatApply.checked=!!x.vatApplied;drawList();savedModal.classList.add('hidden')}};window.rmS=id=>{let a=JSON.parse(localStorage.getItem('kd-erp')||'[]').filter(x=>x.id!==id);localStorage.setItem('kd-erp',JSON.stringify(a));openSaved()}
 function getCust(){return{date:date.value,company:company.value,manager:manager.value,phone:phone.value,email:email.value,site:site.value,consultStatus:consultStatus.value,consultMemo:consultMemo.value}}function setCust(c){Object.keys(c).forEach(k=>{if($(k))$(k).value=c[k]||''})}
-function openSheet(){if(!items.length)return alert('견적 항목 없음');let c=getCust();customerBox.innerHTML=`<div><b>견적일자</b><span>${c.date}</span></div><div><b>고객명</b><span>${c.company}</span></div><div><b>담당자</b><span>${c.manager}</span></div><div><b>연락처</b><span>${c.phone}</span></div><div><b>현장명</b><span>${c.site}</span></div><div><b>상담단계</b><span>${c.consultStatus||''}</span></div>`;sheetItems.innerHTML=items.map((x,i)=>`<tr><td>${i+1}</td><td>${x.name}</td><td>${x.spec}</td><td>${x.qty}</td><td>${won(x.unit)}</td><td>${won(x.amount)}</td><td>${x.note||''}</td></tr>`).join('');let t=totalsCalc();sheetGrand.textContent=`총금액 ${won(t.total)} (V.A.T. 포함)`;sheetTotals.innerHTML=`<div><b>상품 합계</b><span>${won(t.raw)}</span></div>${t.rate>0?`<div><b>할인율</b><span>${t.rate}%</span></div><div><b>할인금액</b><span>-${won(t.discount)}</span></div>`:''}<div><b>공급가액</b><span>${won(t.supply)}</span></div><div><b>부가세</b><span>${won(t.tax)}</span></div><div><b>최종 결제금액</b><span>${won(t.total)}</span></div>`;quoteModal.classList.remove('hidden')}
+function openSheet(){if(!items.length)return alert('견적 항목 없음');let c=getCust();customerBox.innerHTML=`<div><b>견적일자</b><span>${c.date}</span></div><div><b>고객명</b><span>${c.company}</span></div><div><b>담당자</b><span>${c.manager}</span></div><div><b>연락처</b><span>${c.phone}</span></div><div><b>현장명</b><span>${c.site}</span></div><div><b>상담단계</b><span>${c.consultStatus||''}</span></div>`;sheetItems.innerHTML=items.map((x,i)=>`<tr><td>${i+1}</td><td>${x.name}</td><td>${x.spec}</td><td>${x.qty}</td><td>${won(x.unit)}</td><td>${won(x.amount)}</td><td>${x.note||''}</td></tr>`).join('');let t=totalsCalc();sheetGrand.textContent=`총금액 ${won(t.total)} (${t.vatApplied?'V.A.T. 포함':'V.A.T. 미적용'})`;sheetTotals.innerHTML=`<div><b>상품 합계</b><span>${won(t.raw)}</span></div>${t.rate>0?`<div><b>할인율</b><span>${t.rate}%</span></div><div><b>할인금액</b><span>-${won(t.discount)}</span></div>`:''}<div><b>공급가액</b><span>${won(t.supply)}</span></div><div><b>${t.vatApplied?'부가세 (10%)':'부가세 미적용'}</b><span>${won(t.tax)}</span></div><div><b>최종 결제금액</b><span>${won(t.total)}</span></div>`;quoteModal.classList.remove('hidden')}
 async function saveJpg(){if(typeof html2canvas==='undefined')return alert('저장모듈 오류');let c=await html2canvas(sheet,{scale:2,backgroundColor:'#fff'}),a=document.createElement('a');a.download=`강동자바라_온라인_견적서_${company.value||'고객'}_${date.value}.jpg`;a.href=c.toDataURL('image/jpeg',.95);a.click()}
+vatApply.addEventListener('change',drawList);
 </script>
 </body></html>
