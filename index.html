@@ -212,7 +212,7 @@ function gTpl(){
   const sizes=Object.keys(alWindow.widthOptions||{}).map(Number).sort((a,b)=>a-b);
   return `<div class="card">
     <h2>방범창</h2>
-    <p class="desc">알루미늄 소비자용은 60×60cm 14,000원부터 시작하며, 면적 계산단위가 늘어날 때마다 4,500원씩 추가됩니다.</p>
+    <p class="desc">알루미늄 소비자용은 60~220cm 스마트스토어 옵션가격을 적용하고, 221~300cm는 면적단가 4,500원의 맞춤견적으로 계산합니다.</p>
     <div class="tabs" id="gmt">
       <button class="on" data-m="알루미늄">알루미늄 · 스마트스토어</button>
       <button data-m="SUS201">SUS201</button>
@@ -246,7 +246,7 @@ function gTpl(){
         </label>
       </div>
       <div id="consumerPriceNotice" class="notice">
-        소비자용: 60×60cm 기본 14,000원 · 올림[(가로×세로)÷900]에서 기본 4단위를 뺀 수량 × 4,500원 추가
+        소비자용: 60~220cm는 스마트스토어 옵션가격 · 221~300cm는 맞춤견적 면적단가 4,500원 적용
       </div>
       <div id="businessPriceNotice" class="notice hidden">
         업체용: 가로(mm) × 세로(mm) ÷ 90,000을 올림한 계산칸수 × ${won(alWindow.businessUnitPrice||4000)}
@@ -293,18 +293,20 @@ function bindG(){
   gadd.onclick=addG;
   upG()
 }
-function exactAluminumOption(value, options){
+function exactAluminumSize(value){
   const number=Number(value);
   if(!Number.isInteger(number)) return null;
-  if(number<60||number>300) return null;
-  return Object.prototype.hasOwnProperty.call(options||{},String(number))?number:null
+  const min=alWindow.minSizeCm||60,
+        max=alWindow.maxSizeCm||300;
+  if(number<min||number>max) return null;
+  return number
 }
 function gcalc(){
   if(guardMat==='알루미늄'){
     const rawW=gw.value,
           rawH=gh.value,
-          w=exactAluminumOption(rawW,alWindow.widthOptions),
-          h=exactAluminumOption(rawH,alWindow.heightOptions),
+          w=exactAluminumSize(rawW),
+          h=exactAluminumSize(rawH),
           q=Math.max(1,+gq.value||1),
           valid=w!==null&&h!==null;
     if(alPriceType==='business'){
@@ -331,12 +333,16 @@ function gcalc(){
     const cells=Math.ceil((w*h)/900),
           baseCells=alWindow.baseCells||4,
           extraCells=Math.max(0,cells-baseCells),
-          areaExtra=extraCells*(alWindow.consumerUnitPrice||4500),
+          smartMax=alWindow.smartStoreMaxSizeCm||220,
+          isStoreOption=w<=smartMax&&h<=smartMax,
+          widthExtra=isStoreOption?(alWindow.widthOptions?.[String(w)]||0):0,
+          heightExtra=isStoreOption?(alWindow.heightOptions?.[String(h)]||0):0,
+          areaExtra=isStoreOption?(widthExtra+heightExtra):(extraCells*(alWindow.consumerUnitPrice||4500)),
           assembly=gAssembly.value==='1'?(alWindow.assemblyPrice||0):0,
           unit=(alWindow.basePrice||14000)+areaExtra+assembly;
     return{
       mode:'smartstore',w,h,q,valid:true,
-      cells,baseCells,extraCells,areaExtra,assembly,
+      cells,baseCells,extraCells,areaExtra,assembly,isStoreOption,widthExtra,heightExtra,
       unit,amount:unit*q,
       note:gn.value
     }
@@ -353,8 +359,8 @@ function upG(){
   const c=gcalc();
   gm.textContent=guardMat;
   if(c.mode==='smartstore'){
-    gDetailLabel.textContent=c.valid?'면적 추가금':'입력 확인';
-    gc.textContent=c.valid?`${c.extraCells}단위 · ${won(c.areaExtra+c.assembly)}`:'60~300cm 정수';
+    gDetailLabel.textContent=c.valid?(c.isStoreOption?'옵션 추가금':'맞춤 추가금'):'입력 확인';
+    gc.textContent=c.valid?(c.isStoreOption?`가로 ${won(c.widthExtra)} + 세로 ${won(c.heightExtra)}${c.assembly?' + 조립 '+won(c.assembly):''}`:`${c.extraCells}단위 · ${won(c.areaExtra+c.assembly)}`):'60~300cm 정수';
     gr.textContent=c.valid?won(c.unit):'계산 불가';
     gt.textContent=c.valid?won(c.amount):'계산 불가'
   }else if(c.mode==='business'){
@@ -376,14 +382,15 @@ function addG(){
   }
   if(!c.w||!c.h)return alert('규격을 입력해주세요.');
   if(c.mode==='smartstore'){
-    const assemblyText=c.assembly?'조립':'미조립';
+    const assemblyText=c.assembly?'조립':'미조립',
+          priceTypeText=c.isStoreOption?'스마트스토어 옵션가':'221~300cm 맞춤견적';
     items.push({
       name:'알루미늄 방범창 · 소비자용',
-      spec:`가로 ${c.w}cm × 세로 ${c.h}cm / ${c.cells}단위 / ${assemblyText}`,
+      spec:`가로 ${c.w}cm × 세로 ${c.h}cm / ${priceTypeText} / ${assemblyText}`,
       qty:c.q,
       unit:c.unit,
       amount:c.amount,
-      note:c.note||`기본 14,000원 + 면적 ${c.extraCells}단위 추가`
+      note:c.note||(c.isStoreOption?`기본 14,000원 + 가로옵션 ${won(c.widthExtra)} + 세로옵션 ${won(c.heightExtra)}`:`기본 14,000원 + 면적 ${c.extraCells}단위 추가`)
     })
   }else if(c.mode==='business'){
     items.push({
