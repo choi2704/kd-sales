@@ -33,7 +33,7 @@ table{width:100%;border-collapse:collapse}th{background:var(--n);color:white}#sh
 <body>
 <div class="shell">
 <aside class="side">
- <div class="logo">KD SALES ERP<small>강동자바라 온라인 예상견적 시스템 V3.1</small></div>
+ <div class="logo">KD SALES ERP<small>강동자바라 온라인 견적 시스템 V3.2</small></div>
  <div class="nav">
   <button class="on" data-mod="dash">대시보드</button>
   <button data-mod="jabara">자바라</button>
@@ -52,7 +52,7 @@ table{width:100%;border-collapse:collapse}th{background:var(--n);color:white}#sh
  </div>
 </aside>
 <main class="main">
- <header class="top"><div><h1 id="title">대시보드</h1><p id="subtitle">제품을 선택해 통합 견적을 작성하세요.</p></div><div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end"><button id="copyMessage" class="btn soft">안내문 복사</button><button id="copyQuoteMessage" class="btn message-blue">견적내용 메시지 복사</button><button id="makeQuote" class="btn quote-blue">예상 견적서 만들기</button></div></header>
+ <header class="top"><div><h1 id="title">대시보드</h1><p id="subtitle">제품을 선택해 통합 견적을 작성하세요.</p></div><div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end"><button id="copyMessage" class="btn soft">안내문 복사</button><button id="copyQuoteMessage" class="btn message-blue">견적내용 메시지 복사</button><button id="makeQuote" class="btn quote-blue">견적서 만들기</button></div></header>
  <section class="customer">
  <div class="grid g6">
   <label>견적일자<input id="date" type="date"></label>
@@ -81,9 +81,9 @@ table{width:100%;border-collapse:collapse}th{background:var(--n);color:white}#sh
     <label class="discount-input"><input id="discountRate" type="number" min="0" max="100" step="0.1" value="0"><em>%</em></label>
   </div>
   <div><span>할인금액</span><b id="discountAmount">-0원</b></div>
-  <div class="discount-row"><span>부가세 10% 추가</span><label class="switch"><input id="addVat" type="checkbox"> 적용</label></div>
+  <div class="discount-row"><span>부가세</span><b>포함</b></div>
   <div><span>공급가액</span><b id="sub">0원</b></div>
-  <div><span id="vatLabel">부가세 (미적용)</span><b id="vat">0원</b></div>
+  <div><span id="vatLabel">부가세 (포함)</span><b id="vat">0원</b></div>
   <div class="grand"><span>최종금액</span><b id="grand">0원</b></div>
 </div><button id="extraBtn" class="btn soft">+ 기타 비용</button></aside>
  </section>
@@ -91,7 +91,7 @@ table{width:100%;border-collapse:collapse}th{background:var(--n);color:white}#sh
 </div>
 <div id="extraModal" class="modal hidden"><div class="modalcard"><div class="modalhead"><h2>기타 비용</h2><button class="x">×</button></div><label>비용명<input id="extraName"></label><label>금액<input id="extraAmount" type="number"></label><label>비고<input id="extraNote"></label><button id="extraAdd" class="btn primary" style="width:100%;margin-top:12px">추가</button></div></div>
 <div id="savedModal" class="modal hidden"><div class="modalcard"><div class="modalhead"><h2>저장된 견적</h2><button class="x">×</button></div><div id="savedList"></div></div></div>
-<div id="quoteModal" class="modal hidden"><div><div class="toolbar" style="display:flex;justify-content:space-between;margin-bottom:8px"><button class="btn ghost x">닫기</button><div><button id="jpg" class="btn green">JPG 저장</button> <button id="print" class="btn primary">PDF/인쇄</button></div></div><article id="sheet"><h1>예 상 견 적 서</h1><div class="infogrid"><div id="customerBox" class="box"></div><div class="box"><div><b>상호</b><span>㈜강동자바라</span></div><div><b>대표자</b><span>김영규</span></div><div><b>사업자번호</b><span>221-81-49797</span></div><div><b>대표번호</b><span>1577-6084</span></div><div><b>이메일</b><span>jk0820s@naver.com</span></div><div><b>주소</b><span>경기도 광주시 곤지암읍 구수동길 1-26</span></div></div></div><div class="totalbar"><span>아래와 같이 견적합니다.</span><b id="sheetGrand"></b></div><table><thead><tr><th>No.</th><th>제품명</th><th>규격</th><th>수량</th><th>단가</th><th>금액</th><th>비고</th></tr></thead><tbody id="sheetItems"></tbody></table><div class="bottom"><div class="terms"><b>견적 조건</b><p>주문 확정 및 결제 확인 후 제작 일정이 안내됩니다.</p><p>본 견적은 예상 견적이며 실제 실측, 현장 조건, 배송 및 시공 여부에 따라 금액이 변경될 수 있습니다.</p><p>납품 담당자: 010-3050-0482</p><p>기업은행 242-134872-04-021 / ㈜강동자바라</p><p><b>※ 실제 실측 및 시공환경에 따라 최종 금액은 변경될 수 있습니다.</b></p></div><div id="sheetTotals" class="box"></div></div></article></div></div>
+<div id="quoteModal" class="modal hidden"><div><div class="toolbar" style="display:flex;justify-content:space-between;margin-bottom:8px"><button class="btn ghost x">닫기</button><div><button id="jpg" class="btn green">JPG 저장</button> <button id="print" class="btn primary">PDF/인쇄</button></div></div><article id="sheet"><h1>견 적 서</h1><div class="infogrid"><div id="customerBox" class="box"></div><div class="box"><div><b>상호</b><span>㈜강동자바라</span></div><div><b>대표자</b><span>김영규</span></div><div><b>사업자번호</b><span>221-81-49797</span></div><div><b>대표번호</b><span>1577-6084</span></div><div><b>이메일</b><span>jk0820s@naver.com</span></div><div><b>주소</b><span>경기도 광주시 곤지암읍 구수동길 1-26</span></div></div></div><div class="totalbar"><span>아래와 같이 견적합니다.</span><b id="sheetGrand"></b></div><table><thead><tr><th>No.</th><th>제품명</th><th>규격</th><th>수량</th><th>단가</th><th>금액</th><th>비고</th></tr></thead><tbody id="sheetItems"></tbody></table><div class="bottom"><div class="terms"><b>견적 조건</b><p>주문 확정 및 결제 확인 후 제작 일정이 안내됩니다.</p><p>본 견적은 실제 실측, 현장 조건, 배송 및 시공 여부에 따라 금액이 변경될 수 있습니다.</p><p>납품 담당자: 010-3050-0482</p><p>기업은행 242-134872-04-021 / ㈜강동자바라</p><p><b>※ 실제 실측 및 시공환경에 따라 최종 금액은 변경될 수 있습니다.</b></p></div><div id="sheetTotals" class="box"></div></div></article></div></div>
 <div id="toast" class="toast"></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script>
@@ -142,7 +142,7 @@ function bind(){
   document.querySelectorAll('.nav button[data-mod]').forEach(b=>b.onclick=()=>render(b.dataset.mod));document.querySelectorAll('.x').forEach(b=>b.onclick=()=>b.closest('.modal').classList.add('hidden'));makeQuote.onclick=openSheet;print.onclick=()=>window.print();jpg.onclick=saveJpg;extraBtn.onclick=()=>extraModal.classList.remove('hidden');extraAdd.onclick=addExtra;newQuote.onclick=resetAll;saveQuote.onclick=saveNow;loadQuote.onclick=openSaved}
 function toast(s){toast.textContent=s;toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),1600)}
 function render(m){mod=m;document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('on',b.dataset.mod===m));const map={dash:['대시보드','제품을 선택해 통합 견적을 작성하세요.'],jabara:['자바라','본체와 하우스를 자동 계산합니다.'],ladder:['사다리','최소 3m와 로스 올림을 적용합니다.'],handrail:['핸드레일','파이프 단가와 부속을 계산합니다.'],guard:['방범창','규격별 계산칸수를 자동 산출합니다.'],lexan:['렉산','입력 사이즈보다 큰 원판 규격 기준으로 계산합니다.'],security:['방범창 자바라','평수 반올림과 최소 20평 기준을 적용합니다.']};title.textContent=map[m][0];subtitle.textContent=map[m][1];module.innerHTML=m==='dash'?dashTpl():m==='jabara'?jTpl():m==='ladder'?lTpl():m==='handrail'?hTpl():m==='guard'?gTpl():m==='lexan'?lexanTpl():securityTpl();module.querySelectorAll('[data-go]').forEach(x=>x.onclick=()=>render(x.dataset.go));if(m==='jabara')bindJ();if(m==='ladder')bindL();if(m==='handrail')bindH();if(m==='guard')bindG();if(m==='lexan')bindLexan();if(m==='security')bindSecurity()}
-function dashTpl(){return `<div class="card"><h2>제품 선택</h2><p class="desc">온라인 판매단가로 서로 다른 제품을 한 예상 견적에 함께 추가할 수 있습니다.</p><div class="dash"><div data-go="jabara"><h3>자바라</h3><p>형태·재질·높이·길이·하우스</p></div><div data-go="ladder"><h3>사다리</h3><p>안전망·밴딩·일자형·옵션</p></div><div data-go="handrail"><h3>핸드레일</h3><p>원/사각파이프·규격·두께</p></div><div data-go="guard"><h3>방범창</h3><p>스마트스토어 알루미늄 옵션 · SUS201 · SUS304</p></div><div data-go="lexan"><h3>렉산</h3><p>원판 규격 기준 · 2T/3T · 색상 선택</p></div><div data-go="security"><h3>방범창 자바라</h3><p>알루미늄/스텐 · 최소 20평</p></div><div class="disabled"><h3>난간대</h3><p>다음 버전</p></div><div class="disabled"><h3>폴딩도어</h3><p>다음 버전</p></div></div></div>`}
+function dashTpl(){return `<div class="card"><h2>제품 선택</h2><p class="desc">온라인 판매단가로 서로 다른 제품을 한 견적에 함께 추가할 수 있습니다.</p><div class="dash"><div data-go="jabara"><h3>자바라</h3><p>형태·재질·높이·길이·하우스</p></div><div data-go="ladder"><h3>사다리</h3><p>안전망·밴딩·일자형·옵션</p></div><div data-go="handrail"><h3>핸드레일</h3><p>원/사각파이프·규격·두께</p></div><div data-go="guard"><h3>방범창</h3><p>스마트스토어 알루미늄 옵션 · SUS201 · SUS304</p></div><div data-go="lexan"><h3>렉산</h3><p>원판 규격 기준 · 2T/3T · 색상 선택</p></div><div data-go="security"><h3>방범창 자바라</h3><p>알루미늄/스텐 · 최소 20평</p></div><div class="disabled"><h3>난간대</h3><p>다음 버전</p></div><div class="disabled"><h3>폴딩도어</h3><p>다음 버전</p></div></div></div>`}
 function jTpl(){return `<div class="card"><h2>스텐 자바라</h2><p class="desc">최소 주문 3m · 100파이 우레탄바퀴 +5,000원/m</p><div class="grid g4"><label>형태<select id="jt"><option>일반형</option><option>고급형</option></select></label><label>재질<select id="jm"><option value="201">SUS201</option><option value="304">SUS304</option></select></label><label>높이<select id="jh"><option value="1200">1200</option><option value="1500">1500</option></select></label><label>길이(m)<input id="jl" type="number" value="3" step=".1"></label><label>수량<input id="jq" type="number" value="1"></label><label>개폐<select id="ji"><option>편개형</option><option>양개형</option></select></label><label>바퀴<select id="jw"><option>우레탄바퀴</option><option>레일바퀴</option><option>100파이 우레탄바퀴</option></select></label><label>비고<input id="jn"></label></div><div class="house"><div class="househead"><b>자바라 하우스</b><label class="switch"><input id="hu" type="checkbox"> 추가</label></div><div id="hf" class="grid g4 hidden"><label>높이<select id="hh"><option>1350</option><option>1650</option></select></label><label>재질<select id="hm"><option value="201">SUS201</option><option value="304">SUS304</option></select></label><label>수량<input id="hq" readonly></label><label>깊이<input id="hd" readonly></label></div><div id="hi"></div></div><div class="result"><div><small>사양</small><b id="js"></b></div><div><small>적용길이</small><b id="ja"></b></div><div><small>단가</small><b id="jr"></b></div><div><small>총금액</small><b id="jtotal"></b></div></div><button id="jadd" class="btn primary" style="width:100%">+ 견적목록 추가</button></div>`}
 function tier(l){if(l<=7.5)return{idx:0,d:'1000mm',r:'~7.5m'};if(l<=10)return{idx:1,d:'1300mm',r:'8.5~10m'};if(l<=13)return{idx:2,d:'1700mm',r:'11~13m'};if(l<=16)return{idx:3,d:'2000mm',r:'14~16m'};return{idx:4,d:'별도문의',r:'17~20m'}}
 function bindJ(){['jt','jm','jh','jl','jq','ji','jw','hh','hm'].forEach(id=>$(id).oninput=upJ);hu.onchange=()=>{hf.classList.toggle('hidden',!hu.checked);upJ()};jadd.onclick=addJ;upJ()}
@@ -430,10 +430,11 @@ function totalsCalc(){
         rate=Math.max(0,Math.min(100,+discountRate.value||0)),
         discount=Math.round(raw*rate/100),
         supply=Math.max(0,raw-discount),
-        vatApplied=!!addVat.checked,
-        tax=vatApplied?Math.round(supply*0.1):0,
-        total=supply+tax;
-  return{raw,rate,discount,supply,tax,total,vatApplied}
+        vatApplied=true,
+        total=supply,
+        netSupply=Math.round(total/1.1),
+        tax=total-netSupply;
+  return{raw,rate,discount,supply:netSupply,tax,total,vatApplied}
 }
 
 function lexanApplied(arr,val){
@@ -609,7 +610,7 @@ function drawList(){
   discountAmount.textContent='-'+won(t.discount);
   sub.textContent=won(t.supply);
   vat.textContent=won(t.tax);
-  vatLabel.textContent=t.vatApplied?'부가세 10%':'부가세 (미적용)';
+  vatLabel.textContent='부가세 (포함)';
   grand.textContent=won(t.total)
 }
 window.copyI=i=>{items.splice(i+1,0,{...items[i]});drawList()};window.delI=i=>{items.splice(i,1);drawList()}
@@ -621,8 +622,8 @@ async function copyCustomerMessage(){
   const discountLine=t.rate>0?`할인율: ${t.rate}%\n할인금액: ${won(t.discount)}\n`:'';
   const message=`안녕하세요${name?` ${name} 고객님`:''}, 강동자바라입니다.
 
-요청하신 예상 견적을 안내드립니다.
-${discountLine}예상 견적금액: ${total} (${t.vatApplied?'부가세 포함':'부가세 미적용'})
+요청하신 견적을 안내드립니다.
+${discountLine}견적금액: ${total} (부가세 포함)
 
 본 견적은 실제 실측, 현장 조건, 배송 및 시공 여부에 따라 변경될 수 있습니다.
 확인 후 궁금하신 사항은 언제든 문의해 주세요.
@@ -648,7 +649,7 @@ async function copyDetailedQuoteMessage(){
     manager.value.trim()?`담당자: ${manager.value.trim()}`:'',
     site.value.trim()?`현장명: ${site.value.trim()}`:''
   ].filter(Boolean).join(' / ');
-  const message=`안녕하세요${name?` ${name} 고객님`:''}, 강동자바라입니다.\n\n요청하신 예상 견적 내용을 안내드립니다.\n${customerLine?customerLine+'\n':''}견적일자: ${date.value}\n\n[견적 내용]\n${lines}\n\n상품 합계: ${won(t.raw)}${discountLine}\n공급가액: ${won(t.supply)}\n부가세: ${won(t.tax)}\n최종 예상금액: ${won(t.total)} (부가세 포함)\n\n※ 본 견적은 예상 견적으로 실제 실측, 현장 조건, 배송 및 시공 여부에 따라 변경될 수 있습니다.\n※ 배송비·시공비가 별도인 항목은 비고 내용을 확인해 주세요.\n\n감사합니다.`;
+  const message=`안녕하세요${name?` ${name} 고객님`:''}, 강동자바라입니다.\n\n요청하신 견적 내용을 안내드립니다.\n${customerLine?customerLine+'\n':''}견적일자: ${date.value}\n\n[견적 내용]\n${lines}\n\n상품 합계: ${won(t.raw)}${discountLine}\n공급가액: ${won(t.supply)}\n부가세: ${won(t.tax)}\n최종 견적금액: ${won(t.total)} (부가세 포함)\n\n※ 실제 실측, 현장 조건, 배송 및 시공 여부에 따라 금액이 변경될 수 있습니다.\n※ 배송비·시공비가 별도인 항목은 비고 내용을 확인해 주세요.\n\n감사합니다.`;
   try{
     await navigator.clipboard.writeText(message);
     toast('견적내용 메시지를 복사했습니다.');
@@ -657,12 +658,12 @@ async function copyDetailedQuoteMessage(){
   }
 }
 
-function resetAll(){if(items.length&&!confirm('초기화할까요?'))return;items=[];['company','manager','phone','email','site','consultMemo'].forEach(id=>$(id).value='');consultStatus.value='신규';discountRate.value=0;addVat.checked=false;drawList();render('dash')}
-function saveNow(){let n=prompt('견적 이름',`${company.value||'고객'}_${date.value}`);if(!n)return;let a=JSON.parse(localStorage.getItem('kd-erp')||'[]');a.unshift({id:Date.now(),name:n,cust:getCust(),items,discountRate:+discountRate.value||0,addVat:addVat.checked,when:new Date().toLocaleString('ko-KR')});localStorage.setItem('kd-erp',JSON.stringify(a.slice(0,100)));toast('저장 완료')}
+function resetAll(){if(items.length&&!confirm('초기화할까요?'))return;items=[];['company','manager','phone','email','site','consultMemo'].forEach(id=>$(id).value='');consultStatus.value='신규';discountRate.value=0;drawList();render('dash')}
+function saveNow(){let n=prompt('견적 이름',`${company.value||'고객'}_${date.value}`);if(!n)return;let a=JSON.parse(localStorage.getItem('kd-erp')||'[]');a.unshift({id:Date.now(),name:n,cust:getCust(),items,discountRate:+discountRate.value||0,when:new Date().toLocaleString('ko-KR')});localStorage.setItem('kd-erp',JSON.stringify(a.slice(0,100)));toast('저장 완료')}
 function openSaved(){let a=JSON.parse(localStorage.getItem('kd-erp')||'[]');savedList.innerHTML=a.length?a.map(x=>`<div class="qi"><div class="qihead"><div><h4>${x.name}</h4><p>${x.when}</p></div><div><button onclick="loadS(${x.id})">불러오기</button> <button onclick="rmS(${x.id})">삭제</button></div></div></div>`).join(''):`<div class="empty">저장된 견적 없음</div>`;savedModal.classList.remove('hidden')}
-window.loadS=id=>{let x=JSON.parse(localStorage.getItem('kd-erp')||'[]').find(y=>y.id===id);if(x){setCust(x.cust);items=x.items||[];discountRate.value=x.discountRate||0;addVat.checked=!!x.addVat;drawList();savedModal.classList.add('hidden')}};window.rmS=id=>{let a=JSON.parse(localStorage.getItem('kd-erp')||'[]').filter(x=>x.id!==id);localStorage.setItem('kd-erp',JSON.stringify(a));openSaved()}
+window.loadS=id=>{let x=JSON.parse(localStorage.getItem('kd-erp')||'[]').find(y=>y.id===id);if(x){setCust(x.cust);items=x.items||[];discountRate.value=x.discountRate||0;drawList();savedModal.classList.add('hidden')}};window.rmS=id=>{let a=JSON.parse(localStorage.getItem('kd-erp')||'[]').filter(x=>x.id!==id);localStorage.setItem('kd-erp',JSON.stringify(a));openSaved()}
 function getCust(){return{date:date.value,company:company.value,manager:manager.value,phone:phone.value,email:email.value,site:site.value,consultStatus:consultStatus.value,consultMemo:consultMemo.value}}function setCust(c){Object.keys(c).forEach(k=>{if($(k))$(k).value=c[k]||''})}
-function openSheet(){if(!items.length)return alert('견적 항목 없음');let c=getCust();customerBox.innerHTML=`<div><b>견적일자</b><span>${c.date}</span></div><div><b>고객명</b><span>${c.company}</span></div><div><b>담당자</b><span>${c.manager}</span></div><div><b>연락처</b><span>${c.phone}</span></div><div><b>현장명</b><span>${c.site}</span></div><div><b>상담단계</b><span>${c.consultStatus||''}</span></div>`;sheetItems.innerHTML=items.map((x,i)=>`<tr><td>${i+1}</td><td>${x.name}</td><td>${x.spec}</td><td>${x.qty}</td><td>${won(x.unit)}</td><td>${won(x.amount)}</td><td>${x.note||''}</td></tr>`).join('');let t=totalsCalc();sheetGrand.textContent=`총금액 ${won(t.total)} (${t.vatApplied?'V.A.T. 포함':'V.A.T. 미적용'})`;sheetTotals.innerHTML=`<div><b>상품 합계</b><span>${won(t.raw)}</span></div>${t.rate>0?`<div><b>할인율</b><span>${t.rate}%</span></div><div><b>할인금액</b><span>-${won(t.discount)}</span></div>`:''}<div><b>공급가액</b><span>${won(t.supply)}</span></div><div><b>부가세 ${t.vatApplied?'10%':'미적용'}</b><span>${won(t.tax)}</span></div><div><b>최종 결제금액</b><span>${won(t.total)}</span></div>`;quoteModal.classList.remove('hidden')}
-async function saveJpg(){if(typeof html2canvas==='undefined')return alert('저장모듈 오류');let c=await html2canvas(sheet,{scale:2,backgroundColor:'#fff'}),a=document.createElement('a');a.download=`강동자바라_온라인_예상견적서_${company.value||'고객'}_${date.value}.jpg`;a.href=c.toDataURL('image/jpeg',.95);a.click()}
+function openSheet(){if(!items.length)return alert('견적 항목 없음');let c=getCust();customerBox.innerHTML=`<div><b>견적일자</b><span>${c.date}</span></div><div><b>고객명</b><span>${c.company}</span></div><div><b>담당자</b><span>${c.manager}</span></div><div><b>연락처</b><span>${c.phone}</span></div><div><b>현장명</b><span>${c.site}</span></div><div><b>상담단계</b><span>${c.consultStatus||''}</span></div>`;sheetItems.innerHTML=items.map((x,i)=>`<tr><td>${i+1}</td><td>${x.name}</td><td>${x.spec}</td><td>${x.qty}</td><td>${won(x.unit)}</td><td>${won(x.amount)}</td><td>${x.note||''}</td></tr>`).join('');let t=totalsCalc();sheetGrand.textContent=`총금액 ${won(t.total)} (V.A.T. 포함)`;sheetTotals.innerHTML=`<div><b>상품 합계</b><span>${won(t.raw)}</span></div>${t.rate>0?`<div><b>할인율</b><span>${t.rate}%</span></div><div><b>할인금액</b><span>-${won(t.discount)}</span></div>`:''}<div><b>공급가액</b><span>${won(t.supply)}</span></div><div><b>부가세</b><span>${won(t.tax)}</span></div><div><b>최종 결제금액</b><span>${won(t.total)}</span></div>`;quoteModal.classList.remove('hidden')}
+async function saveJpg(){if(typeof html2canvas==='undefined')return alert('저장모듈 오류');let c=await html2canvas(sheet,{scale:2,backgroundColor:'#fff'}),a=document.createElement('a');a.download=`강동자바라_온라인_견적서_${company.value||'고객'}_${date.value}.jpg`;a.href=c.toDataURL('image/jpeg',.95);a.click()}
 </script>
 </body></html>
