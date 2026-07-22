@@ -444,11 +444,12 @@ function gcalc(){
         q=Math.max(1,+gsq.value||1);
   if(guardMat==='SUS201'){
     const valid=Number.isInteger(w)&&Number.isInteger(h)&&w>=(sus201Data.minSizeCm||90)&&w<=(sus201Data.maxSizeCm||240)&&h>=(sus201Data.minSizeCm||90)&&h<=(sus201Data.maxSizeCm||240),
-          widthExtra=valid?(sus201Data.widthOptions?.[String(w)]||0):0,
+          widthOption=Math.min(240,Math.floor(w/10)*10),
+          widthExtra=valid?(sus201Data.widthOptions?.[String(widthOption)]||0):0,
           heightExtra=valid?(sus201Data.heightOptions?.[String(h)]||0):0,
           cells=valid?Math.ceil((w*h)/900):0,
           unit=valid?(sus201Data.basePrice||54400)+widthExtra+heightExtra:0;
-    return{mode:'sus201',w,h,q,valid,cells,widthExtra,heightExtra,unit,amount:unit*q,note:gsn.value}
+    return{mode:'sus201',w,h,q,valid,cells,widthOption,widthExtra,heightExtra,unit,amount:unit*q,note:gsn.value}
   }
   const row=sus304Band(h),
         col=sus304Band(w),
@@ -472,7 +473,7 @@ function upG(){
     gt.textContent=won(c.amount)
   }else if(c.mode==='sus201'){
     gDetailLabel.textContent=c.valid?'옵션 추가금':'입력 확인';
-    gc.textContent=c.valid?`가로 ${won(c.widthExtra)} + 세로 ${won(c.heightExtra)}`:'90~240cm 정수';
+    gc.textContent=c.valid?`가로${c.widthOption} ${won(c.widthExtra)} + 세로${c.h} ${won(c.heightExtra)}`:'90~240cm 정수';
     gr.textContent=c.valid?won(c.unit):'계산 불가';
     gt.textContent=c.valid?won(c.amount):'계산 불가'
   }else if(c.mode==='sus304'){
@@ -516,7 +517,7 @@ function addG(){
       qty:c.q,
       unit:c.unit,
       amount:c.amount,
-      note:c.note||`기본 54,400원 + 가로옵션 ${won(c.widthExtra)} + 세로옵션 ${won(c.heightExtra)}`
+      note:c.note||`기본 54,400원 + 가로${c.widthOption} 옵션 ${won(c.widthExtra)} + 세로${c.h} 옵션 ${won(c.heightExtra)}`
     })
   }else if(c.mode==='sus304'){
     if(!c.valid) return alert('SUS304는 가로·세로를 1~2400mm 범위로 입력해주세요.');
