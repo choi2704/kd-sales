@@ -329,11 +329,31 @@ function bindG(){
   upG()
 }
 
-const sus304Price={
-  basePrice:13600,
-  basePyeong:9,
-  tiers:{9:0,11:29800,14:46000,17:62200,20:78400,23:94600,26:110800,29:127000,32:143200,35:159400,38:175600,41:191800,44:208000,47:224200,50:240400,53:256600,56:272800,59:289000,62:305200,65:321400,68:337600,71:353800,74:370000,77:386200,80:419400}
-};
+const sus304UnitPrice=1000;
+const sus304QtyTable=[
+  [63,70,77,84,91,98,105,112,119,126,133,140,147,154,161,168],
+  [70,78,86,93,101,109,117,124,132,140,148,156,163,171,179,187],
+  [77,86,94,103,111,120,128,137,145,154,163,171,180,188,197,205],
+  [84,93,103,112,121,131,140,149,159,168,177,187,196,205,215,224],
+  [91,101,111,121,131,142,152,162,172,182,192,202,212,222,233,243],
+  [98,109,120,131,142,152,163,174,185,196,207,218,229,240,250,261],
+  [105,117,128,140,152,163,175,187,198,210,222,233,245,257,268,280],
+  [112,124,137,149,162,174,187,199,212,224,236,249,261,274,287,299],
+  [119,132,145,159,172,185,199,212,225,238,251,264,278,291,304,317],
+  [126,140,154,168,182,196,210,224,238,252,266,280,294,308,322,336],
+  [133,148,163,177,192,207,222,236,251,266,281,296,310,325,340,355],
+  [140,156,171,187,202,218,233,249,264,280,296,311,327,342,358,373],
+  [147,163,180,196,212,229,245,261,278,294,310,327,343,359,376,392],
+  [154,171,188,205,222,240,257,274,291,308,325,342,359,376,394,411],
+  [161,179,197,215,233,250,268,286,304,322,340,358,376,394,411,429],
+  [168,187,205,224,243,261,280,299,317,336,355,373,392,411,429,448]
+];
+function sus304Band(value){
+  const v=Number(value)||0;
+  if(v<=0||v>2400) return -1;
+  if(v<=900) return 0;
+  return Math.ceil((v-900)/100);
+}
 function configureSusGuardFields(){
   if(!document.getElementById('gsw')) return;
   if(guardMat==='SUS201'){
@@ -351,7 +371,7 @@ function configureSusGuardFields(){
     gsw.min=gsh.min=1; gsw.max=gsh.max=10000; gsw.step=gsh.step=1;
     if(+gsw.value<300) gsw.value=900;
     if(+gsh.value<300) gsh.value=900;
-    susPriceNotice.textContent='SUS304: 기본 9평 13,600원 · 계산평수에 맞는 상위 옵션구간 적용 (최대 80평)';
+    susPriceNotice.textContent='SUS304: 가로·세로 표의 교차 수량 × 1,000원 (최대 2400mm)';
   }
 }
 
@@ -430,13 +450,12 @@ function gcalc(){
           unit=valid?(sus201Data.basePrice||54400)+widthExtra+heightExtra:0;
     return{mode:'sus201',w,h,q,valid,cells,widthExtra,heightExtra,unit,amount:unit*q,note:gsn.value}
   }
-  const cells=w&&h?Math.ceil(w*h/90000):0,
-        tiers=Object.keys(sus304Price.tiers).map(Number).sort((a,b)=>a-b),
-        appliedTier=cells<=sus304Price.basePyeong?sus304Price.basePyeong:tiers.find(v=>v>=cells),
-        valid=!!(w&&h&&appliedTier),
-        optionExtra=valid?(sus304Price.tiers[appliedTier]||0):0,
-        unit=valid?sus304Price.basePrice+optionExtra:0;
-  return{mode:'sus304',w,h,q,valid,cells,appliedTier,optionExtra,unit,amount:unit*q,note:gsn.value}
+  const row=sus304Band(h),
+        col=sus304Band(w),
+        valid=row>=0&&col>=0,
+        tableQty=valid?sus304QtyTable[row][col]:0,
+        unit=valid?tableQty*sus304UnitPrice:0;
+  return{mode:'sus304',w,h,q,valid,row,col,tableQty,unitPrice:sus304UnitPrice,unit,amount:unit*q,note:gsn.value}
 }
 function upG(){
   const c=gcalc();
@@ -457,8 +476,8 @@ function upG(){
     gr.textContent=c.valid?won(c.unit):'계산 불가';
     gt.textContent=c.valid?won(c.amount):'계산 불가'
   }else if(c.mode==='sus304'){
-    gDetailLabel.textContent=c.valid?'적용 평수':'입력 확인';
-    gc.textContent=c.valid?`${c.cells}평 계산 → ${c.appliedTier}평 옵션`:'최대 80평';
+    gDetailLabel.textContent=c.valid?'표 적용 수량':'입력 확인';
+    gc.textContent=c.valid?`${c.tableQty} × ${won(c.unitPrice)}`:'1~2400mm';
     gr.textContent=c.valid?won(c.unit):'계산 불가';
     gt.textContent=c.valid?won(c.amount):'계산 불가'
   }
@@ -500,14 +519,14 @@ function addG(){
       note:c.note||`기본 54,400원 + 가로옵션 ${won(c.widthExtra)} + 세로옵션 ${won(c.heightExtra)}`
     })
   }else if(c.mode==='sus304'){
-    if(!c.valid) return alert('SUS304는 최대 80평까지 계산됩니다. 규격을 확인해주세요.');
+    if(!c.valid) return alert('SUS304는 가로·세로를 1~2400mm 범위로 입력해주세요.');
     items.push({
       name:'스텐 304 방범창',
-      spec:`${c.w}×${c.h}mm / 계산 ${c.cells}평 → ${c.appliedTier}평 옵션`,
+      spec:`${c.w}×${c.h}mm / 표 수량 ${c.tableQty}`, 
       qty:c.q,
       unit:c.unit,
       amount:c.amount,
-      note:c.note||`기본 13,600원 + ${c.appliedTier}평 옵션 ${won(c.optionExtra)}`
+      note:c.note||`표 수량 ${c.tableQty} × 1,000원`
     })
   }
   drawList();
