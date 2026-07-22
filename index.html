@@ -125,7 +125,7 @@ table{width:100%;border-collapse:collapse}th{background:var(--n);color:white}#sh
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script>
 const $=id=>document.getElementById(id),won=n=>Math.round(Number(n)||0).toLocaleString('ko-KR')+'원';
-let prices={},alWindow={},lexanData={},securityData={},items=[],mod='dash',ladderType='safe',ladderMat='201',guardMat='알루미늄',alPriceType='consumer',lexanThickness='2T',lexanColor='블루',securityProduct='알루미늄 방범자바라',securityOpening='편개형',securityColor='화이트';
+let prices={},alWindow={},sus201Data={},lexanData={},securityData={},items=[],mod='dash',ladderType='safe',ladderMat='201',guardMat='알루미늄',alPriceType='consumer',lexanThickness='2T',lexanColor='블루',securityProduct='알루미늄 방범자바라',securityOpening='편개형',securityColor='화이트';
 const jRates={
   '일반형':{
     '201':{'1200':85000,'1500':125000},
@@ -154,6 +154,8 @@ document.addEventListener('DOMContentLoaded',async()=>{
   catch(e){toast('파이프 단가표 오류')}
   try{alWindow=await fetch('data/aluminum-window-options.json',{cache:'no-store'}).then(r=>r.json())}
   catch(e){toast('알루미늄 방범창 옵션 데이터 오류')}
+  try{sus201Data=await fetch('data/sus201-window-options.json',{cache:'no-store'}).then(r=>r.json())}
+  catch(e){toast('SUS201 방범창 옵션 데이터 오류')}
   try{lexanData=await fetch('data/lexan.json',{cache:'no-store'}).then(r=>r.json())}
   catch(e){toast('렉산 가격 데이터 오류')}
   try{securityData=await fetch('data/security-jabara.json',{cache:'no-store'}).then(r=>r.json())}
@@ -285,11 +287,12 @@ function gTpl(){
 
     <div id="susGuardFields" class="hidden">
       <div class="grid g4">
-        <label>가로(mm)<input id="gsw" type="number"></label>
-        <label>세로(mm)<input id="gsh" type="number"></label>
+        <label id="gswLabel">가로(cm)<input id="gsw" type="number" min="90" max="240" step="1" value="90"></label>
+        <label id="gshLabel">세로(cm)<input id="gsh" type="number" min="90" max="240" step="1" value="90"></label>
         <label>수량<input id="gsq" type="number" value="1" min="1"></label>
         <label>비고<input id="gsn"></label>
       </div>
+      <div id="susPriceNotice" class="notice" style="margin-top:10px"></div>
     </div>
 
     <div class="result">
@@ -307,6 +310,7 @@ function bindG(){
     document.querySelectorAll('#gmt button').forEach(x=>x.classList.toggle('on',x===b));
     alGuardFields.classList.toggle('hidden',guardMat!=='알루미늄');
     susGuardFields.classList.toggle('hidden',guardMat==='알루미늄');
+    configureSusGuardFields();
     upG()
   });
   document.querySelectorAll('#alPriceMode button').forEach(b=>b.onclick=()=>{
@@ -321,8 +325,36 @@ function bindG(){
   ['gsw','gsh','gsq'].forEach(id=>$(id).oninput=upG);
   storeProductBtn.onclick=()=>window.open(alWindow.productUrl,'_blank');
   gadd.onclick=addG;
+  configureSusGuardFields();
   upG()
 }
+
+const sus304Price={
+  basePrice:13600,
+  basePyeong:9,
+  tiers:{9:0,11:29800,14:46000,17:62200,20:78400,23:94600,26:110800,29:127000,32:143200,35:159400,38:175600,41:191800,44:208000,47:224200,50:240400,53:256600,56:272800,59:289000,62:305200,65:321400,68:337600,71:353800,74:370000,77:386200,80:419400}
+};
+function configureSusGuardFields(){
+  if(!document.getElementById('gsw')) return;
+  if(guardMat==='SUS201'){
+    gswLabel.childNodes[0].nodeValue='가로(cm)';
+    gshLabel.childNodes[0].nodeValue='세로(cm)';
+    gsw.min=gsh.min=sus201Data.minSizeCm||90;
+    gsw.max=gsh.max=sus201Data.maxSizeCm||240;
+    gsw.step=gsh.step=1;
+    if(+gsw.value<90||+gsw.value>240) gsw.value=90;
+    if(+gsh.value<90||+gsh.value>240) gsh.value=90;
+    susPriceNotice.textContent='SUS201: 기본 9평 54,400원 + 가로 옵션가 + 세로 옵션가 (90~240cm)';
+  }else if(guardMat==='SUS304'){
+    gswLabel.childNodes[0].nodeValue='가로(mm)';
+    gshLabel.childNodes[0].nodeValue='세로(mm)';
+    gsw.min=gsh.min=1; gsw.max=gsh.max=10000; gsw.step=gsh.step=1;
+    if(+gsw.value<300) gsw.value=900;
+    if(+gsh.value<300) gsh.value=900;
+    susPriceNotice.textContent='SUS304: 기본 9평 13,600원 · 계산평수에 맞는 상위 옵션구간 적용 (최대 80평)';
+  }
+}
+
 function exactAluminumSize(value){
   const number=Number(value);
   if(!Number.isInteger(number)) return null;
@@ -389,11 +421,22 @@ function gcalc(){
   }
   const w=+gsw.value||0,
         h=+gsh.value||0,
-        q=Math.max(1,+gsq.value||1),
-        cells=w&&h?Math.ceil(w*h/90000):0,
-        rate=gRates[guardMat],
-        unit=cells*rate;
-  return{mode:'formula',w,h,q,cells,rate,unit,amount:unit*q,note:gsn.value}
+        q=Math.max(1,+gsq.value||1);
+  if(guardMat==='SUS201'){
+    const valid=Number.isInteger(w)&&Number.isInteger(h)&&w>=(sus201Data.minSizeCm||90)&&w<=(sus201Data.maxSizeCm||240)&&h>=(sus201Data.minSizeCm||90)&&h<=(sus201Data.maxSizeCm||240),
+          widthExtra=valid?(sus201Data.widthOptions?.[String(w)]||0):0,
+          heightExtra=valid?(sus201Data.heightOptions?.[String(h)]||0):0,
+          cells=valid?Math.ceil((w*h)/900):0,
+          unit=valid?(sus201Data.basePrice||54400)+widthExtra+heightExtra:0;
+    return{mode:'sus201',w,h,q,valid,cells,widthExtra,heightExtra,unit,amount:unit*q,note:gsn.value}
+  }
+  const cells=w&&h?Math.ceil(w*h/90000):0,
+        tiers=Object.keys(sus304Price.tiers).map(Number).sort((a,b)=>a-b),
+        appliedTier=cells<=sus304Price.basePyeong?sus304Price.basePyeong:tiers.find(v=>v>=cells),
+        valid=!!(w&&h&&appliedTier),
+        optionExtra=valid?(sus304Price.tiers[appliedTier]||0):0,
+        unit=valid?sus304Price.basePrice+optionExtra:0;
+  return{mode:'sus304',w,h,q,valid,cells,appliedTier,optionExtra,unit,amount:unit*q,note:gsn.value}
 }
 function upG(){
   const c=gcalc();
@@ -408,11 +451,16 @@ function upG(){
     gc.textContent=c.cells+'칸';
     gr.textContent=won(c.unit);
     gt.textContent=won(c.amount)
-  }else{
-    gDetailLabel.textContent='계산칸수';
-    gc.textContent=c.cells+'칸';
-    gr.textContent=won(c.unit);
-    gt.textContent=won(c.amount)
+  }else if(c.mode==='sus201'){
+    gDetailLabel.textContent=c.valid?'옵션 추가금':'입력 확인';
+    gc.textContent=c.valid?`가로 ${won(c.widthExtra)} + 세로 ${won(c.heightExtra)}`:'90~240cm 정수';
+    gr.textContent=c.valid?won(c.unit):'계산 불가';
+    gt.textContent=c.valid?won(c.amount):'계산 불가'
+  }else if(c.mode==='sus304'){
+    gDetailLabel.textContent=c.valid?'적용 평수':'입력 확인';
+    gc.textContent=c.valid?`${c.cells}평 계산 → ${c.appliedTier}평 옵션`:'최대 80평';
+    gr.textContent=c.valid?won(c.unit):'계산 불가';
+    gt.textContent=c.valid?won(c.amount):'계산 불가'
   }
 }
 function addG(){
@@ -441,14 +489,25 @@ function addG(){
       amount:c.amount,
       note:c.note||'업체용 단가 적용'
     })
-  }else{
+  }else if(c.mode==='sus201'){
+    if(!c.valid) return alert('SUS201은 가로·세로를 90~240cm 사이 정수로 입력해주세요.');
     items.push({
-      name:`방범창 ${guardMat}`,
-      spec:`${c.w}×${c.h}mm / ${c.cells}칸`,
+      name:'스텐 201 방범창',
+      spec:`가로 ${c.w}cm × 세로 ${c.h}cm / ${c.cells}평`,
       qty:c.q,
       unit:c.unit,
       amount:c.amount,
-      note:c.note
+      note:c.note||`기본 54,400원 + 가로옵션 ${won(c.widthExtra)} + 세로옵션 ${won(c.heightExtra)}`
+    })
+  }else if(c.mode==='sus304'){
+    if(!c.valid) return alert('SUS304는 최대 80평까지 계산됩니다. 규격을 확인해주세요.');
+    items.push({
+      name:'스텐 304 방범창',
+      spec:`${c.w}×${c.h}mm / 계산 ${c.cells}평 → ${c.appliedTier}평 옵션`,
+      qty:c.q,
+      unit:c.unit,
+      amount:c.amount,
+      note:c.note||`기본 13,600원 + ${c.appliedTier}평 옵션 ${won(c.optionExtra)}`
     })
   }
   drawList();
