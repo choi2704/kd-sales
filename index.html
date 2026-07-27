@@ -371,14 +371,12 @@ function sus304Band(value){
 function configureSusGuardFields(){
   if(!document.getElementById('gsw')) return;
   if(guardMat==='SUS201'){
-    gswLabel.childNodes[0].nodeValue='가로(cm)';
-    gshLabel.childNodes[0].nodeValue='세로(cm)';
-    gsw.min=gsh.min=sus201Data.minSizeCm||90;
-    gsw.max=gsh.max=sus201Data.maxSizeCm||240;
-    gsw.step=gsh.step=1;
-    if(+gsw.value<90||+gsw.value>240) gsw.value=90;
-    if(+gsh.value<90||+gsh.value>240) gsh.value=90;
-    susPriceNotice.textContent='SUS201: 기본 9평 54,400원 + 가로 옵션가 + 세로 옵션가 (90~240cm)';
+    gswLabel.childNodes[0].nodeValue='가로(mm)';
+    gshLabel.childNodes[0].nodeValue='세로(mm)';
+    gsw.min=gsh.min=1; gsw.max=gsh.max=3000; gsw.step=gsh.step=1;
+    if(+gsw.value<1||+gsw.value>3000) gsw.value=900;
+    if(+gsh.value<1||+gsh.value>3000) gsh.value=900;
+    susPriceNotice.textContent='SUS201: 2200mm 이하는 스마트스토어 옵션가, 초과 시 대형 표 계산 (최대 3000mm)';
   }else if(guardMat==='SUS304'){
     gswLabel.childNodes[0].nodeValue='가로(mm)';
     gshLabel.childNodes[0].nodeValue='세로(mm)';
@@ -457,12 +455,32 @@ function gcalc(){
         h=+gsh.value||0,
         q=Math.max(1,+gsq.value||1);
   if(guardMat==='SUS201'){
-    const valid=Number.isInteger(w)&&Number.isInteger(h)&&w>=(sus201Data.minSizeCm||90)&&w<=(sus201Data.maxSizeCm||240)&&h>=(sus201Data.minSizeCm||90)&&h<=(sus201Data.maxSizeCm||240),
-          widthExtra=valid?(sus201Data.widthOptions?.[String(w)]||0):0,
-          heightExtra=valid?(sus201Data.heightOptions?.[String(h)]||0):0,
-          cells=valid?Math.ceil((w*h)/900):0,
-          unit=valid?(sus201Data.basePrice||54400)+widthExtra+heightExtra:0;
-    return{mode:'sus201',w,h,q,valid,cells,widthExtra,heightExtra,unit,amount:unit*q,note:gsn.value}
+    const row=sus304Band(h),
+          col=sus304Band(w),
+          valid=row>=0&&col>=0,
+          rowUpper=valid?(row===0?900:900+(row*100)):0,
+          colUpper=valid?(col===0?900:900+(col*100)):0,
+          tableQty=valid?Math.round((rowUpper*colUpper*6)/90000):0,
+          unitPrice=1000,
+          smartMaxMm=2200,
+          useSmartStore=valid&&w<=smartMaxMm&&h<=smartMaxMm,
+          widthCm=Math.max(90,Math.min(220,Math.ceil(w/10))),
+          heightCm=Math.max(90,Math.min(220,Math.ceil(h/10))),
+          widthOptionCm=Math.max(90,Math.floor(widthCm/10)*10),
+          smartBase=sus201Data?.basePrice||54400,
+          widthExtra=sus201Data?.widthOptions?.[String(widthOptionCm)]||0,
+          heightExtra=sus201Data?.heightOptions?.[String(heightCm)]||0,
+          smartUnit=smartBase+widthExtra+heightExtra,
+          boundaryWidthCm=Math.max(90,Math.min(220,Math.ceil(Math.min(w,smartMaxMm)/10))),
+          boundaryHeightCm=Math.max(90,Math.min(220,Math.ceil(Math.min(h,smartMaxMm)/10))),
+          boundaryWidthOptionCm=Math.max(90,Math.floor(boundaryWidthCm/10)*10),
+          boundarySmartUnit=smartBase+
+            (sus201Data?.widthOptions?.[String(boundaryWidthOptionCm)]||0)+
+            (sus201Data?.heightOptions?.[String(boundaryHeightCm)]||0),
+          tableUnit=valid?tableQty*unitPrice:0,
+          unit=valid?(useSmartStore?smartUnit:Math.max(tableUnit,boundarySmartUnit)):0,
+          priceMode=useSmartStore?'smartstore':'large';
+    return{mode:'sus201',priceMode,w,h,q,valid,row,col,rowUpper,colUpper,tableQty,unitPrice,unit,amount:unit*q,note:gsn.value,widthCm,heightCm,widthOptionCm,widthExtra,heightExtra,smartBase,smartUnit,tableUnit,boundarySmartUnit}
   }
   const row=sus304Band(h),
         col=sus304Band(w),
@@ -485,8 +503,8 @@ function upG(){
     gr.textContent=won(c.unit);
     gt.textContent=won(c.amount)
   }else if(c.mode==='sus201'){
-    gDetailLabel.textContent=c.valid?'옵션 추가금':'입력 확인';
-    gc.textContent=c.valid?`가로 ${won(c.widthExtra)} + 세로 ${won(c.heightExtra)}`:'90~240cm 정수';
+    gDetailLabel.textContent=c.valid?(c.priceMode==='smartstore'?'스마트스토어 옵션가':'대형 맞춤 계산'):'입력 확인';
+    gc.textContent=c.valid?(c.priceMode==='smartstore'?`기본 ${won(c.smartBase)} + 가로${c.widthOptionCm} ${won(c.widthExtra)} + 세로${c.heightCm} ${won(c.heightExtra)}`:`표 ${c.tableQty} × ${won(c.unitPrice)} · 2200 기준 최저가 ${won(c.boundarySmartUnit)}`):'1~3000mm';
     gr.textContent=c.valid?won(c.unit):'계산 불가';
     gt.textContent=c.valid?won(c.amount):'계산 불가'
   }else if(c.mode==='sus304'){
@@ -523,14 +541,14 @@ function addG(){
       note:c.note||'업체용 단가 적용'
     })
   }else if(c.mode==='sus201'){
-    if(!c.valid) return alert('SUS201은 가로·세로를 90~240cm 사이 정수로 입력해주세요.');
+    if(!c.valid) return alert('SUS201은 가로·세로를 1~3000mm 범위로 입력해주세요.');
     items.push({
       name:'스텐 201 방범창',
-      spec:`가로 ${c.w}cm × 세로 ${c.h}cm / ${c.cells}평`,
+      spec:c.priceMode==='smartstore'?`${c.w}×${c.h}mm / 스마트스토어 옵션가`:`${c.w}×${c.h}mm / 2200mm 초과 대형 맞춤`,
       qty:c.q,
       unit:c.unit,
       amount:c.amount,
-      note:c.note||`기본 54,400원 + 가로옵션 ${won(c.widthExtra)} + 세로옵션 ${won(c.heightExtra)}`
+      note:c.note||(c.priceMode==='smartstore'?`기본 ${won(c.smartBase)} + 가로${c.widthOptionCm} ${won(c.widthExtra)} + 세로${c.heightCm} ${won(c.heightExtra)}`:`표 수량 ${c.tableQty} × 1,000원, 2200mm 기준금액보다 낮지 않게 적용`)
     })
   }else if(c.mode==='sus304'){
     if(!c.valid) return alert('SUS304는 가로·세로를 1~3000mm 범위로 입력해주세요.');
