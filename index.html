@@ -8,7 +8,7 @@
 *{box-sizing:border-box}body{margin:0;background:#fff6fa;font-family:Pretendard,"Noto Sans KR",Arial;color:#10243a}button,input,select{font:inherit}
 .shell{display:grid;grid-template-columns:220px 1fr;min-height:100vh}.side{background:var(--n);color:white;padding:20px 14px;display:flex;flex-direction:column}.logo{font-weight:900;font-size:19px;padding:10px 8px 24px}.logo small{display:block;font-size:11px;color:#b8cada;margin-top:5px}
 .nav{display:grid;gap:6px}.nav button{border:0;background:transparent;color:#ffe8f1;text-align:left;padding:13px;border-radius:10px;font-weight:800;cursor:pointer}.nav button.on{background:white;color:var(--n)}.nav button.off{opacity:.45;cursor:not-allowed}.sidefoot{margin-top:auto;display:grid;gap:8px}
-.btn{border:0;border-radius:9px;padding:11px 14px;font-weight:900;cursor:pointer}.primary{background:var(--n);color:white}.soft{background:var(--b);color:var(--n)}.ghost{background:#b83f70;color:white}.green{background:#e85b91;color:white}.quote-blue{background:#1565c0;color:white}.message-blue{background:#e8f1ff;color:#0d55a6;border:1px solid #a9c8ee}.order-btn{background:#fff3df;color:#9a5700;border:1px solid #edc684}.statement-btn{background:#eaf8ef;color:#176b38;border:1px solid #9ed2af}
+.btn{border:0;border-radius:9px;padding:11px 14px;font-weight:900;cursor:pointer}.sales-report-btn{background:#7b2cbf;color:white}.primary{background:var(--n);color:white}.soft{background:var(--b);color:var(--n)}.ghost{background:#b83f70;color:white}.green{background:#e85b91;color:white}.quote-blue{background:#1565c0;color:white}.message-blue{background:#e8f1ff;color:#0d55a6;border:1px solid #a9c8ee}.order-btn{background:#fff3df;color:#9a5700;border:1px solid #edc684}.statement-btn{background:#eaf8ef;color:#176b38;border:1px solid #9ed2af}
 .big-order-btn{background:#263f8f;color:#fff;border:1px solid #1b2e6c}
 .quick-tools{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;margin-bottom:7px}.quick-tool-btn{padding:10px 18px;border-radius:10px;font-size:14px;box-shadow:0 2px 5px rgba(0,0,0,.08)}.fold-tool-btn{background:#0f7b8f;color:white;border:1px solid #096777}.delivery-tool-btn{background:#ef7c24;color:white;border:1px solid #d96610}.customer-message-tool-btn{background:#6f42c1;color:white;border:1px solid #59359b}
 .big-order-setup{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:12px 0}
@@ -72,6 +72,7 @@ table{width:100%;border-collapse:collapse}th{background:var(--n);color:white}#sh
   <button class="off">폴딩도어 준비중</button>
  </div>
  <div class="sidefoot">
+  <button id="onlineSales" class="btn sales-report-btn" onclick="window.open('https://choi2704.github.io/kd-online-sales/','_blank','noopener')">온라인 매출</button>
   <button id="newQuote" class="btn ghost">새 견적</button>
   <button id="saveQuote" class="btn ghost">견적 저장</button>
   <button id="loadQuote" class="btn ghost">저장 견적</button>
