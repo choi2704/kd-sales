@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>KD Factory ERP V1</title>
+<style>
+:root{--n:#d94f84;--b:#fff0f6;--l:#efc6d7;--m:#8c6675}
+*{box-sizing:border-box}body{margin:0;background:#fff6fa;font-family:Pretendard,"Noto Sans KR",Arial;color:#10243a}button,input,select{font:inherit}
+.shell{display:grid;grid-template-columns:220px 1fr;min-height:100vh}.side{background:var(--n);color:white;padding:20px 14px;display:flex;flex-direction:column}.logo{font-weight:900;font-size:19px;padding:10px 8px 24px}.logo small{display:block;font-size:11px;color:#b8cada;margin-top:5px}
+.nav{display:grid;gap:6px}.nav button{border:0;background:transparent;color:#ffe8f1;text-align:left;padding:13px;border-radius:10px;font-weight:800;cursor:pointer}.nav button.on{background:white;color:var(--n)}.nav button.off{opacity:.45;cursor:not-allowed}.sidefoot{margin-top:auto;display:grid;gap:8px}
+.btn{border:0;border-radius:9px;padding:11px 14px;font-weight:900;cursor:pointer}.sales-manage-btn{background:#7b2cbf;color:#fff;border:1px solid #6421a0}.primary{background:var(--n);color:white}.soft{background:var(--b);color:var(--n)}.ghost{background:#b83f70;color:white}.green{background:#e85b91;color:white}.quote-blue{background:#1565c0;color:white}.message-blue{background:#e8f1ff;color:#0d55a6;border:1px solid #a9c8ee}.order-btn{background:#fff3df;color:#9a5700;border:1px solid #edc684}.statement-btn{background:#eaf8ef;color:#176b38;border:1px solid #9ed2af}
+.big-order-btn{background:#263f8f;color:#fff;border:1px solid #1b2e6c}
+.quick-tools{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;margin-bottom:7px}.quick-tool-btn{padding:10px 18px;border-radius:10px;font-size:14px;box-shadow:0 2px 5px rgba(0,0,0,.08)}.fold-tool-btn{background:#0f7b8f;color:white;border:1px solid #096777}.delivery-tool-btn{background:#ef7c24;color:white;border:1px solid #d96610}.customer-message-tool-btn{background:#6f42c1;color:white;border:1px solid #59359b}
+.big-order-setup{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:12px 0}
+#bigOrderCard{width:1080px;height:1080px;background:#fff;color:#111;padding:62px 68px;display:flex;flex-direction:column;border:14px solid #173f8f;font-family:Pretendard,"Noto Sans KR",Arial}
+#bigOrderCard .bo-title{display:flex;align-items:center;justify-content:space-between;border-bottom:9px solid #173f8f;padding-bottom:24px;margin-bottom:28px}
+#bigOrderCard .bo-title h1{font-size:66px;margin:0;letter-spacing:-3px;color:#173f8f}
+#bigOrderCard .bo-title .date{font-size:28px;font-weight:900;color:#34495e}
+#bigOrderCard .bo-section{border:4px solid #173f8f;border-radius:18px;margin-bottom:14px;overflow:hidden}
+#bigOrderCard .bo-head{background:#173f8f;color:#fff;font-size:27px;font-weight:900;padding:8px 20px;line-height:1.15}
+#bigOrderCard .bo-body{padding:14px 20px;font-size:28px;font-weight:800;line-height:1.38}
+#bigOrderCard .bo-items{display:grid;grid-template-rows:repeat(3,minmax(72px,auto));gap:5px;min-height:300px;align-content:start;overflow:hidden}
+#bigOrderCard .bo-item{display:grid;grid-template-columns:46px 1fr 92px;gap:9px;align-items:center;border-bottom:2px solid #c9d5e8;padding:7px 0;min-height:72px}
+#bigOrderCard .bo-item:last-child{border-bottom:0}
+#bigOrderCard .bo-item .num{background:#eaf1ff;color:#173f8f;border-radius:50%;width:40px;height:40px;display:flex;align-items:center;justify-content:center;font-size:21px}
+#bigOrderCard .bo-item .name{font-size:25px;line-height:1.22;word-break:keep-all}
+#bigOrderCard .bo-item .qty{text-align:right;color:#c33333;font-size:25px}
+#bigOrderCard .bo-info-grid{display:grid;grid-template-columns:1fr 1fr;gap:0}
+#bigOrderCard .bo-info-grid>div{padding:8px 16px;font-size:23px;font-weight:900;border-right:2px solid #b7c7dc;line-height:1.2}
+#bigOrderCard .bo-info-grid>div:last-child{border-right:0}
+#bigOrderCard .bo-label{display:block;font-size:14px;color:#60738b;margin-bottom:1px}
+#bigOrderCard .bo-delivery{font-size:27px;line-height:1.34;white-space:pre-wrap;word-break:keep-all}
+#bigOrderCard .bo-footer{margin-top:auto;display:flex;justify-content:space-between;align-items:end;border-top:5px solid #173f8f;padding-top:18px}
+#bigOrderCard .bo-footer strong{font-size:34px;color:#173f8f}
+#bigOrderCard .bo-footer span{font-size:24px;font-weight:800;color:#52677d}
+@media(max-width:700px){.big-order-setup{grid-template-columns:1fr}}
+.main{min-width:0}.top{min-height:96px;background:white;border-bottom:1px solid var(--l);padding:0 24px;display:flex;align-items:center;justify-content:space-between}.top h1{margin:0;font-size:22px}.top p{margin:4px 0 0;color:var(--m);font-size:12px}
+.customer,.card,.quote{background:white;border:1px solid var(--l);border-radius:15px}.customer{margin:18px 20px 0;padding:16px}.grid{display:grid;gap:10px}.g6{grid-template-columns:repeat(6,1fr)}.g4{grid-template-columns:repeat(4,1fr)}.g3{grid-template-columns:repeat(3,1fr)}.g2{grid-template-columns:repeat(2,1fr)}
+label{display:flex;flex-direction:column;gap:6px;font-size:12px;font-weight:800}input,select{height:41px;border:1px solid var(--l);border-radius:8px;padding:0 10px}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:15px;padding:15px 20px 28px}.card{padding:21px}.card h2{margin:0 0 5px}.desc{color:var(--m);font-size:12px;margin:0 0 18px}
+.tabs{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:15px}.tabs button{border:1px solid var(--l);background:white;padding:9px 13px;border-radius:8px;font-weight:900;cursor:pointer}.tabs button.on{background:var(--n);color:white}
+.opts{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:13px}.opt{border:1px solid var(--l);border-radius:10px;padding:10px;background:#fbfdff}.opt label{display:flex;flex-direction:row;align-items:center}.opt input[type=checkbox]{width:auto;height:auto}.opt input[type=number]{width:100%;margin-top:7px;height:34px}
+.result{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--l);border-radius:11px;overflow:hidden;margin:16px 0}.result div{padding:13px;border-right:1px solid var(--l)}.result div:last-child{border:0;background:var(--b)}.result small{display:block;color:var(--m);margin-bottom:5px}.result b{font-size:16px}
+.house{border:1px solid var(--l);border-radius:11px;padding:13px;margin-top:13px;background:#fbfdff}.househead{display:flex;justify-content:space-between}.switch{display:flex;flex-direction:row;align-items:center}.switch input{width:auto;height:auto}
+.pipe{display:grid;grid-template-columns:1fr 1fr 1.1fr .7fr .8fr .9fr 38px;gap:6px;align-items:end;border:1px solid var(--l);border-radius:10px;padding:9px;margin-bottom:7px;background:#fbfdff}.del{border:0;background:#fde6e6;color:#a83232;border-radius:7px;height:39px;cursor:pointer}
+.quote{position:sticky;top:92px;height:fit-content;overflow:hidden}.qhead{padding:15px;border-bottom:1px solid var(--l);display:flex;justify-content:space-between}.qlist{padding:9px;max-height:410px;overflow:auto}.empty{text-align:center;color:var(--m);padding:45px 10px;line-height:1.8}.qi{border:1px solid var(--l);border-radius:10px;padding:10px;margin-bottom:8px}.qihead{display:flex;justify-content:space-between;gap:8px}.qi h4{margin:0;font-size:13px}.qi p{margin:5px 0 0;color:var(--m);font-size:11px}.qiact button{border:0;border-radius:6px;padding:5px 7px;margin-top:7px;font-size:10px;cursor:pointer}.summary{border-top:1px solid var(--l);padding:12px}.summary div{display:flex;justify-content:space-between;padding:6px}.summary .grand{font-size:16px;border-top:1px dashed var(--l);margin-top:5px;padding-top:11px}.discount-row{align-items:center}.discount-input{display:flex;flex-direction:row;align-items:center;gap:5px}.discount-input input{width:78px;height:34px;text-align:right}.discount-input em{font-style:normal;font-weight:900}.quote>.btn{margin:0 12px 12px;width:calc(100% - 24px)}
+.dash{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.dash div{border:1px solid var(--l);border-radius:12px;padding:17px;cursor:pointer}.dash h3{margin:0 0 6px}.dash p{margin:0;color:var(--m);font-size:12px}.dash .disabled{opacity:.5;cursor:not-allowed}
+.hidden{display:none!important}.modal{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:30;display:flex;justify-content:center;align-items:flex-start;padding:35px 15px;overflow:auto}.modalcard{background:white;width:min(650px,100%);border-radius:14px;padding:20px}.modalhead{display:flex;justify-content:space-between}.x{border:0;border-radius:7px;width:32px;height:32px;cursor:pointer}
+#sheet{--quote-blue:#1565c0;--quote-light:#eaf3ff;background:white;width:794px;min-height:1123px;padding:30px;color:#111;border-top:8px solid var(--quote-blue)}#sheet h1{text-align:center;letter-spacing:14px;color:var(--quote-blue)}.infogrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.box{border:1px solid #b9c8d5}.box div{display:grid;grid-template-columns:100px 1fr;border-bottom:1px solid #b9c8d5}.box div:last-child{border:0}.box b,.box span{padding:8px}.box b{background:#fff0f6;text-align:center}#sheet .box b{background:var(--quote-light);color:#123c69}#sheet .totalbar{border:2px solid var(--quote-blue)}.totalbar{border:2px solid var(--n);padding:13px;margin:16px 0;display:flex;justify-content:space-between;font-weight:900}
+table{width:100%;border-collapse:collapse}th{background:var(--n);color:white}#sheet th{background:var(--quote-blue)}th,td{border:1px solid #becbd6;padding:8px;text-align:center;font-size:11px}.bottom{display:grid;grid-template-columns:1.3fr .7fr;gap:10px;margin-top:12px}.terms{border:1px solid #becbd6;padding:12px;font-size:11px}
+.toast{position:fixed;right:20px;bottom:20px;background:var(--n);color:white;padding:11px 15px;border-radius:8px;display:none;z-index:60}.toast.show{display:block}
+.mode-tabs{display:flex;gap:8px;margin:12px 0 16px}.mode-tabs button{flex:1;border:1px solid #b9c8d5;background:#fff;padding:10px;border-radius:8px;font-weight:900;cursor:pointer}.mode-tabs button.on{background:#1565c0;color:#fff;border-color:#1565c0}.doc-form-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.doc-items-head{display:flex;justify-content:space-between;align-items:center;margin:16px 0 8px}.manual-doc-row{display:grid;grid-template-columns:2fr .55fr .8fr .8fr 1.3fr 34px;gap:6px;align-items:end;margin-bottom:7px}.manual-doc-row input{width:100%}.manual-doc-row .remove-row{height:41px;border:0;border-radius:8px;background:#fde8e8;color:#a22;font-weight:900;cursor:pointer}.simple-document{--doc-blue:#075b9c;--doc-dark:#0a2442;--doc-line:#8aa9c2;--doc-light:#eef6fc;padding:18px 22px 24px;border-top:5px solid var(--doc-blue)!important;color:#111}.simple-document .doc-top{display:flex;align-items:center;gap:22px;margin:0 0 20px}.simple-document .doc-top h1{margin:0;letter-spacing:-2px;font-size:40px;color:#111;text-align:left;white-space:nowrap}.simple-document .doc-top-line{height:6px;background:var(--doc-blue);flex:1}.simple-document .doc-number{font-size:10px;font-weight:800;text-align:right;color:#3e5263;margin-bottom:6px}.doc-party-area{display:grid;grid-template-columns:.9fr 1.35fr;gap:8px;margin-bottom:8px}.recipient-card{border:2px solid #4f5e69;min-height:148px;display:flex;flex-direction:column}.recipient-card .label{background:var(--doc-blue);color:white;font-weight:900;padding:7px 12px;width:max-content}.recipient-card .content{padding:18px 14px;text-align:center;font-size:12px;line-height:1.75}.recipient-card .content strong{font-size:17px}.supplier-card{display:grid;grid-template-columns:34px 1fr;border:2px solid #4f5e69;position:relative}.supplier-card>.vertical{display:flex;align-items:center;justify-content:center;writing-mode:vertical-rl;letter-spacing:5px;font-weight:900;border-right:1px solid #4f5e69;background:#f7fbfe;color:var(--doc-dark)}.supplier-grid{display:grid;grid-template-columns:92px 1fr 65px 1.2fr}.supplier-grid b,.supplier-grid span{padding:7px 8px;font-size:11px;border-right:1px solid #8b98a4;border-bottom:1px solid #8b98a4}.supplier-grid b{background:var(--doc-light);text-align:center;color:var(--doc-dark)}.supplier-grid .wide{grid-column:span 3}.supplier-grid .last{border-bottom:0}.amount-band{border:3px solid #111;padding:8px 13px;margin:8px 0 10px;display:flex;justify-content:space-between;font-size:15px;font-weight:900}.amount-band.blue{background:var(--doc-blue);color:white;border-color:var(--doc-blue)}.simple-doc-table{margin-top:0}.simple-doc-table th{background:#f1f5f8!important;color:#17212b!important;border:1px solid var(--doc-line)!important;font-size:12px!important;padding:8px!important}.simple-doc-table td{height:34px;border:1px solid #b6c6d3!important;font-size:11px!important;padding:7px!important}.simple-doc-table td.left{text-align:left}.simple-summary-row td{font-weight:900;background:#f6f9fb}.doc-summary-strip{display:grid;grid-template-columns:62px 70px 78px 1fr 52px 1fr 58px 1.15fr 54px 70px;border:2px solid #3e4f5d;margin-top:9px}.doc-summary-strip b,.doc-summary-strip span{padding:8px 6px;border-right:1px solid #738391;text-align:center;font-size:11px}.doc-summary-strip b{background:var(--doc-light);color:var(--doc-dark)}.doc-summary-strip>*:last-child{border-right:0}.doc-bottom-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:9px}.shipping-box{display:grid;grid-template-columns:82px 1fr;border:1px solid var(--doc-line);margin:0}.shipping-box b,.shipping-box div{padding:9px;font-size:11px}.shipping-box b{background:var(--doc-light);text-align:center;border-right:1px solid var(--doc-line);color:var(--doc-dark)}.simple-note{margin:0;border:1px solid var(--doc-line);padding:10px;font-size:11px;min-height:78px;white-space:pre-wrap}.doc-footer{margin-top:22px;background:var(--doc-blue);color:white;padding:12px 18px;text-align:right;font-size:15px;font-weight:900;letter-spacing:.5px}.doc-footer small{font-size:10px;font-weight:600;opacity:.9;margin-right:12px}
+@media(max-width:1100px){.g6{grid-template-columns:repeat(3,1fr)}.layout{grid-template-columns:1fr}.quote{position:static}.qlist{max-height:none}}
+@media(max-width:720px){.shell{grid-template-columns:1fr}.side{position:static}.nav{grid-template-columns:repeat(3,1fr)}.sidefoot{grid-template-columns:repeat(3,1fr);margin-top:14px}.g4,.g3,.opts,.result{grid-template-columns:1fr 1fr}.pipe{grid-template-columns:1fr 1fr}.infogrid,.bottom{grid-template-columns:1fr}}
+@media(max-width:480px){.g6,.g4,.g3,.g2,.opts,.result,.dash{grid-template-columns:1fr}.nav{grid-template-columns:1fr 1fr}}
+@media print{body>*:not(#quoteModal){display:none!important}#quoteModal{position:static!important;display:block!important;background:white;padding:0}#quoteModal .toolbar{display:none}#sheet{padding:7mm;min-height:auto}@page{size:A4 portrait;margin:7mm}}
+</style>
+</head>
+<body>
+<div class="shell">
+<aside class="side">
+ <div class="logo">KD SALES ERP<small>강동자바라 온라인 견적 시스템 V3.2</small></div>
+ <div class="nav">
+  <button class="on" data-mod="dash">대시보드</button>
+  <button data-mod="jabara">자바라</button>
+  <button data-mod="ladder">사다리</button>
+  <button data-mod="handrail">핸드레일</button>
+  <button data-mod="guard">방범창</button>
+  <button data-mod="lexan">렉산</button>
+  <button data-mod="security">방범창 자바라</button>
+  <button class="off">난간대 준비중</button>
+  <button class="off">폴딩도어 준비중</button>
+ </div>
+ <div class="sidefoot">
+  <button id="openSalesManager" class="btn sales-manage-btn" onclick="window.open('https://choi2704.github.io/kd-online-sales/','_blank','noopener')">온라인 매출관리</button>
+  <button id="newQuote" class="btn ghost">새 견적</button>
+  <button id="saveQuote" class="btn ghost">견적 저장</button>
+  <button id="loadQuote" class="btn ghost">저장 견적</button>
+ </div>
+</aside>
+<main class="main">
+ <header class="top"><div><h1 id="title">대시보드</h1><p id="subtitle">제품을 선택해 통합 견적을 작성하세요.</p></div><div style="display:flex;flex-direction:column;align-items:flex-end;padding:9px 0"><div class="quick-tools"><button id="topCustomerMessage" class="btn quick-tool-btn customer-message-tool-btn" onclick="window.open('https://choi2704.github.io/kd-customer-message/','_blank','noopener')">💬 고객 메시지 작성</button><button id="topFoldCalc" class="btn quick-tool-btn fold-tool-btn">📐 자바라 접힘 계산기</button><button id="topYongdalCalc" class="btn quick-tool-btn delivery-tool-btn">🚚 용달비 계산기</button></div><div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end"><button id="copyMessage" class="btn soft">안내문 복사</button><button id="copyQuoteMessage" class="btn message-blue">견적내용 메시지 복사</button><button id="makeQuote" class="btn quote-blue">견적서 만들기</button><button id="makeOrder" class="btn order-btn">발주서 만들기</button><button id="makeStatement" class="btn statement-btn">거래명세서 만들기</button><button id="makeBigOrderCard" class="btn big-order-btn">큰글씨 발주 메시지</button></div></div></header>
+ <section class="customer">
+ <div class="grid g6">
+  <label>견적일자<input id="date" type="date"></label>
+  <label>고객명·업체명<input id="company"></label>
+  <label>담당자<input id="manager"></label>
+  <label>연락처<input id="phone"></label>
+  <label>이메일<input id="email"></label>
+  <label>현장명<input id="site"></label>
+ </div>
+ <div class="grid g2" style="margin-top:10px">
+  <label>상담단계
+   <select id="consultStatus">
+    <option>신규</option><option>견적발송</option><option>재문의</option>
+    <option>계약완료</option><option>보류</option>
+   </select>
+  </label>
+  <label>상담메모<input id="consultMemo" placeholder="톡톡, 전화상담, 재문의 내용 등을 입력"></label>
+ </div>
+</section>
+ <section class="layout">
+  <div id="module"></div>
+  <aside class="quote"><div class="qhead"><b>온라인 견적목록</b><span><b id="count">0</b>개</span></div><div id="qlist" class="qlist"></div><div class="summary">
+  <div><span>상품 합계</span><b id="rawSub">0원</b></div>
+  <div class="discount-row">
+    <span>할인율</span>
+    <label class="discount-input"><input id="discountRate" type="number" min="0" max="100" step="0.1" value="0"><em>%</em></label>
+  </div>
+  <div><span>할인금액</span><b id="discountAmount">-0원</b></div>
+  <div class="discount-row"><span>부가세 적용</span><label style="display:flex;align-items:center;gap:7px;font-weight:700;color:#174f86;cursor:pointer"><input id="vatApply" type="checkbox" style="width:18px;height:18px;accent-color:#1769c2"> 부가세 10% 추가</label></div>
+  <div><span>공급가액</span><b id="sub">0원</b></div>
+  <div><span id="vatLabel">부가세 (포함)</span><b id="vat">0원</b></div>
+  <div class="grand"><span>최종금액</span><b id="grand">0원</b></div>
+</div><button id="extraBtn" class="btn soft">+ 기타 비용</button></aside>
+ </section>
+</main>
+</div>
+<div id="extraModal" class="modal hidden"><div class="modalcard"><div class="modalhead"><h2>기타 비용</h2><button class="x">×</button></div><label>비용명<input id="extraName"></label><label>금액<input id="extraAmount" type="number"></label><label>비고<input id="extraNote"></label><button id="extraAdd" class="btn primary" style="width:100%;margin-top:12px">추가</button></div></div>
+<div id="savedModal" class="modal hidden"><div class="modalcard"><div class="modalhead"><h2>저장된 견적</h2><button class="x">×</button></div><div id="savedList"></div></div></div>
+<div id="docSetupModal" class="modal hidden"><div class="modalcard" style="width:min(860px,100%)"><div class="modalhead"><h2 id="docSetupTitle">문서 작성</h2><button class="x">×</button></div><div class="mode-tabs"><button id="docImportMode" class="on">견적내용 불러오기</button><button id="docManualMode">처음부터 직접 입력</button></div><div class="doc-form-grid"><label id="docPartyLabel">발주처<input id="docParty"></label><label>담당자<input id="docManager"></label><label>연락처<input id="docPhone"></label><label id="docSiteLabel">납품처<input id="docSite"></label><label>배송정보<select id="docDelivery"><option>선불</option><option>착불</option><option>직접수령</option><option>협의</option></select></label><label>문서번호<input id="docNumber" placeholder="자동 생성"></label></div><label style="margin-top:10px">요청사항·비고<textarea id="docNote" style="min-height:74px;border:1px solid var(--l);border-radius:8px;padding:10px;resize:vertical"></textarea></label><div class="doc-items-head"><b>품목 입력</b><button id="addDocRow" class="btn soft" type="button">+ 품목 추가</button></div><div id="manualDocItems"></div><button id="generateSimpleDoc" class="btn quote-blue" style="width:100%;margin-top:14px">문서 만들기</button></div></div>
+<div id="bigOrderModal" class="modal hidden"><div style="width:min(1160px,100%)"><div class="toolbar" style="display:flex;justify-content:space-between;margin-bottom:8px"><button class="btn ghost x">닫기</button><div><button id="copyBigOrderText" class="btn soft">내용 복사</button> <button id="saveBigOrderJpg" class="btn quote-blue">정사각형 JPG 저장</button></div></div><div class="modalcard" style="width:100%;margin-bottom:12px"><h2 style="margin-top:0">큰글씨 발주 메시지 직접 작성</h2><label>주문내역 직접 입력<textarea id="bigOrderItemsInput" style="min-height:150px;border:1px solid var(--l);border-radius:8px;padding:12px;resize:vertical;font-size:16px;line-height:1.6" placeholder="한 줄에 한 품목씩 입력하세요.
+예) 알루미늄 방범창 | 1200×1500 | 2개
+예) 스텐 자바라 | SUS201 / H1200 / 5m | 1개"></textarea></label><div style="font-size:12px;color:var(--m);margin-top:5px">입력 형식: 제품명 | 규격·메모 | 수량</div><div class="big-order-setup"><label>주문자<input id="bigOrderName"></label><label>연락처<input id="bigOrderPhone"></label><label>배송방법<select id="bigOrderDeliveryType"><option>화물 착불</option><option>택배 착불</option><option>택배 선불</option><option>직접수령</option><option>협의</option></select></label><label>배송일·요청일<input id="bigOrderDeliveryDate" placeholder="예: 7월 25일 출고 요청"></label></div><label>배송주소 및 배송사항<textarea id="bigOrderDeliveryNote" style="min-height:82px;border:1px solid var(--l);border-radius:8px;padding:10px;resize:vertical" placeholder="배송주소, 현장명, 하차 연락, 요청사항 등을 입력하세요."></textarea></label><button id="refreshBigOrderCard" class="btn quote-blue" style="width:100%;margin-top:12px">내용 반영하기</button></div><div style="overflow:auto;border-radius:12px"><article id="bigOrderCard"></article></div></div></div>
+<div id="quoteModal" class="modal hidden"><div><div class="toolbar" style="display:flex;justify-content:space-between;margin-bottom:8px"><button class="btn ghost x">닫기</button><div><button id="jpg" class="btn green">JPG 저장</button> <button id="print" class="btn primary">PDF/인쇄</button></div></div><article id="sheet"><h1 id="sheetTitle">견 적 서</h1><div class="infogrid"><div id="customerBox" class="box"></div><div class="box"><div><b>상호</b><span>㈜강동자바라</span></div><div><b>대표자</b><span>김영규</span></div><div><b>사업자번호</b><span>221-81-49797</span></div><div><b>대표번호</b><span>1577-6084</span></div><div><b>이메일</b><span>jk0820s@naver.com</span></div><div><b>주소</b><span>경기도 광주시 곤지암읍 구수동길 1-26</span></div></div></div><div class="totalbar"><span id="sheetIntro">아래와 같이 견적합니다.</span><b id="sheetGrand"></b></div><table><thead><tr><th>No.</th><th>제품명</th><th>규격</th><th>수량</th><th>단가</th><th>금액</th><th>비고</th></tr></thead><tbody id="sheetItems"></tbody></table><div class="bottom"><div id="sheetTerms" class="terms"></div><div id="sheetTotals" class="box"></div></div></article></div></div>
+<div id="toast" class="toast"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+const $=id=>document.getElementById(id),won=n=>Math.round(Number(n)||0).toLocaleString('ko-KR')+'원';
+let prices={},alWindow={},sus201Data={},lexanData={},securityData={},items=[],mod='dash',ladderType='safe',ladderMat='201',guardMat='알루미늄',alPriceType='consumer',lexanThickness='2T',lexanColor='블루',securityProduct='알루미늄 방범자바라',securityOpening='편개형',securityColor='화이트';
+const jRates={
+  '일반형':{
+    '201':{'1200':85000,'1500':120000},
+    '304':{'1200':125000,'1500':170000}
+  },
+  '고급형':{
+    '201':{'1200':140000,'1500':180000},
+    '304':{'1200':160000,'1500':200000}
+  }
+};
+const hRates={
+  '1350':{
+    '201':[300000,400000,500000,600000,null],
+    '304':[350000,500000,600000,700000,null]
+  },
+  '1650':{
+    '201':[350000,500000,600000,700000,null],
+    '304':[400000,550000,650000,750000,null]
+  }
+};
+const lRates={safe:{label:'안전망사다리',201:65000,304:75000},bending:{label:'밴딩사다리',201:45000,304:55000},straight:{label:'일자사다리',304:52000}};
+const gRates={'알루미늄':4000,'SUS201':4700,'SUS304':5700};
+document.addEventListener('DOMContentLoaded',async()=>{
+  date.value=new Date().toISOString().slice(0,10);
+  try{prices=await fetch('pipe-price.json',{cache:'no-store'}).then(r=>r.json())}
+  catch(e){toast('파이프 단가표 오류')}
+  try{alWindow=await fetch('data/aluminum-window-options.json',{cache:'no-store'}).then(r=>r.json())}
+  catch(e){toast('알루미늄 방범창 옵션 데이터 오류')}
+  try{sus201Data=await fetch('data/sus201-window-options.json',{cache:'no-store'}).then(r=>r.json())}
+  catch(e){toast('SUS201 방범창 옵션 데이터 오류')}
+  try{lexanData=await fetch('data/lexan.json',{cache:'no-store'}).then(r=>r.json())}
+  catch(e){toast('렉산 가격 데이터 오류')}
+  try{securityData=await fetch('data/security-jabara.json',{cache:'no-store'}).then(r=>r.json())}
+  catch(e){toast('방범창 자바라 가격 데이터 오류')}
+  bind();render('dash');drawList()
+});
+function bind(){
+  copyMessage.onclick=copyCustomerMessage;
+  copyQuoteMessage.onclick=copyDetailedQuoteMessage;
+  discountRate.oninput=()=>{
+    let v=Math.max(0,Math.min(100,+discountRate.value||0));
+    if(+discountRate.value!==v) discountRate.value=v;
+    drawList()
+  };
+  document.querySelectorAll('.nav button[data-mod]').forEach(b=>b.onclick=()=>render(b.dataset.mod));topFoldCalc.onclick=()=>window.open('fold-calculator.html','_blank','noopener');topYongdalCalc.onclick=()=>window.open('https://choi2704.github.io/yongdal-calculator/','_blank','noopener');document.querySelectorAll('.x').forEach(b=>b.onclick=()=>b.closest('.modal').classList.add('hidden'));makeQuote.onclick=()=>openDocument('quote');makeOrder.onclick=()=>openDocSetup('order');makeStatement.onclick=()=>openDocSetup('statement');makeBigOrderCard.onclick=openBigOrderCard;refreshBigOrderCard.onclick=renderBigOrderCard;bigOrderItemsInput.oninput=renderBigOrderCard;bigOrderName.oninput=renderBigOrderCard;bigOrderPhone.oninput=renderBigOrderCard;bigOrderDeliveryType.onchange=renderBigOrderCard;bigOrderDeliveryDate.oninput=renderBigOrderCard;bigOrderDeliveryNote.oninput=renderBigOrderCard;saveBigOrderJpg.onclick=saveBigOrderCard;copyBigOrderText.onclick=copyBigOrderCardText;print.onclick=()=>window.print();jpg.onclick=saveJpg;extraBtn.onclick=()=>extraModal.classList.remove('hidden');extraAdd.onclick=addExtra;newQuote.onclick=resetAll;saveQuote.onclick=saveNow;loadQuote.onclick=openSaved;docImportMode.onclick=()=>setDocMode('import');docManualMode.onclick=()=>setDocMode('manual');addDocRow.onclick=()=>addManualDocRow();generateSimpleDoc.onclick=generateSimpleDocument}
+function toast(s){toast.textContent=s;toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),1600)}
+function render(m){mod=m;document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('on',b.dataset.mod===m));const map={dash:['대시보드','제품을 선택해 통합 견적을 작성하세요.'],jabara:['자바라','본체와 하우스를 자동 계산합니다.'],foldcalc:['자바라 접힘계산','주문길이와 높이로 접혔을 때 필요한 공간을 계산합니다.'],ladder:['사다리','최소 3m와 로스 올림을 적용합니다.'],handrail:['핸드레일','파이프 단가와 부속을 계산합니다.'],guard:['방범창','규격별 계산칸수를 자동 산출합니다.'],lexan:['렉산','입력 사이즈보다 큰 원판 규격 기준으로 계산합니다.'],security:['방범창 자바라','평수 반올림과 최소 20평 기준을 적용합니다.']};title.textContent=map[m][0];subtitle.textContent=map[m][1];module.innerHTML=m==='dash'?dashTpl():m==='jabara'?jTpl():m==='foldcalc'?foldCalcTpl():m==='ladder'?lTpl():m==='handrail'?hTpl():m==='guard'?gTpl():m==='lexan'?lexanTpl():securityTpl();module.querySelectorAll('[data-go]').forEach(x=>x.onclick=()=>render(x.dataset.go));if(m==='jabara')bindJ();if(m==='foldcalc')bindFoldCalc();if(m==='ladder')bindL();if(m==='handrail')bindH();if(m==='guard')bindG();if(m==='lexan')bindLexan();if(m==='security')bindSecurity()}
+function dashTpl(){return `<div class="card"><h2>제품 선택</h2><p class="desc">온라인 판매단가로 서로 다른 제품을 한 견적에 함께 추가할 수 있습니다.</p><div class="dash"><div data-go="jabara"><h3>자바라</h3><p>형태·재질·높이·길이·하우스</p></div><div data-go="ladder"><h3>사다리</h3><p>안전망·밴딩·일자형·옵션</p></div><div data-go="handrail"><h3>핸드레일</h3><p>원/사각파이프·규격·두께</p></div><div data-go="guard"><h3>방범창</h3><p>스마트스토어 알루미늄 옵션 · SUS201 · SUS304</p></div><div data-go="lexan"><h3>렉산</h3><p>원판 규격 기준 · 2T/3T · 색상 선택</p></div><div data-go="security"><h3>방범창 자바라</h3><p>알루미늄/스텐 · 최소 20평</p></div><div class="disabled"><h3>난간대</h3><p>다음 버전</p></div><div class="disabled"><h3>폴딩도어</h3><p>다음 버전</p></div></div></div>`}
+function foldCalcTpl(){return `<div class="card"><h2>자바라 접힘사이즈 계산기</h2><p class="desc">주문길이를 입력하면 접혔을 때 확보해야 할 공간을 자동 계산합니다. 여유분 100mm와 50mm 단위 올림이 적용됩니다.</p><div class="grid g3"><label>자바라 높이<select id="fcHeight"><option value="1200">높이 1200mm</option><option value="1500">높이 1500mm</option></select></label><label>주문길이(mm)<input id="fcOrder" type="number" min="1" step="1" placeholder="예: 5000"></label><label>계산 기준<input id="fcRule" readonly></label></div><div class="result" style="margin-top:16px"><div><small>기본 접힘폭</small><b id="fcBase">0mm</b></div><div><small>여유분</small><b>+100mm</b></div><div><small>올림 전</small><b id="fcBefore">0mm</b></div><div><small>최종 필요공간</small><b id="fcFinal" style="color:var(--n);font-size:26px">0mm</b></div></div><div class="notice" id="fcExplain" style="margin-top:14px">주문길이를 입력해 주세요.</div><div class="grid g2" style="margin-top:14px"><button id="fcCopy" class="btn primary">계산결과 복사</button><button id="fcReset" class="btn ghost">초기화</button></div></div>`}
+function next50Strict(v){return v>0?(Math.floor(v/50)+1)*50:0}
+function bindFoldCalc(){
+ const h=document.getElementById('fcHeight'),o=document.getElementById('fcOrder'),rule=document.getElementById('fcRule'),base=document.getElementById('fcBase'),before=document.getElementById('fcBefore'),final=document.getElementById('fcFinal'),explain=document.getElementById('fcExplain');
+ function calc(){const height=Number(h.value),order=Math.max(0,Number(o.value)||0),divisor=height===1200?420:450;rule.value=`주문길이 ÷ ${divisor} × 52 + 100`;const b=order/divisor*52,pre=b+100,res=next50Strict(pre);base.textContent=`${Math.round(b).toLocaleString()}mm`;before.textContent=`${Math.round(pre).toLocaleString()}mm`;final.textContent=`${res.toLocaleString()}mm`;explain.textContent=order?`높이 ${height}mm · 주문길이 ${order.toLocaleString()}mm → 접힘공간 ${res.toLocaleString()}mm 확보`:'주문길이를 입력해 주세요.';return {height,order,divisor,b,pre,res}}
+ h.onchange=calc;o.oninput=calc;document.getElementById('fcReset').onclick=()=>{o.value='';h.value='1200';calc()};document.getElementById('fcCopy').onclick=async()=>{const r=calc();if(!r.order){toast('주문길이를 입력해 주세요.');return}const text=`[자바라 접힘사이즈]\n높이: ${r.height}mm\n주문길이: ${r.order.toLocaleString()}mm\n계산식: 주문길이 ÷ ${r.divisor} × 52 + 100mm\n최종 필요공간: ${r.res.toLocaleString()}mm (50mm 단위 올림)`;try{await navigator.clipboard.writeText(text);toast('접힘 계산결과가 복사되었습니다.')}catch(e){alert(text)}};calc()
+}
+function jTpl(){return `<div class="card"><h2>스텐 자바라</h2><p class="desc">최소 주문 3m · 100파이 우레탄바퀴 +5,000원/m</p><div class="grid g4"><label>형태<select id="jt"><option>일반형</option><option>고급형</option></select></label><label>재질<select id="jm"><option value="201">SUS201</option><option value="304">SUS304</option></select></label><label>높이<select id="jh"><option value="1200">1200</option><option value="1500">1500</option></select></label><label>길이(m)<input id="jl" type="number" value="3" step=".1"></label><label>수량<input id="jq" type="number" value="1"></label><label>개폐<select id="ji"><option>편개형</option><option>양개형</option></select></label><label>바퀴<select id="jw"><option>우레탄바퀴</option><option>레일바퀴</option><option>100파이 우레탄바퀴</option></select></label><label>비고<input id="jn"></label></div><div class="house"><div class="househead"><b>자바라 하우스</b><label class="switch"><input id="hu" type="checkbox"> 추가</label></div><div id="hf" class="grid g4 hidden"><label>높이<select id="hh"><option>1350</option><option>1650</option></select></label><label>재질<select id="hm"><option value="201">SUS201</option><option value="304">SUS304</option></select></label><label>수량<input id="hq" readonly></label><label>깊이<input id="hd" readonly></label></div><div id="hi"></div></div><div class="result"><div><small>사양</small><b id="js"></b></div><div><small>적용길이</small><b id="ja"></b></div><div><small>단가</small><b id="jr"></b></div><div><small>총금액</small><b id="jtotal"></b></div></div><button id="jadd" class="btn primary" style="width:100%">+ 견적목록 추가</button></div>`}
+function tier(l){if(l<=7.5)return{idx:0,d:'1000mm',r:'~7.5m'};if(l<=10)return{idx:1,d:'1300mm',r:'8.5~10m'};if(l<=13)return{idx:2,d:'1700mm',r:'11~13m'};if(l<=16)return{idx:3,d:'2000mm',r:'14~16m'};return{idx:4,d:'별도문의',r:'17~20m'}}
+function bindJ(){['jt','jm','jh','jl','jq','ji','jw','hh','hm'].forEach(id=>$(id).oninput=upJ);hu.onchange=()=>{hf.classList.toggle('hidden',!hu.checked);upJ()};jadd.onclick=addJ;upJ()}
+function calcJ(){
+  let l=Math.max(3,+jl.value||3),
+      q=Math.max(1,+jq.value||1),
+      rate=jRates[jt.value][jm.value][jh.value]+(jw.value==='100파이 우레탄바퀴'?5000:0),
+      splitLength=ji.value==='양개형'?l/2:l,
+      body={
+        name:`스텐 자바라 ${jt.value} SUS${jm.value}`,
+        spec:`H${jh.value} / 총 ${l}m / ${ji.value}${ji.value==='양개형'?` (${splitLength}m × 2짝)`:''} / ${jw.value}`,
+        qty:q,
+        unit:rate*l,
+        amount:rate*l*q,
+        note:jn.value
+      };
+  let house=null;
+  if(hu.checked){
+    let t=tier(splitLength),
+        cnt=ji.value==='양개형'?2:1,
+        u=hRates[hh.value][hm.value][t.idx];
+    house={
+      name:`자바라 하우스 SUS${hm.value}`,
+      spec:`H${hh.value} / 제작기준 ${splitLength}m × ${cnt}EA / 깊이 ${t.d} / ${t.r}`,
+      qty:cnt,
+      unit:u,
+      amount:u===null?0:u*cnt,
+      note:u===null?'하우스 별도문의':(ji.value==='양개형'?'양개형 분할 자동계산':'편개형 자동계산')
+    }
+  }
+  return{l,splitLength,rate,body,house}
+}
+function upJ(){
+  let c=calcJ(),
+      t=tier(c.splitLength),
+      cnt=ji.value==='양개형'?2:1;
+  hq.value=cnt;
+  hd.value=t.d;
+  js.textContent=`${jt.value}/SUS${jm.value}/H${jh.value}`;
+  ja.textContent=ji.value==='양개형'?`총 ${c.l}m → ${c.splitLength}m × 2짝`:`${c.l}m`;
+  jr.textContent=won(c.rate)+'/m';
+  jtotal.textContent=c.house&&c.house.unit===null?'하우스 별도문의':won(c.body.amount+(c.house?c.house.amount:0));
+  hi.textContent=c.house?`하우스 제작기준 ${c.splitLength}m × ${cnt}EA · ${t.r} · 깊이 ${t.d} · ${c.house.unit===null?'별도문의':won(c.house.amount)}`:''
+}
+function addJ(){let c=calcJ();items.push(c.body);if(c.house&&c.house.unit!==null)items.push(c.house);else if(c.house&&c.house.unit===null)toast('17~20m 하우스는 별도문의입니다.');drawList();toast('자바라 추가')}
+function opt(n,p,cls){return `<div class="opt"><label><input class="${cls}" type="checkbox" data-name="${n}" data-price="${p}"> ${n}</label><input class="${cls}q" type="number" value="1" min="1"><small>${won(p)}/개</small></div>`}
+function lTpl(){return `<div class="card"><h2>사다리</h2><p class="desc">로스 적용 시 최소 3m, 1m 단위 올림</p><div class="tabs" id="ltab"><button class="on" data-t="safe">안전망</button><button data-t="bending">밴딩</button><button data-t="straight">일자</button></div><div class="tabs" id="lmat"><button class="on" data-m="201">SUS201</button><button data-m="304">SUS304</button></div><div class="grid g4"><label>주문높이(mm)<input id="lh" type="number"></label><label>수량<input id="lq" type="number" value="1"></label><label>단가<input id="lr" readonly></label><label>본체금액<input id="lb" readonly></label></div><label class="switch" style="margin-top:12px"><input id="loss" type="checkbox" checked> 로스 적용</label><div class="opts">${opt('엘보',5000,'lo')}${opt('빠찌',5000,'lo')}${opt('베이스판',10000,'lo')}${opt('구름다리',80000,'lo')}${opt('시건장치',80000,'lo')}</div><div class="result"><div><small>제품</small><b id="lname"></b></div><div><small>주문/계산</small><b id="llen"></b></div><div><small>옵션</small><b id="lopt"></b></div><div><small>총금액</small><b id="ltotal"></b></div></div><button id="ladd" class="btn primary" style="width:100%">+ 견적목록 추가</button></div>`}
+function bindL(){document.querySelectorAll('#ltab button').forEach(b=>b.onclick=()=>{ladderType=b.dataset.t;document.querySelectorAll('#ltab button').forEach(x=>x.classList.toggle('on',x===b));if(ladderType==='straight'){ladderMat='304';document.querySelector('[data-m="201"]').style.display='none';document.querySelectorAll('#lmat button').forEach(x=>x.classList.toggle('on',x.dataset.m==='304'))}else document.querySelector('[data-m="201"]').style.display='';upL()});document.querySelectorAll('#lmat button').forEach(b=>b.onclick=()=>{ladderMat=b.dataset.m;document.querySelectorAll('#lmat button').forEach(x=>x.classList.toggle('on',x===b));upL()});['lh','lq','loss'].forEach(id=>$(id).oninput=upL);document.querySelectorAll('.lo,.loq').forEach(x=>x.oninput=upL);ladd.onclick=addL;upL()}
+function lens(){let o=(+lh.value||0)/1000;return{o,c:o?(loss.checked?Math.max(3,Math.ceil(o)):o):(loss.checked?3:0)}}
+function lopts(){let total=0,d=[];document.querySelectorAll('.opt').forEach(o=>{let c=o.querySelector('.lo'),q=+o.querySelector('.loq').value||1;if(c.checked){let u=+c.dataset.price;total+=u*q;d.push({name:c.dataset.name,qty:q,unit:u,amount:u*q})}});return{total,d}}
+function upL(){let c=lRates[ladderType],rate=c?.[ladderMat]||0,len=lens(),q=+lq.value||1,o=lopts();lr.value=won(rate)+'/m';lb.value=won(rate*len.c*q);lname.textContent=`${c.label} SUS${ladderMat}`;llen.textContent=`${len.o||0}m/${len.c||0}m`;lopt.textContent=won(o.total);ltotal.textContent=won(rate*len.c*q+o.total)}
+function addL(){let c=lRates[ladderType],rate=c?.[ladderMat]||0,len=lens(),q=+lq.value||1;if(!len.o||!rate)return alert('높이 확인');items.push({name:`${c.label} SUS${ladderMat}`,spec:`주문 ${len.o}m / 계산 ${len.c}m`,qty:q,unit:rate*len.c,amount:rate*len.c*q,note:loss.checked?'로스 적용':'실길이'});lopts().d.forEach(o=>items.push({name:o.name,spec:`${c.label} 옵션`,qty:o.qty,unit:o.unit,amount:o.amount,note:'사다리 옵션'}));drawList();toast('사다리 추가')}
+function hTpl(){return `<div class="card"><h2>핸드레일</h2><p class="desc">파이프 규격과 부속을 별도 표시</p><div id="pipes"></div><button id="padd" class="btn soft">+ 파이프 추가</button><div class="opts">${hopt('엘보',5000)}${hopt('베이스판',10000)}${hopt('브라켓',0)}${hopt('기타 추가금액',0)}</div><div class="grid g3" style="margin-top:12px"><label>포스트수량<input id="pq" type="number" value="0"></label><label>포스트단가<input id="pp" type="number" value="0"></label><label>세트수량<input id="hsq" type="number" value="1"></label></div><label style="margin-top:12px">비고<input id="hn"></label><div class="result"><div><small>종류</small><b id="hk"></b></div><div><small>총길이</small><b id="hl"></b></div><div><small>옵션</small><b id="he"></b></div><div><small>총금액</small><b id="ht"></b></div></div><button id="hadd" class="btn primary" style="width:100%">+ 견적목록 추가</button></div>`}
+function hopt(n,p){return `<div class="opt"><label><input class="ho" type="checkbox" data-name="${n}"> ${n}</label><input class="hoq" type="${n==='기타 추가금액'?'hidden':'number'}" value="1"><input class="hop" type="number" value="${p}"></div>`}
+function bindH(){padd.onclick=addPipe;hadd.onclick=addH;document.querySelectorAll('.ho,.hoq,.hop').forEach(x=>x.oninput=upH);['pq','pp','hsq'].forEach(id=>$(id).oninput=upH);addPipe()}
+function addPipe(){let r=document.createElement('div');r.className='pipe';r.innerHTML=`<label>재질<select class="pm"><option value="201">SUS201</option><option value="304">SUS304</option></select></label><label>형태<select class="ps"><option value="round">원</option><option value="square">사각</option></select></label><label>규격<select class="pz"></select></label><label>두께<select class="pt"></select></label><label>길이<input class="pl" type="number" step=".1"></label><label>원/m<input class="pr" readonly></label><button class="del">×</button>`;pipes.appendChild(r);r.querySelector('.pm').onchange=()=>sizes(r);r.querySelector('.ps').onchange=()=>sizes(r);r.querySelector('.pz').onchange=()=>thicks(r);r.querySelector('.pt').onchange=upH;r.querySelector('.pl').oninput=upH;r.querySelector('.del').onclick=()=>{if(document.querySelectorAll('.pipe').length>1){r.remove();upH()}};sizes(r)}
+function table(r){return prices?.[r.querySelector('.ps').value]?.[r.querySelector('.pm').value]||{}}
+function sizes(r){let t=table(r),s=r.querySelector('.pz');s.innerHTML=Object.keys(t).map(x=>`<option>${x}</option>`).join('');thicks(r)}
+function thicks(r){let t=table(r),z=r.querySelector('.pz').value,s=r.querySelector('.pt');s.innerHTML=Object.keys(t[z]||{}).map(x=>`<option>${x}</option>`).join('');upH()}
+function pcalc(){let amount=0,len=0,parts=[];document.querySelectorAll('.pipe').forEach(r=>{let s=r.querySelector('.ps').value,m=r.querySelector('.pm').value,z=r.querySelector('.pz').value,t=r.querySelector('.pt').value,l=+r.querySelector('.pl').value||0,p=prices?.[s]?.[m]?.[z]?.[t]||0;r.querySelector('.pr').value=won(p);amount+=p*l;len+=l;if(l)parts.push(`SUS${m} ${s==='round'?'원':'사각'} ${z}×${t}T ${l}m`)});return{amount,len,parts}}
+function hextra(){let total=0,d=[];document.querySelectorAll('.opt').forEach(o=>{let c=o.querySelector('.ho');if(!c)return;let q=+o.querySelector('.hoq')?.value||1,u=+o.querySelector('.hop').value||0;if(c.checked){total+=q*u;d.push({name:c.dataset.name,qty:q,unit:u,amount:q*u})}});let q=+pq.value||0,u=+pp.value||0;if(q&&u){total+=q*u;d.push({name:'포스트',qty:q,unit:u,amount:q*u})}return{total,d}}
+function upH(){let p=pcalc(),e=hextra(),q=+hsq.value||1;hk.textContent=document.querySelectorAll('.pipe').length+'종';hl.textContent=p.len.toFixed(2)+'m';he.textContent=won(e.total);ht.textContent=won((p.amount+e.total)*q)}
+function addH(){let p=pcalc(),e=hextra(),q=+hsq.value||1;if(!p.parts.length)return alert('길이 입력');items.push({name:'핸드레일 파이프',spec:p.parts.join(' / '),qty:q,unit:p.amount,amount:p.amount*q,note:hn.value||'파이프 본체'});e.d.forEach(o=>items.push({name:o.name,spec:'핸드레일 추가비용',qty:o.qty*q,unit:o.unit,amount:o.amount*q,note:'핸드레일 옵션'}));drawList();toast('핸드레일 추가')}
+function optionSelect(id,label,options){
+  return `<label>${label}<select id="${id}">${options.map(v=>`<option value="${v}">${v}cm</option>`).join('')}</select></label>`
+}
+function gTpl(){
+  const sizes=Object.keys(alWindow.widthOptions||{}).map(Number).sort((a,b)=>a-b);
+  return `<div class="card">
+    <h2>방범창</h2>
+    <p class="desc">알루미늄 소비자용은 60~220cm 스마트스토어 옵션가격을 적용하고, 221~300cm는 220×220 기준 이후 추가 면적단위당 5,500원의 맞춤견적으로 계산합니다.</p>
+    <div class="tabs" id="gmt">
+      <button class="on" data-m="알루미늄">알루미늄 · 스마트스토어</button>
+      <button data-m="SUS201">SUS201</button>
+      <button data-m="SUS304">SUS304</button>
+    </div>
+
+    <div id="alGuardFields">
+      <div class="tabs" id="alPriceMode">
+        <button class="on" data-mode="consumer">소비자용 · 스마트스토어</button>
+        <button data-mode="business">업체용 · 4,000원 단가</button>
+      </div>
+      <div class="grid g4">
+        <label>가로사이즈(cm)
+          <input id="gw" type="number" min="60" max="300" step="1" value="60" inputmode="numeric" placeholder="60~300">
+        </label>
+        <label>세로사이즈(cm)
+          <input id="gh" type="number" min="60" max="300" step="1" value="60" inputmode="numeric" placeholder="60~300">
+        </label>
+        <label id="assemblyLabel">조립요청
+          <select id="gAssembly">
+            <option value="0">미조립</option>
+            <option value="1">조립 +${won(alWindow.assemblyPrice||0)}</option>
+          </select>
+        </label>
+        <label>수량<input id="gq" type="number" value="1" min="1"></label>
+      </div>
+      <div class="grid g2" style="margin-top:10px">
+        <label>비고<input id="gn"></label>
+        <label>상품페이지
+          <button id="storeProductBtn" type="button" class="btn soft" style="height:41px">스마트스토어 상품보기</button>
+        </label>
+      </div>
+      <div id="consumerPriceNotice" class="notice">
+        소비자용: 60~220cm는 스마트스토어 옵션가격 · 221~300cm는 220×220 기준 이후 추가 면적단위당 5,500원 적용
+      </div>
+      <div id="businessPriceNotice" class="notice hidden">
+        업체용: 가로(mm) × 세로(mm) ÷ 90,000을 올림한 계산칸수 × ${won(alWindow.businessUnitPrice||4000)}
+      </div>
+    </div>
+
+    <div id="susGuardFields" class="hidden">
+      <div class="grid g4">
+        <label id="gswLabel">가로(cm)<input id="gsw" type="number" min="90" max="240" step="1" value="90"></label>
+        <label id="gshLabel">세로(cm)<input id="gsh" type="number" min="90" max="240" step="1" value="90"></label>
+        <label>수량<input id="gsq" type="number" value="1" min="1"></label>
+        <label>비고<input id="gsn"></label>
+      </div>
+      <div id="susPriceNotice" class="notice" style="margin-top:10px"></div>
+    </div>
+
+    <div class="result">
+      <div><small>재질</small><b id="gm"></b></div>
+      <div><small id="gDetailLabel">옵션 추가금</small><b id="gc"></b></div>
+      <div><small>개당 금액</small><b id="gr"></b></div>
+      <div><small>총금액</small><b id="gt"></b></div>
+    </div>
+    <button id="gadd" class="btn primary" style="width:100%">+ 견적목록 추가</button>
+  </div>`
+}
+function bindG(){
+  document.querySelectorAll('#gmt button').forEach(b=>b.onclick=()=>{
+    guardMat=b.dataset.m;
+    document.querySelectorAll('#gmt button').forEach(x=>x.classList.toggle('on',x===b));
+    alGuardFields.classList.toggle('hidden',guardMat!=='알루미늄');
+    susGuardFields.classList.toggle('hidden',guardMat==='알루미늄');
+    configureSusGuardFields();
+    upG()
+  });
+  document.querySelectorAll('#alPriceMode button').forEach(b=>b.onclick=()=>{
+    alPriceType=b.dataset.mode;
+    document.querySelectorAll('#alPriceMode button').forEach(x=>x.classList.toggle('on',x===b));
+    assemblyLabel.classList.toggle('hidden',alPriceType==='business');
+    consumerPriceNotice.classList.toggle('hidden',alPriceType!=='consumer');
+    businessPriceNotice.classList.toggle('hidden',alPriceType!=='business');
+    upG()
+  });
+  ['gw','gh','gAssembly','gq'].forEach(id=>$(id).oninput=upG);
+  ['gsw','gsh','gsq'].forEach(id=>$(id).oninput=upG);
+  storeProductBtn.onclick=()=>window.open(alWindow.productUrl,'_blank');
+  gadd.onclick=addG;
+  configureSusGuardFields();
+  upG()
+}
+
+const sus304UnitPrice=1000;
+const sus304QtyTable=[
+  [63,70,77,84,91,98,105,112,119,126,133,140,147,154,161,168,175,182,189,196,203,210],
+  [70,78,86,93,101,109,117,124,132,140,148,156,163,171,179,187,194,202,210,218,226,233],
+  [77,86,94,103,111,120,128,137,145,154,163,171,180,188,197,205,214,222,231,240,248,257],
+  [84,93,103,112,121,131,140,149,159,168,177,187,196,205,215,224,233,243,252,261,271,280],
+  [91,101,111,121,131,142,152,162,172,182,192,202,212,222,233,243,253,263,273,283,293,303],
+  [98,109,120,131,142,152,163,174,185,196,207,218,229,240,250,261,272,283,294,305,316,327],
+  [105,117,128,140,152,163,175,187,198,210,222,233,245,257,268,280,292,303,315,327,338,350],
+  [112,124,137,149,162,174,187,199,212,224,236,249,261,274,286,299,311,324,336,348,361,373],
+  [119,132,145,159,172,185,198,212,225,238,251,264,278,291,304,317,331,344,357,370,383,397],
+  [126,140,154,168,182,196,210,224,238,252,266,280,294,308,322,336,350,364,378,392,406,420],
+  [133,148,163,177,192,207,222,236,251,266,281,296,310,325,340,355,369,384,399,414,429,443],
+  [140,156,171,187,202,218,233,249,264,280,296,311,327,342,358,373,389,404,420,436,451,467],
+  [147,163,180,196,212,229,245,261,278,294,310,327,343,359,376,392,408,425,441,457,474,490],
+  [154,171,188,205,222,240,257,274,291,308,325,342,359,376,394,411,428,445,462,479,496,513],
+  [161,179,197,215,233,250,268,286,304,322,340,358,376,394,411,429,447,465,483,501,519,537],
+  [168,187,205,224,243,261,280,299,317,336,355,373,392,411,429,448,467,485,504,523,541,560],
+  [175,194,214,233,253,272,292,311,331,350,369,389,408,428,447,467,486,506,525,544,564,583],
+  [182,202,222,243,263,283,303,324,344,364,384,404,425,445,465,485,506,526,546,566,586,607],
+  [189,210,231,252,273,294,315,336,357,378,399,420,441,462,483,504,525,546,567,588,609,630],
+  [196,218,240,261,283,305,327,348,370,392,414,436,457,479,501,523,544,566,588,610,632,653],
+  [203,226,248,271,293,316,338,361,383,406,429,451,474,496,519,541,564,586,609,632,654,677],
+  [210,233,257,280,303,327,350,373,397,420,443,467,490,513,537,560,583,607,630,653,677,700]
+];
+function sus304Band(value){
+  const v=Number(value)||0;
+  if(v<=0||v>3000) return -1;
+  if(v<=900) return 0;
+  return Math.ceil((v-900)/100);
+}
+function configureSusGuardFields(){
+  if(!document.getElementById('gsw')) return;
+  if(guardMat==='SUS201'){
+    gswLabel.childNodes[0].nodeValue='가로(mm)';
+    gshLabel.childNodes[0].nodeValue='세로(mm)';
+    gsw.min=gsh.min=1; gsw.max=gsh.max=3000; gsw.step=gsh.step=1;
+    if(+gsw.value<1||+gsw.value>3000) gsw.value=900;
+    if(+gsh.value<1||+gsh.value>3000) gsh.value=900;
+    susPriceNotice.textContent='SUS201: 2200mm 이하는 스마트스토어 옵션가, 초과 시 대형 표 계산 (최대 3000mm)';
+  }else if(guardMat==='SUS304'){
+    gswLabel.childNodes[0].nodeValue='가로(mm)';
+    gshLabel.childNodes[0].nodeValue='세로(mm)';
+    gsw.min=gsh.min=1; gsw.max=gsh.max=10000; gsw.step=gsh.step=1;
+    if(+gsw.value<300) gsw.value=900;
+    if(+gsh.value<300) gsh.value=900;
+    susPriceNotice.textContent='SUS304: 가로·세로 표의 교차 수량 × 1,000원 (최대 3000mm)';
+  }
+}
+
+function exactAluminumSize(value){
+  const number=Number(value);
+  if(!Number.isInteger(number)) return null;
+  const min=alWindow.minSizeCm||60,
+        max=alWindow.maxSizeCm||300;
+  if(number<min||number>max) return null;
+  return number
+}
+function gcalc(){
+  if(guardMat==='알루미늄'){
+    const rawW=gw.value,
+          rawH=gh.value,
+          w=exactAluminumSize(rawW),
+          h=exactAluminumSize(rawH),
+          q=Math.max(1,+gq.value||1),
+          valid=w!==null&&h!==null;
+    if(alPriceType==='business'){
+      const businessW=Number(rawW)||0,
+            businessH=Number(rawH)||0,
+            widthMm=businessW*10,
+            heightMm=businessH*10,
+            cells=businessW&&businessH?Math.ceil((widthMm*heightMm)/90000):0,
+            rate=alWindow.businessUnitPrice||4000,
+            unit=cells*rate;
+      return{
+        mode:'business',w:businessW,h:businessH,q,cells,rate,
+        valid:businessW>0&&businessH>0,
+        unit,amount:unit*q,note:gn.value
+      }
+    }
+    if(!valid){
+      return{
+        mode:'smartstore',w:Number(rawW)||0,h:Number(rawH)||0,q,
+        valid:false,cells:0,baseCells:4,extraCells:0,areaExtra:0,assembly:0,
+        unit:0,amount:0,note:gn.value
+      }
+    }
+    const cells=Math.ceil((w*h)/900),
+          baseCells=alWindow.baseCells||4,
+          extraCells=Math.max(0,cells-baseCells),
+          smartMax=alWindow.smartStoreMaxSizeCm||220,
+          isStoreOption=w<=smartMax&&h<=smartMax,
+          widthExtra=isStoreOption?(alWindow.widthOptions?.[String(w)]||0):0,
+          heightExtra=isStoreOption?(alWindow.heightOptions?.[String(h)]||0):0,
+          standardAreaTotal=(alWindow.basePrice||14000)+(extraCells*(alWindow.standardConsumerUnitPrice||4500)),
+          boundaryW=Math.min(w,smartMax),
+          boundaryH=Math.min(h,smartMax),
+          boundaryCells=Math.ceil((boundaryW*boundaryH)/900),
+          boundaryWidthExtra=alWindow.widthOptions?.[String(boundaryW)]||0,
+          boundaryHeightExtra=alWindow.heightOptions?.[String(boundaryH)]||0,
+          boundaryPrice=(alWindow.basePrice||14000)+boundaryWidthExtra+boundaryHeightExtra,
+          addedLargeCells=Math.max(0,cells-boundaryCells),
+          largeAreaTotal=boundaryPrice+(addedLargeCells*(alWindow.consumerUnitPrice||5500)),
+          customAreaTotal=Math.max(standardAreaTotal,largeAreaTotal),
+          areaExtra=isStoreOption?(widthExtra+heightExtra):(customAreaTotal-(alWindow.basePrice||14000)),
+          assembly=gAssembly.value==='1'?(alWindow.assemblyPrice||0):0,
+          unit=(alWindow.basePrice||14000)+areaExtra+assembly;
+    return{
+      mode:'smartstore',w,h,q,valid:true,
+      cells,baseCells,extraCells,areaExtra,assembly,isStoreOption,widthExtra,heightExtra,
+      unit,amount:unit*q,
+      note:gn.value
+    }
+  }
+  const w=+gsw.value||0,
+        h=+gsh.value||0,
+        q=Math.max(1,+gsq.value||1);
+  if(guardMat==='SUS201'){
+    const row=sus304Band(h),
+          col=sus304Band(w),
+          valid=row>=0&&col>=0,
+          rowUpper=valid?(row===0?900:900+(row*100)):0,
+          colUpper=valid?(col===0?900:900+(col*100)):0,
+          tableQty=valid?Math.round((rowUpper*colUpper*6)/90000):0,
+          unitPrice=1000,
+          smartMaxMm=2200,
+          useSmartStore=valid&&w<=smartMaxMm&&h<=smartMaxMm,
+          widthCm=Math.max(90,Math.min(220,Math.ceil(w/10))),
+          heightCm=Math.max(90,Math.min(220,Math.ceil(h/10))),
+          widthOptionCm=Math.max(90,Math.floor(widthCm/10)*10),
+          smartBase=sus201Data?.basePrice||54400,
+          widthExtra=sus201Data?.widthOptions?.[String(widthOptionCm)]||0,
+          heightExtra=sus201Data?.heightOptions?.[String(heightCm)]||0,
+          smartUnit=smartBase+widthExtra+heightExtra,
+          boundaryWidthCm=Math.max(90,Math.min(220,Math.ceil(Math.min(w,smartMaxMm)/10))),
+          boundaryHeightCm=Math.max(90,Math.min(220,Math.ceil(Math.min(h,smartMaxMm)/10))),
+          boundaryWidthOptionCm=Math.max(90,Math.floor(boundaryWidthCm/10)*10),
+          boundarySmartUnit=smartBase+
+            (sus201Data?.widthOptions?.[String(boundaryWidthOptionCm)]||0)+
+            (sus201Data?.heightOptions?.[String(boundaryHeightCm)]||0),
+          tableUnit=valid?tableQty*unitPrice:0,
+          unit=valid?(useSmartStore?smartUnit:Math.max(tableUnit,boundarySmartUnit)):0,
+          priceMode=useSmartStore?'smartstore':'large';
+    return{mode:'sus201',priceMode,w,h,q,valid,row,col,rowUpper,colUpper,tableQty,unitPrice,unit,amount:unit*q,note:gsn.value,widthCm,heightCm,widthOptionCm,widthExtra,heightExtra,smartBase,smartUnit,tableUnit,boundarySmartUnit}
+  }
+  const row=sus304Band(h),
+        col=sus304Band(w),
+        valid=row>=0&&col>=0,
+        tableQty=valid?sus304QtyTable[row][col]:0,
+        unit=valid?tableQty*sus304UnitPrice:0;
+  return{mode:'sus304',w,h,q,valid,row,col,tableQty,unitPrice:sus304UnitPrice,unit,amount:unit*q,note:gsn.value}
+}
+function upG(){
+  const c=gcalc();
+  gm.textContent=guardMat;
+  if(c.mode==='smartstore'){
+    gDetailLabel.textContent=c.valid?(c.isStoreOption?'옵션 추가금':'맞춤 추가금'):'입력 확인';
+    gc.textContent=c.valid?(c.isStoreOption?`가로 ${won(c.widthExtra)} + 세로 ${won(c.heightExtra)}${c.assembly?' + 조립 '+won(c.assembly):''}`:`${c.cells}단위 · 대형 맞춤단가 ${won(c.areaExtra+c.assembly)}`):'60~300cm 정수';
+    gr.textContent=c.valid?won(c.unit):'계산 불가';
+    gt.textContent=c.valid?won(c.amount):'계산 불가'
+  }else if(c.mode==='business'){
+    gDetailLabel.textContent='계산칸수';
+    gc.textContent=c.cells+'칸';
+    gr.textContent=won(c.unit);
+    gt.textContent=won(c.amount)
+  }else if(c.mode==='sus201'){
+    gDetailLabel.textContent=c.valid?(c.priceMode==='smartstore'?'스마트스토어 옵션가':'대형 맞춤 계산'):'입력 확인';
+    gc.textContent=c.valid?(c.priceMode==='smartstore'?`기본 ${won(c.smartBase)} + 가로${c.widthOptionCm} ${won(c.widthExtra)} + 세로${c.heightCm} ${won(c.heightExtra)}`:`표 ${c.tableQty} × ${won(c.unitPrice)} · 2200 기준 최저가 ${won(c.boundarySmartUnit)}`):'1~3000mm';
+    gr.textContent=c.valid?won(c.unit):'계산 불가';
+    gt.textContent=c.valid?won(c.amount):'계산 불가'
+  }else if(c.mode==='sus304'){
+    gDetailLabel.textContent=c.valid?'표 적용 수량':'입력 확인';
+    gc.textContent=c.valid?`${c.tableQty} × ${won(c.unitPrice)}`:'1~3000mm';
+    gr.textContent=c.valid?won(c.unit):'계산 불가';
+    gt.textContent=c.valid?won(c.amount):'계산 불가'
+  }
+}
+function addG(){
+  const c=gcalc();
+  if(c.mode==='smartstore'&&!c.valid){
+    return alert('소비자용은 가로와 세로를 60~300cm 사이의 정수로 정확히 입력해주세요. 예: 123');
+  }
+  if(!c.w||!c.h)return alert('규격을 입력해주세요.');
+  if(c.mode==='smartstore'){
+    const assemblyText=c.assembly?'조립':'미조립',
+          priceTypeText=c.isStoreOption?'스마트스토어 옵션가':'221~300cm 맞춤견적';
+    items.push({
+      name:'알루미늄 방범창 · 소비자용',
+      spec:`가로 ${c.w}cm × 세로 ${c.h}cm / ${priceTypeText} / ${assemblyText}`,
+      qty:c.q,
+      unit:c.unit,
+      amount:c.amount,
+      note:c.note||(c.isStoreOption?`기본 14,000원 + 가로옵션 ${won(c.widthExtra)} + 세로옵션 ${won(c.heightExtra)}`:`기본 14,000원 + 면적 ${c.extraCells}단위 추가`)
+    })
+  }else if(c.mode==='business'){
+    items.push({
+      name:'알루미늄 방범창 · 업체용',
+      spec:`${c.w*10}×${c.h*10}mm / ${c.cells}칸 × ${won(c.rate)}`,
+      qty:c.q,
+      unit:c.unit,
+      amount:c.amount,
+      note:c.note||'업체용 단가 적용'
+    })
+  }else if(c.mode==='sus201'){
+    if(!c.valid) return alert('SUS201은 가로·세로를 1~3000mm 범위로 입력해주세요.');
+    items.push({
+      name:'스텐 201 방범창',
+      spec:c.priceMode==='smartstore'?`${c.w}×${c.h}mm / 스마트스토어 옵션가`:`${c.w}×${c.h}mm / 2200mm 초과 대형 맞춤`,
+      qty:c.q,
+      unit:c.unit,
+      amount:c.amount,
+      note:c.note||(c.priceMode==='smartstore'?`기본 ${won(c.smartBase)} + 가로${c.widthOptionCm} ${won(c.widthExtra)} + 세로${c.heightCm} ${won(c.heightExtra)}`:`표 수량 ${c.tableQty} × 1,000원, 2200mm 기준금액보다 낮지 않게 적용`)
+    })
+  }else if(c.mode==='sus304'){
+    if(!c.valid) return alert('SUS304는 가로·세로를 1~3000mm 범위로 입력해주세요.');
+    items.push({
+      name:'스텐 304 방범창',
+      spec:`${c.w}×${c.h}mm / 표 수량 ${c.tableQty}`, 
+      qty:c.q,
+      unit:c.unit,
+      amount:c.amount,
+      note:c.note||`표 수량 ${c.tableQty} × 1,000원`
+    })
+  }
+  drawList();
+  toast('방범창 추가')
+}
+function totalsCalc(){
+  const raw=items.reduce((a,b)=>a+b.amount,0),
+        rate=Math.max(0,Math.min(100,+discountRate.value||0)),
+        discount=Math.round(raw*rate/100),
+        supply=Math.max(0,raw-discount),
+        vatApplied=!!vatApply.checked,
+        tax=vatApplied?Math.round(supply*0.1):0,
+        total=supply+tax;
+  return{raw,rate,discount,supply,tax,total,vatApplied}
+}
+
+function lexanApplied(arr,val){
+  for(const v of arr) if(val<=v) return v;
+  return null
+}
+function lexanUnitPrice(th,bw,bh){
+  const x=lexanData.widths.indexOf(bw),y=lexanData.heights.indexOf(bh);
+  return x<0||y<0?null:lexanData.prices[th][y][x]
+}
+function lexanTpl(){
+  return `<div class="card">
+    <h2>렉산 판재</h2>
+    <p class="desc">입력 사이즈보다 큰 원판 규격을 적용합니다. 배송비는 착불입니다.</p>
+    <div class="tabs" id="lexanThicknessTabs">
+      ${(lexanData.thicknesses||[]).map(v=>`<button class="${v===lexanThickness?'on':''}" data-v="${v}">${v}</button>`).join('')}
+    </div>
+    <div class="tabs" id="lexanColorTabs">
+      ${(lexanData.colors||[]).map(v=>`<button class="${v===lexanColor?'on':''}" data-v="${v}">${v}</button>`).join('')}
+    </div>
+    <div class="grid g4">
+      <label>가로(mm)<input id="lexW" type="number" min="1"></label>
+      <label>세로(mm)<input id="lexH" type="number" min="1"></label>
+      <label>수량<input id="lexQty" type="number" value="1" min="1"></label>
+      <label>비고<input id="lexNote"></label>
+    </div>
+    <div class="result">
+      <div><small>입력 사이즈</small><b id="lexInput">-</b></div>
+      <div><small>적용 원판</small><b id="lexBoard">-</b></div>
+      <div><small>장당 금액</small><b id="lexUnit">0원</b></div>
+      <div><small>총금액</small><b id="lexTotal">0원</b></div>
+    </div>
+    <div id="lexGuide" class="notice">가로와 세로를 입력해주세요.</div>
+    <button id="lexAdd" class="btn primary" style="width:100%">+ 견적목록 추가</button>
+  </div>`
+}
+function bindLexan(){
+  document.querySelectorAll('#lexanThicknessTabs button').forEach(b=>b.onclick=()=>{
+    lexanThickness=b.dataset.v;
+    document.querySelectorAll('#lexanThicknessTabs button').forEach(x=>x.classList.toggle('on',x===b));
+    upLexan()
+  });
+  document.querySelectorAll('#lexanColorTabs button').forEach(b=>b.onclick=()=>{
+    lexanColor=b.dataset.v;
+    document.querySelectorAll('#lexanColorTabs button').forEach(x=>x.classList.toggle('on',x===b));
+    upLexan()
+  });
+  ['lexW','lexH','lexQty'].forEach(id=>$(id).oninput=upLexan);
+  lexAdd.onclick=addLexan;
+  upLexan()
+}
+function lexanCalc(){
+  const w=+lexW.value||0,h=+lexH.value||0,qty=Math.max(1,+lexQty.value||1),
+        boardW=w?lexanApplied(lexanData.widths,w):null,
+        boardH=h?lexanApplied(lexanData.heights,h):null,
+        unit=boardW&&boardH?lexanUnitPrice(lexanThickness,boardW,boardH):0,
+        usage=boardW&&boardH?Math.min(100,(w*h)/(boardW*boardH)*100):0;
+  return{w,h,qty,boardW,boardH,unit,total:unit*qty,usage,note:lexNote.value}
+}
+function upLexan(){
+  const c=lexanCalc();
+  lexInput.textContent=c.w&&c.h?`${c.w}×${c.h}mm`:'-';
+  if(c.w&&c.h&&!c.boardW){
+    lexBoard.textContent='규격 초과';
+    lexUnit.textContent='별도문의';
+    lexTotal.textContent='별도문의';
+    lexGuide.textContent='기본 원판 규격을 초과했습니다. 별도 문의가 필요합니다.';
+    return
+  }
+  lexBoard.textContent=c.boardW?`${c.boardW}×${c.boardH}mm`:'-';
+  lexUnit.textContent=won(c.unit);
+  lexTotal.textContent=won(c.total);
+  lexGuide.textContent=c.boardW?`원판 사용률 ${c.usage.toFixed(1)}% · ${lexanThickness} · ${lexanColor} · 배송비 착불`:'가로와 세로를 입력해주세요.'
+}
+function addLexan(){
+  const c=lexanCalc();
+  if(!c.w||!c.h)return alert('가로와 세로를 입력해주세요.');
+  if(!c.boardW||!c.boardH)return alert('기본 원판 규격을 초과했습니다. 별도 문의가 필요합니다.');
+  items.push({
+    name:'렉산 판재',
+    spec:`${lexanThickness} / ${lexanColor} / 주문 ${c.w}×${c.h}mm / 원판 ${c.boardW}×${c.boardH}mm`,
+    qty:c.qty,
+    unit:c.unit,
+    amount:c.total,
+    note:c.note||'배송비 착불'
+  });
+  drawList();toast('렉산 견적을 추가했습니다.')
+}
+
+function securityTpl(){
+  return `<div class="card">
+    <h2>방범창 자바라</h2>
+    <p class="desc">가로×세로÷90,000 후 반올림하며 최소 20평을 적용합니다.</p>
+    <div class="tabs" id="secProductTabs">
+      ${(securityData.products||[]).map(v=>`<button class="${v.name===securityProduct?'on':''}" data-v="${v.name}">${v.name}</button>`).join('')}
+    </div>
+    <div class="tabs" id="secOpeningTabs">
+      ${(securityData.openings||[]).map(v=>`<button class="${v===securityOpening?'on':''}" data-v="${v}">${v}</button>`).join('')}
+    </div>
+    <div class="tabs" id="secColorTabs">
+      ${(securityData.colors||[]).map(v=>`<button class="${v===securityColor?'on':''}" data-v="${v}">${v}</button>`).join('')}
+    </div>
+    <div class="grid g4">
+      <label>가로(mm)<input id="secW" type="number" min="1"></label>
+      <label>세로(mm)<input id="secH" type="number" min="1"></label>
+      <label>수량<input id="secQty" type="number" value="1" min="1"></label>
+      <label>비고<input id="secNote"></label>
+    </div>
+    <div class="result">
+      <div><small>계산 평수</small><b id="secRaw">0평</b></div>
+      <div><small>적용 평수</small><b id="secApplied">20평</b></div>
+      <div><small>개당 금액</small><b id="secUnit">0원</b></div>
+      <div><small>총금액</small><b id="secTotal">0원</b></div>
+    </div>
+    <div id="secGuide" class="notice">가로와 세로를 입력해주세요.</div>
+    <button id="secAdd" class="btn primary" style="width:100%">+ 견적목록 추가</button>
+  </div>`
+}
+function bindSecurity(){
+  document.querySelectorAll('#secProductTabs button').forEach(b=>b.onclick=()=>{
+    securityProduct=b.dataset.v;document.querySelectorAll('#secProductTabs button').forEach(x=>x.classList.toggle('on',x===b));upSecurity()
+  });
+  document.querySelectorAll('#secOpeningTabs button').forEach(b=>b.onclick=()=>{
+    securityOpening=b.dataset.v;document.querySelectorAll('#secOpeningTabs button').forEach(x=>x.classList.toggle('on',x===b));upSecurity()
+  });
+  document.querySelectorAll('#secColorTabs button').forEach(b=>b.onclick=()=>{
+    securityColor=b.dataset.v;document.querySelectorAll('#secColorTabs button').forEach(x=>x.classList.toggle('on',x===b));upSecurity()
+  });
+  ['secW','secH','secQty'].forEach(id=>$(id).oninput=upSecurity);
+  secAdd.onclick=addSecurity;upSecurity()
+}
+function securityCalc(){
+  const w=+secW.value||0,h=+secH.value||0,qty=Math.max(1,+secQty.value||1),
+        calcW=Math.max(w,h),calcH=Math.min(w,h),
+        raw=w&&h?(calcW*calcH)/(securityData.divisor||90000):0,
+        rounded=Math.round(raw),
+        applied=w&&h?Math.max(securityData.minPyeong||20,rounded):(securityData.minPyeong||20),
+        product=(securityData.products||[]).find(x=>x.name===securityProduct)||securityData.products?.[0]||{rate:0},
+        rate=product.rate||0,unit=w&&h?applied*rate:0;
+  return{w,h,calcW,calcH,qty,raw,applied,rate,unit,total:unit*qty,note:secNote.value}
+}
+function upSecurity(){
+  const c=securityCalc();
+  secRaw.textContent=c.w&&c.h?`${c.raw.toFixed(1)}평`:'0평';
+  secApplied.textContent=c.w&&c.h?`${c.applied}평`:`${securityData.minPyeong||20}평`;
+  secUnit.textContent=won(c.unit);
+  secTotal.textContent=won(c.total);
+  secGuide.textContent=c.w&&c.h
+    ?`${securityProduct} · ${securityOpening} · ${securityColor} · ${won(c.rate)}/평${Math.round(c.raw)<(securityData.minPyeong||20)?' · 최소 20평 적용':''}`
+    :'가로와 세로를 입력해주세요.'
+}
+function addSecurity(){
+  const c=securityCalc();
+  if(!c.w||!c.h)return alert('가로와 세로를 입력해주세요.');
+  items.push({
+    name:securityProduct,
+    spec:`${securityOpening} / ${securityColor} / ${c.w}×${c.h}mm / ${c.applied}평`,
+    qty:c.qty,
+    unit:c.unit,
+    amount:c.total,
+    note:c.note||'운임·시공비 별도'
+  });
+  drawList();toast('방범창 자바라 견적을 추가했습니다.')
+}
+
+function drawList(){
+  count.textContent=items.length;
+  qlist.innerHTML=items.length
+    ?items.map((x,i)=>`<div class="qi"><div class="qihead"><div><h4>${x.name}</h4><p>${x.spec}</p></div><b>${won(x.amount)}</b></div><div class="qiact"><button onclick="copyI(${i})">복사</button> <button onclick="delI(${i})">삭제</button></div></div>`).join('')
+    :`<div class="empty">제품을 계산한 후<br><b>견적목록 추가</b>를 눌러주세요.</div>`;
+  const t=totalsCalc();
+  rawSub.textContent=won(t.raw);
+  discountAmount.textContent='-'+won(t.discount);
+  sub.textContent=won(t.supply);
+  vat.textContent=won(t.tax);
+  vatLabel.textContent=t.vatApplied?'부가세 (10%)':'부가세 (미적용)';
+  grand.textContent=won(t.total)
+}
+window.copyI=i=>{items.splice(i+1,0,{...items[i]});drawList()};window.delI=i=>{items.splice(i,1);drawList()}
+function addExtra(){let n=extraName.value.trim(),a=+extraAmount.value||0;if(!n||!a)return alert('비용 입력');items.push({name:n,spec:'기타 비용',qty:1,unit:a,amount:a,note:extraNote.value});extraModal.classList.add('hidden');extraName.value=extraAmount.value=extraNote.value='';drawList()}
+async function copyCustomerMessage(){
+  const t=totalsCalc();
+  const total=won(t.total);
+  const name=company.value.trim();
+  const discountLine=t.rate>0?`할인율: ${t.rate}%\n할인금액: ${won(t.discount)}\n`:'';
+  const message=`안녕하세요${name?` ${name} 고객님`:''}, 강동자바라입니다.
+
+요청하신 견적을 안내드립니다.
+${discountLine}견적금액: ${total} (${t.vatApplied?'부가세 포함':'부가세 미적용'})
+
+본 견적은 실제 실측, 현장 조건, 배송 및 시공 여부에 따라 변경될 수 있습니다.
+확인 후 궁금하신 사항은 언제든 문의해 주세요.
+감사합니다.`;
+  try{
+    await navigator.clipboard.writeText(message);
+    toast('고객 안내문을 복사했습니다.');
+  }catch(e){
+    prompt('아래 내용을 복사해 주세요.',message);
+  }
+}
+async function copyDetailedQuoteMessage(){
+  if(!items.length)return alert('견적 항목이 없습니다.');
+  const t=totalsCalc();
+  const name=company.value.trim();
+  const lines=items.map((x,i)=>{
+    const note=x.note?` / 비고: ${x.note}`:'';
+    return `${i+1}. ${x.name}\n   규격: ${x.spec}\n   수량: ${x.qty} / 단가: ${won(x.unit)} / 금액: ${won(x.amount)}${note}`;
+  }).join('\n\n');
+  const discountLine=t.rate>0?`\n할인율: ${t.rate}%\n할인금액: -${won(t.discount)}`:'';
+  const customerLine=[
+    company.value.trim()?`고객명: ${company.value.trim()}`:'',
+    manager.value.trim()?`담당자: ${manager.value.trim()}`:'',
+    site.value.trim()?`현장명: ${site.value.trim()}`:''
+  ].filter(Boolean).join(' / ');
+  const message=`안녕하세요${name?` ${name} 고객님`:''}, 강동자바라입니다.\n\n요청하신 견적 내용을 안내드립니다.\n${customerLine?customerLine+'\n':''}견적일자: ${date.value}\n\n[견적 내용]\n${lines}\n\n상품 합계: ${won(t.raw)}${discountLine}\n공급가액: ${won(t.supply)}\n부가세: ${won(t.tax)}\n최종 견적금액: ${won(t.total)} (${t.vatApplied?'부가세 포함':'부가세 미적용'})\n\n※ 실제 실측, 현장 조건, 배송 및 시공 여부에 따라 금액이 변경될 수 있습니다.\n※ 배송비·시공비가 별도인 항목은 비고 내용을 확인해 주세요.\n\n감사합니다.`;
+  try{
+    await navigator.clipboard.writeText(message);
+    toast('견적내용 메시지를 복사했습니다.');
+  }catch(e){
+    prompt('아래 내용을 복사해 주세요.',message);
+  }
+}
+
+function resetAll(){if(items.length&&!confirm('초기화할까요?'))return;items=[];['company','manager','phone','email','site','consultMemo'].forEach(id=>$(id).value='');consultStatus.value='신규';discountRate.value=0;vatApply.checked=false;drawList();render('dash')}
+function saveNow(){let n=prompt('견적 이름',`${company.value||'고객'}_${date.value}`);if(!n)return;let a=JSON.parse(localStorage.getItem('kd-erp')||'[]');a.unshift({id:Date.now(),name:n,cust:getCust(),items,discountRate:+discountRate.value||0,vatApplied:vatApply.checked,when:new Date().toLocaleString('ko-KR')});localStorage.setItem('kd-erp',JSON.stringify(a.slice(0,100)));toast('저장 완료')}
+function openSaved(){let a=JSON.parse(localStorage.getItem('kd-erp')||'[]');savedList.innerHTML=a.length?a.map(x=>`<div class="qi"><div class="qihead"><div><h4>${x.name}</h4><p>${x.when}</p></div><div><button onclick="loadS(${x.id})">불러오기</button> <button onclick="rmS(${x.id})">삭제</button></div></div></div>`).join(''):`<div class="empty">저장된 견적 없음</div>`;savedModal.classList.remove('hidden')}
+window.loadS=id=>{let x=JSON.parse(localStorage.getItem('kd-erp')||'[]').find(y=>y.id===id);if(x){setCust(x.cust);items=x.items||[];discountRate.value=x.discountRate||0;vatApply.checked=!!x.vatApplied;drawList();savedModal.classList.add('hidden')}};window.rmS=id=>{let a=JSON.parse(localStorage.getItem('kd-erp')||'[]').filter(x=>x.id!==id);localStorage.setItem('kd-erp',JSON.stringify(a));openSaved()}
+function getCust(){return{date:date.value,company:company.value,manager:manager.value,phone:phone.value,email:email.value,site:site.value,consultStatus:consultStatus.value,consultMemo:consultMemo.value}}function setCust(c){Object.keys(c).forEach(k=>{if($(k))$(k).value=c[k]||''})}
+let docSetupType='order',docInputMode='import';
+function openDocSetup(type){
+  docSetupType=type;docSetupTitle.textContent=type==='order'?'발주서 작성':'거래명세서 작성';
+  docPartyLabel.childNodes[0].nodeValue=type==='order'?'수신처(업체명)':'공급받는자';
+  docSiteLabel.childNodes[0].nodeValue=type==='order'?'납품처':'납품장소';
+  docParty.value=company.value||'';docManager.value=manager.value||'';docPhone.value=phone.value||'';docSite.value=site.value||'';docNote.value=consultMemo.value||'';
+  docNumber.value=`${(date.value||new Date().toISOString().slice(0,10)).replaceAll('-','')}-${String(Date.now()).slice(-4)}`;
+  setDocMode('import');docSetupModal.classList.remove('hidden');
+}
+function setDocMode(mode){
+  docInputMode=mode;docImportMode.classList.toggle('on',mode==='import');docManualMode.classList.toggle('on',mode==='manual');manualDocItems.innerHTML='';
+  if(mode==='import'){
+    if(items.length)items.forEach(x=>addManualDocRow({name:`${x.name} / ${x.spec}`,qty:x.qty,unit:x.unit,amount:x.amount,note:x.note||''}));
+    else addManualDocRow();
+  }else addManualDocRow();
+}
+function addManualDocRow(v={}){
+  const r=document.createElement('div');r.className='manual-doc-row';
+  r.innerHTML=`<label>품목명(규격)<input class="di-name" value="${String(v.name||'').replaceAll('"','&quot;')}"></label><label>수량<input class="di-qty" type="number" min="0" step="1" value="${v.qty??1}"></label><label>단가<input class="di-unit" type="number" min="0" step="1" value="${v.unit??0}"></label><label>금액<input class="di-amount" type="number" min="0" step="1" value="${v.amount??0}"></label><label>요청메모<input class="di-note" value="${String(v.note||'').replaceAll('"','&quot;')}"></label><button class="remove-row" type="button">×</button>`;
+  const q=r.querySelector('.di-qty'),u=r.querySelector('.di-unit'),a=r.querySelector('.di-amount');
+  const calc=()=>{a.value=Math.round((+q.value||0)*(+u.value||0))};q.oninput=calc;u.oninput=calc;r.querySelector('.remove-row').onclick=()=>{if(manualDocItems.children.length>1)r.remove()};manualDocItems.appendChild(r);
+}
+function collectSimpleDocItems(){
+  return [...manualDocItems.querySelectorAll('.manual-doc-row')].map(r=>({name:r.querySelector('.di-name').value.trim(),qty:+r.querySelector('.di-qty').value||0,unit:+r.querySelector('.di-unit').value||0,amount:+r.querySelector('.di-amount').value||0,note:r.querySelector('.di-note').value.trim()})).filter(x=>x.name);
+}
+function numberToKoreanAmount(num){
+  const units=['','만','억','조'];
+  const small=['','십','백','천'];
+  const digit=['','일','이','삼','사','오','육','칠','팔','구'];
+  if(!num)return '영원';
+  let n=Math.floor(num),parts=[],u=0;
+  while(n>0){
+    const chunk=n%10000;n=Math.floor(n/10000);
+    if(chunk){let text='';for(let i=0,c=chunk;c>0;i++,c=Math.floor(c/10)){const d=c%10;if(d)text=digit[d]+small[i]+text}parts.unshift(text+units[u])}
+    u++;
+  }
+  return parts.join('')+'원';
+}
+function generateSimpleDocument(){
+  const rows=collectSimpleDocItems();if(!rows.length)return alert('품목을 입력해 주세요.');
+  currentDocumentType=docSetupType;
+  const isOrder=docSetupType==='order';
+  const total=rows.reduce((a,x)=>a+x.amount,0);
+  const qtyTotal=rows.reduce((a,x)=>a+x.qty,0);
+  const vatOn=vatApply.checked;
+  const supply=vatOn?Math.round(total/1.1):total;
+  const tax=vatOn?total-supply:0;
+  const today=date.value||new Date().toISOString().slice(0,10);
+  const docTitle=isOrder?'발주서':'거래명세서';
+  const recipientTitle=isOrder?'수신처':'공급받는자';
+  const party=docParty.value||company.value||'';
+  const siteText=docSite.value||'';
+  const managerText=[docManager.value,docPhone.value].filter(Boolean).join(' / ');
+  const rowsHtml=rows.map(x=>isOrder
+    ?`<tr><td>${today.slice(5).replace('-','/')}</td><td class="left">${x.name}</td><td>${x.qty}</td><td class="left">${x.note||''}</td></tr>`
+    :`<tr><td>${today.slice(5).replace('-','/')}</td><td class="left">${x.name}</td><td>${x.qty}</td><td>${x.unit.toLocaleString()}</td><td>${x.amount.toLocaleString()}</td><td>${vatOn?Math.round(x.amount/11).toLocaleString():'0'}</td></tr>`
+  ).join('');
+  const blankCount=Math.max(0,7-rows.length);
+  const blanks=Array.from({length:blankCount},()=>isOrder
+    ?'<tr><td>&nbsp;</td><td></td><td></td><td></td></tr>'
+    :'<tr><td>&nbsp;</td><td></td><td></td><td></td><td></td><td></td></tr>').join('');
+  sheet.className='simple-document';
+  sheet.innerHTML=`
+    <div class="doc-number">문서번호 ${docNumber.value||''}</div>
+    <div class="doc-top"><h1>${docTitle}</h1><div class="doc-top-line"></div></div>
+    <div class="doc-party-area">
+      <div class="recipient-card">
+        <div class="label">${recipientTitle}</div>
+        <div class="content"><strong>${party||'-'}</strong><br>${siteText||'-'}<br>${managerText||'-'}</div>
+      </div>
+      <div class="supplier-card">
+        <div class="vertical">${isOrder?'발주자':'공급자'}</div>
+        <div class="supplier-grid">
+          <b>일련번호</b><span>${docNumber.value||''}</span><b>TEL</b><span>1577-6084</span>
+          <b>사업자등록번호</b><span>221-81-49797</span><b>성명</b><span>김영규</span>
+          <b>상호</b><span class="wide">㈜강동자바라</span>
+          <b class="last">주소</b><span class="wide last">경기도 광주시 곤지암읍 구수동길 1-26</span>
+        </div>
+      </div>
+    </div>
+    ${isOrder
+      ?`<div class="amount-band blue"><span>아래와 같이 발주합니다.</span><span>${total?won(total):'금액 별도 협의'}</span></div>`
+      :`<div class="amount-band"><span>금액: ${numberToKoreanAmount(total)} 정</span><span>(₩ ${total.toLocaleString()})</span></div>`}
+    <table class="simple-doc-table"><thead><tr>${isOrder
+      ?'<th style="width:75px">일자</th><th>품목명(규격)</th><th style="width:85px">수량</th><th style="width:210px">요청메모</th>'
+      :'<th style="width:70px">일자</th><th>품목명(규격)</th><th style="width:90px">수량(단위 포함)</th><th style="width:100px">단가</th><th style="width:110px">공급가액</th><th style="width:90px">부가세</th>'}</tr></thead>
+      <tbody>${rowsHtml}${blanks}</tbody></table>
+    ${isOrder
+      ?`<div class="doc-summary-strip"><b>수량</b><span>${qtyTotal}</span><b>발주금액</b><span>${total?total.toLocaleString():'협의'}</span><b>납기</b><span>협의</span><b>확인</b><span></span><b>인</b><span></span></div>`
+      :`<div class="doc-summary-strip"><b>수량</b><span>${qtyTotal}</span><b>공급가액</b><span>${supply.toLocaleString()}</span><b>VAT</b><span>${tax.toLocaleString()}</span><b>합계</b><span>${total.toLocaleString()}</span><b>인수</b><span>인</span></div>`}
+    <div class="doc-bottom-grid">
+      <div class="shipping-box"><b>배송정보</b><div>${docDelivery.value||'-'}</div></div>
+      <div class="shipping-box"><b>${isOrder?'납품처':'납품장소'}</b><div>${siteText||'-'}</div></div>
+      <div class="simple-note" style="grid-column:1/-1"><b>${isOrder?'요청사항':'비고'}</b><br>${docNote.value||'-'}</div>
+    </div>
+    <div class="doc-footer"><small>STAINLESS STRUCTURE SPECIALIST</small>㈜강동자바라</div>`;
+  docSetupModal.classList.add('hidden');quoteModal.classList.remove('hidden');
+}
+function getBigOrderItems(){
+  return (bigOrderItemsInput.value||'').split(/\n+/).map(v=>v.trim()).filter(Boolean).map(line=>{
+    const parts=line.split('|').map(v=>v.trim());
+    return {name:parts[0]||'-',spec:parts[1]||'',qty:parts[2]||''};
+  });
+}
+function openBigOrderCard(){
+  const c=getCust();
+  bigOrderName.value=c.company||c.manager||'';
+  bigOrderPhone.value=c.phone||'';
+  bigOrderDeliveryDate.value='';
+  bigOrderDeliveryNote.value=[c.site?`배송지/현장: ${c.site}`:'',c.consultMemo||''].filter(Boolean).join('\n');
+  bigOrderItemsInput.value=items.length?items.map(x=>`${x.name} | ${x.spec}${x.note?` / ${x.note}`:''} | ${x.qty}개`).join('\n'):'';
+  renderBigOrderCard();
+  bigOrderModal.classList.remove('hidden');
+}
+function bigOrderText(){
+  const orderItems=getBigOrderItems();
+  const orderLines=orderItems.map((x,i)=>`${i+1}. ${x.name}${x.spec?` / ${x.spec}`:''}${x.qty?` / ${x.qty}`:''}`);
+  return [`[강동자바라 발주내용]`,`주문자: ${bigOrderName.value||'-'}`,`연락처: ${bigOrderPhone.value||'-'}`,'','주문내역',...(orderLines.length?orderLines:['-']),'',`배송방법: ${bigOrderDeliveryType.value||'-'}`,`배송일: ${bigOrderDeliveryDate.value||'-'}`,`배송사항: ${bigOrderDeliveryNote.value||'-'}`].join('\n');
+}
+function renderBigOrderCard(){
+  const d=date.value||new Date().toISOString().slice(0,10);
+  const orderItems=getBigOrderItems();
+  const visibleItems=orderItems.slice(0,3);
+  const rows=[0,1,2].map(i=>{
+    const x=visibleItems[i];
+    if(!x) return `<div class="bo-item"><div class="num">${i+1}</div><div class="name" style="color:#a8b2bf">-</div><div class="qty"></div></div>`;
+    return `<div class="bo-item"><div class="num">${i+1}</div><div class="name"><b>${x.name}</b>${x.spec?`<br><span style="font-size:21px;color:#52677d">${x.spec}</span>`:''}</div><div class="qty">${x.qty||''}</div></div>`;
+  }).join('');
+  const more=orderItems.length>3?`<div style="font-size:19px;font-weight:900;text-align:right;color:#c33333;padding-top:3px">외 ${orderItems.length-3}개 품목</div>`:'';
+  bigOrderCard.innerHTML=`<div class="bo-title"><h1>발주 내용</h1><div class="date">${d}</div></div><section class="bo-section"><div class="bo-head">주문내역</div><div class="bo-body bo-items">${rows}</div>${more}</section><section class="bo-section"><div class="bo-head">주문자 · 연락처</div><div class="bo-info-grid"><div><span class="bo-label">주문자</span>${bigOrderName.value||'-'}</div><div><span class="bo-label">연락처</span>${bigOrderPhone.value||'-'}</div></div></section><section class="bo-section"><div class="bo-head">배송사항</div><div class="bo-body bo-delivery"><b>${bigOrderDeliveryType.value||'-'}</b>${bigOrderDeliveryDate.value?` · ${bigOrderDeliveryDate.value}`:''}<br>${(bigOrderDeliveryNote.value||'-').replaceAll('\n','<br>')}</div></section><div class="bo-footer"><strong>㈜강동자바라</strong><span>주문내용 확인 후 제작 진행</span></div>`;
+}
+async function saveBigOrderCard(){
+  renderBigOrderCard();
+  if(typeof html2canvas==='undefined')return alert('저장모듈 오류');
+  const canvas=await html2canvas(bigOrderCard,{scale:1,backgroundColor:'#fff',width:1080,height:1080});
+  const a=document.createElement('a');
+  a.download=`강동자바라_큰글씨발주_${bigOrderName.value||'고객'}_${date.value||''}.jpg`;
+  a.href=canvas.toDataURL('image/jpeg',.96);a.click();
+}
+async function copyBigOrderCardText(){
+  try{await navigator.clipboard.writeText(bigOrderText());toast('발주내용이 복사되었습니다.')}catch(e){alert(bigOrderText())}
+}
+function restoreQuoteSheet(){
+  if(sheet.querySelector('#sheetTitle'))return;
+  sheet.className='';sheet.innerHTML=`<h1 id="sheetTitle">견 적 서</h1><div class="infogrid"><div id="customerBox" class="box"></div><div class="box"><div><b>상호</b><span>㈜강동자바라</span></div><div><b>대표자</b><span>김영규</span></div><div><b>사업자번호</b><span>221-81-49797</span></div><div><b>대표번호</b><span>1577-6084</span></div><div><b>이메일</b><span>jk0820s@naver.com</span></div><div><b>주소</b><span>경기도 광주시 곤지암읍 구수동길 1-26</span></div></div></div><div class="totalbar"><span id="sheetIntro">아래와 같이 견적합니다.</span><b id="sheetGrand"></b></div><table><thead><tr><th>No.</th><th>제품명</th><th>규격</th><th>수량</th><th>단가</th><th>금액</th><th>비고</th></tr></thead><tbody id="sheetItems"></tbody></table><div class="bottom"><div id="sheetTerms" class="terms"></div><div id="sheetTotals" class="box"></div></div>`;
+}
+let currentDocumentType='quote';
+const documentConfigs={
+  quote:{title:'견 적 서',intro:'아래와 같이 견적합니다.',dateLabel:'견적일자',partyLabel:'고객명',siteLabel:'현장명',statusLabel:'상담단계',grandLabel:'총금액',file:'견적서',terms:`<b>견적 조건</b><p>주문 확정 및 결제 확인 후 제작 일정이 안내됩니다.</p><p>본 견적은 실제 실측, 현장 조건, 배송 및 시공 여부에 따라 금액이 변경될 수 있습니다.</p><p>납품 담당자: 010-3050-0482</p><p>기업은행 242-134872-04-021 / ㈜강동자바라</p><p><b>※ 실제 실측 및 시공환경에 따라 최종 금액은 변경될 수 있습니다.</b></p>`},
+  order:{title:'발 주 서',intro:'아래와 같이 발주합니다.',dateLabel:'발주일자',partyLabel:'발주처',siteLabel:'납품현장',statusLabel:'요청사항',grandLabel:'발주금액',file:'발주서',terms:`<b>발주 조건</b><p>본 발주서의 규격·수량·납품장소를 확인해 주세요.</p><p>납품 일정은 담당자와 협의 후 확정합니다.</p><p>요청사항: 상담메모 또는 비고 내용을 기준으로 진행합니다.</p><p>발주 담당자 연락처와 납품현장을 반드시 확인해 주세요.</p><p><b>※ 규격 및 수량 변경 시 발주처와 사전 협의가 필요합니다.</b></p>`},
+  statement:{title:'거 래 명 세 서',intro:'아래와 같이 거래명세서를 발행합니다.',dateLabel:'거래일자',partyLabel:'공급받는자',siteLabel:'납품처',statusLabel:'비고',grandLabel:'합계금액',file:'거래명세서',terms:`<b>거래 안내</b><p>상기 품목과 금액을 확인해 주시기 바랍니다.</p><p>공급가액과 부가세는 부가세 적용 선택에 따라 표시됩니다.</p><p>배송비·시공비가 별도인 항목은 각 품목의 비고를 확인해 주세요.</p><p>문의: 1577-6084 / 납품 담당자 010-3050-0482</p><p><b>※ 본 거래명세서는 세금계산서를 대체하지 않습니다.</b></p>`}
+};
+function openDocument(type='quote'){
+  if(!items.length)return alert('견적 항목 없음');
+  restoreQuoteSheet();
+  currentDocumentType=type;
+  const cfg=documentConfigs[type]||documentConfigs.quote;
+  const c=getCust();
+  sheetTitle.textContent=cfg.title;
+  sheetIntro.textContent=cfg.intro;
+  customerBox.innerHTML=`<div><b>${cfg.dateLabel}</b><span>${c.date}</span></div><div><b>${cfg.partyLabel}</b><span>${c.company}</span></div><div><b>담당자</b><span>${c.manager}</span></div><div><b>연락처</b><span>${c.phone}</span></div><div><b>${cfg.siteLabel}</b><span>${c.site}</span></div><div><b>${cfg.statusLabel}</b><span>${type==='quote'?(c.consultStatus||''):(c.consultMemo||c.consultStatus||'')}</span></div>`;
+  sheetItems.innerHTML=items.map((x,i)=>`<tr><td>${i+1}</td><td>${x.name}</td><td>${x.spec}</td><td>${x.qty}</td><td>${won(x.unit)}</td><td>${won(x.amount)}</td><td>${x.note||''}</td></tr>`).join('');
+  const t=totalsCalc();
+  sheetGrand.textContent=`${cfg.grandLabel} ${won(t.total)} (${t.vatApplied?'V.A.T. 포함':'V.A.T. 미적용'})`;
+  sheetTotals.innerHTML=`<div><b>상품 합계</b><span>${won(t.raw)}</span></div>${t.rate>0?`<div><b>할인율</b><span>${t.rate}%</span></div><div><b>할인금액</b><span>-${won(t.discount)}</span></div>`:''}<div><b>공급가액</b><span>${won(t.supply)}</span></div><div><b>${t.vatApplied?'부가세 (10%)':'부가세 미적용'}</b><span>${won(t.tax)}</span></div><div><b>${type==='order'?'최종 발주금액':type==='statement'?'합계금액':'최종 결제금액'}</b><span>${won(t.total)}</span></div>`;
+  sheetTerms.innerHTML=cfg.terms;
+  quoteModal.classList.remove('hidden');
+}
+function openSheet(){openDocument('quote')}
+async function saveJpg(){
+  if(typeof html2canvas==='undefined')return alert('저장모듈 오류');
+  const cfg=documentConfigs[currentDocumentType]||documentConfigs.quote;
+  const c=await html2canvas(sheet,{scale:2,backgroundColor:'#fff'}),a=document.createElement('a');
+  a.download=`강동자바라_온라인_${cfg.file}_${company.value||'고객'}_${date.value}.jpg`;
+  a.href=c.toDataURL('image/jpeg',.95);a.click()
+}
+vatApply.addEventListener('change',drawList);
+</script>
+</body></html>
