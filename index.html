@@ -62,6 +62,12 @@ td:nth-child(9),td:nth-child(10){max-width:220px;overflow:hidden;text-overflow:e
 
 @media(max-width:650px){.grid,.summary{grid-template-columns:1fr}.wrap{padding:12px}h1{font-size:23px}}
 
+
+  .report-title{font-size:23px}
+  .report-box strong{font-size:17px}
+  .report-table{font-size:13px}
+}
+
 .report-window{
   width:min(860px,calc(100% - 32px));
   margin:0 auto;
@@ -85,24 +91,61 @@ td:nth-child(9),td:nth-child(10){max-width:220px;overflow:hidden;text-overflow:e
 .report-table th,.report-table td{border:1px solid #cbd5e1;padding:9px 12px;text-align:right}
 .report-table th{background:#1f4e78;color:#fff;font-size:13px}
 .report-table th:first-child,.report-table td:first-child{text-align:left;width:52%}
-.report-table tbody tr:nth-child(even){background:#fafafa}
+.report-table tbody tr:nth-child(even){background:#f8fafc}
 .report-table tbody tr:last-child td{font-weight:800;background:#eef4fa}
 .report-footer{margin-top:16px;text-align:right;color:#64748b;font-size:11px}
 @media print{
   body{background:#fff!important}
   .report-window{width:760px;margin:0 auto;padding:10px 0}
-  .report-title{font-size:23px}
-  .report-box strong{font-size:17px}
-  .report-table{font-size:13px}
-}
-
 @media print{.upload-card,.input-card,.actions,.filters,.tabs,.sub,.notice,.manage-col{display:none!important}.wrap{max-width:none}.card{box-shadow:none;border:0}}
+
+/* 상세표 촘촘형 강제 적용 */
+.table-wrap{overflow:auto;padding:10px}
+.table-wrap table{
+  width:100%;
+  border-collapse:collapse;
+  min-width:1180px;
+  table-layout:auto;
+}
+.table-wrap th,
+.table-wrap td{
+  border:1px solid #e5e7eb;
+  padding:6px 7px;
+  text-align:center;
+  white-space:nowrap;
+  font-size:12px;
+  line-height:1.25;
+}
+.table-wrap th{
+  background:#f8fafc;
+  color:#334155;
+  position:sticky;
+  top:0;
+  z-index:2;
+  font-size:12px;
+  font-weight:800;
+}
+.table-wrap tbody tr:nth-child(even){background:#fafafa}
+.table-wrap tbody tr:hover{background:#f1f5f9}
+.table-wrap td:nth-child(5),
+.table-wrap td:nth-child(6),
+.table-wrap td:nth-child(7){text-align:right}
+.table-wrap td:nth-child(9),
+.table-wrap td:nth-child(10){
+  max-width:220px;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.table-wrap::-webkit-scrollbar{height:12px}
+.table-wrap::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:8px}
+.table-wrap::-webkit-scrollbar-track{background:#f1f5f9}
+
 </style>
 </head>
 <body>
 <div class="wrap">
   <h1>강동자바라 온라인 매출 통합관리</h1>
-  <p class="sub">스마트스토어 결제 매출은 엑셀로 자동 불러오고, 별도 세금계산서·현금영수증·카드 결제 매출은 직접 추가합니다.</p>
+  <p class="sub">스마트스토어 결제 매출은 엑셀로 자동 불러오고, 별도 세금계산서·현금영수증·카드 결제 매출은 직접 추가합니다. <b>보고서 컴팩트형 · 상세표 촘촘형</b></p>
 
   <div class="card upload-card">
     <div class="upload">
@@ -414,6 +457,40 @@ function summarize(rows){
     jabara:cat("자바라"), lexan:cat("렉산"), steel:cat("스텐 방범창"), aluminum:cat("알루미늄 방범창"), etc:cat("기타")
   };
 }
+
+const REPORT_STYLE = `
+body{margin:0;background:#fff}
+.report-window{
+  width:min(860px,calc(100% - 32px));
+  margin:0 auto;
+  font-family:Arial,"Noto Sans KR",sans-serif;
+  color:#111827;
+  padding:24px 0 18px
+}
+.report-title{text-align:center;font-size:26px;font-weight:900;margin:0 0 5px;letter-spacing:-.5px}
+.report-period{text-align:center;color:#64748b;margin-bottom:18px;font-size:14px}
+.report-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px}
+.report-box{border:1px solid #cbd5e1;border-radius:10px;padding:12px 14px;background:#fff}
+.report-box b{display:block;color:#64748b;font-size:12px;margin-bottom:5px}
+.report-box strong{font-size:19px;letter-spacing:-.3px}
+.report-window h3{font-size:17px;margin:17px 0 9px}
+.report-table{width:100%;border-collapse:collapse;margin-top:8px;font-size:14px;background:#fff}
+.report-table th,.report-table td{border:1px solid #cbd5e1;padding:8px 11px;text-align:right}
+.report-table th{background:#1f4e78;color:#fff;font-size:13px}
+.report-table th:first-child,.report-table td:first-child{text-align:left;width:52%}
+.report-table tbody tr:nth-child(even){background:#f8fafc}
+.report-table tbody tr:last-child td{font-weight:800;background:#eef4fa}
+.report-footer{margin-top:16px;text-align:right;color:#64748b;font-size:11px}
+@media print{
+  @page{size:A4 portrait;margin:14mm}
+  body{background:#fff}
+  .report-window{width:100%;margin:0;padding:0}
+  .report-title{font-size:23px}
+  .report-box strong{font-size:17px}
+  .report-table{font-size:13px}
+}
+`;
+
 function reportHtml(title,label,rows,simple=false){
   const s=summarize(rows);
   const productRows=[
@@ -431,7 +508,7 @@ function reportHtml(title,label,rows,simple=false){
     </tbody></table>`;
   }
   return `<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>${title}</title>
-  <style>${document.querySelector("style").innerHTML}</style></head><body>
+  <style>${REPORT_STYLE}</style></head><body>
   <div class="report-window">
     <div class="report-title">${title}</div>
     <div class="report-period">${label}</div>
