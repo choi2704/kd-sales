@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>강동자바라 접힘사이즈 계산기</title>
+<style>
+:root{--blue:#1f5fbf;--navy:#153e83;--line:#d7e3f6;--bg:#f4f8ff}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:Pretendard,"Noto Sans KR",Arial,sans-serif;color:#15233a}
+.wrap{max-width:780px;margin:40px auto;padding:22px}.card{background:#fff;border:2px solid var(--line);border-radius:22px;padding:28px;box-shadow:0 12px 35px rgba(31,95,191,.12)}
+h1{margin:0 0 8px;font-size:32px;color:var(--navy)}.desc{margin:0 0 24px;color:#61728d;line-height:1.6}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}label{font-weight:800;font-size:15px}input,select{width:100%;margin-top:7px;padding:14px 13px;border:1.5px solid #bfd0ea;border-radius:12px;font-size:18px;background:white}
+.result{margin-top:20px;display:grid;grid-template-columns:1fr 1fr;gap:12px}.box{border:1px solid var(--line);border-radius:14px;padding:16px;background:#f8fbff}.box small{display:block;color:#667a98;margin-bottom:7px}.box b{font-size:23px}.final{grid-column:1/-1;background:#eaf2ff;border:2px solid var(--blue)}.final b{font-size:34px;color:var(--blue)}
+.notice{margin-top:16px;padding:15px;border-radius:12px;background:#fff8e8;color:#7b5a10;font-weight:700;line-height:1.5}.buttons{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}button{border:0;border-radius:12px;padding:15px;font-size:17px;font-weight:900;cursor:pointer}.primary{background:var(--blue);color:white}.ghost{background:#eef3fa;color:#34506f}
+.brand{margin-top:18px;text-align:right;font-weight:900;color:var(--navy)}
+@media(max-width:600px){.wrap{margin:12px auto;padding:10px}.card{padding:20px}.grid,.result,.buttons{grid-template-columns:1fr}.final{grid-column:auto}h1{font-size:27px}}
+</style>
+</head>
+<body><div class="wrap"><div class="card">
+<h1>자바라 접힘사이즈 계산기</h1>
+<p class="desc">주문길이와 높이를 입력하면 접혔을 때 필요한 공간을 계산합니다. 여유분 100mm와 50mm 단위 올림이 적용됩니다.</p>
+<div class="grid"><label>자바라 높이<select id="height"><option value="1200">높이 1200mm</option><option value="1500">높이 1500mm</option></select></label><label>주문길이(mm)<input id="order" type="number" min="1" step="1" placeholder="예: 5000"></label></div>
+<div class="result"><div class="box"><small>계산 기준</small><b id="rule">주문길이 ÷ 420 × 52</b></div><div class="box"><small>여유분</small><b>+100mm</b></div><div class="box"><small>올림 전</small><b id="before">0mm</b></div><div class="box final"><small>최종 필요공간</small><b id="final">0mm</b></div></div>
+<div class="notice" id="explain">주문길이를 입력해 주세요.</div>
+<div class="buttons"><button class="primary" id="copy">계산결과 복사</button><button class="ghost" id="reset">초기화</button></div>
+<div class="brand">㈜강동자바라</div>
+</div></div>
+<script>
+const h=document.getElementById('height'),o=document.getElementById('order'),rule=document.getElementById('rule'),before=document.getElementById('before'),final=document.getElementById('final'),explain=document.getElementById('explain');
+const round50=n=>Math.ceil(n/50)*50;
+function calc(){const height=+h.value,order=Math.max(0,+o.value||0),divisor=height===1200?420:450;base=order/divisor*52;pre=base+100;res=round50(pre);rule.textContent=`주문길이 ÷ ${divisor} × 52`;before.textContent=`${Math.round(pre).toLocaleString()}mm`;final.textContent=`${res.toLocaleString()}mm`;explain.textContent=order?`높이 ${height}mm · 주문길이 ${order.toLocaleString()}mm → 접힘공간 ${res.toLocaleString()}mm 확보`:'주문길이를 입력해 주세요.';return{height,order,divisor,res}}
+h.onchange=calc;o.oninput=calc;document.getElementById('reset').onclick=()=>{h.value='1200';o.value='';calc()};document.getElementById('copy').onclick=async()=>{const r=calc();if(!r.order)return alert('주문길이를 입력해 주세요.');const t=`[자바라 접힘사이즈]
+높이: ${r.height}mm
+주문길이: ${r.order.toLocaleString()}mm
+계산식: 주문길이 ÷ ${r.divisor} × 52 + 100mm
+최종 필요공간: ${r.res.toLocaleString()}mm (50mm 단위 올림)`;try{await navigator.clipboard.writeText(t);alert('계산결과가 복사되었습니다.')}catch(e){alert(t)}};calc();
+</script></body></html>
