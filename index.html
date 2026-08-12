@@ -54,6 +54,163 @@ table{width:100%;border-collapse:collapse}th{background:var(--n);color:white}#sh
 @media(max-width:720px){.shell{grid-template-columns:1fr}.side{position:static}.nav{grid-template-columns:repeat(3,1fr)}.sidefoot{grid-template-columns:repeat(3,1fr);margin-top:14px}.g4,.g3,.opts,.result{grid-template-columns:1fr 1fr}.pipe{grid-template-columns:1fr 1fr}.infogrid,.bottom{grid-template-columns:1fr}}
 @media(max-width:480px){.g6,.g4,.g3,.g2,.opts,.result,.dash{grid-template-columns:1fr}.nav{grid-template-columns:1fr 1fr}}
 @media print{body>*:not(#quoteModal){display:none!important}#quoteModal{position:static!important;display:block!important;background:white;padding:0}#quoteModal .toolbar{display:none}#sheet{padding:7mm;min-height:auto}@page{size:A4 portrait;margin:7mm}}
+
+/* ===== 견적서 가독성 개선: 큰 글씨 + 부가세 자동분리 + 도장 ===== */
+.simple-document{
+  padding:20px 24px 24px;
+}
+.simple-document .doc-top h1{
+  font-size:48px !important;
+  font-weight:900;
+}
+.simple-document .doc-number{
+  font-size:13px !important;
+}
+.recipient-card .label{
+  font-size:15px;
+  padding:9px 14px;
+}
+.recipient-card .content{
+  font-size:15px !important;
+  line-height:1.65;
+  padding:17px 14px;
+}
+.recipient-card .content strong{
+  font-size:21px !important;
+}
+.supplier-grid{
+  grid-template-columns:98px 1fr 70px 1.2fr;
+}
+.supplier-grid b,
+.supplier-grid span{
+  font-size:14px !important;
+  padding:8px 9px !important;
+  line-height:1.35;
+}
+.supplier-card>.vertical{
+  font-size:15px;
+}
+.supplier-name{
+  position:relative;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  min-height:50px;
+  font-size:17px !important;
+  font-weight:900;
+  overflow:visible;
+}
+.company-seal{
+  width:58px;
+  height:58px;
+  object-fit:contain;
+  flex:0 0 58px;
+  margin:-8px 0;
+}
+.amount-band{
+  font-size:18px !important;
+  padding:11px 14px !important;
+}
+.amount-band small{
+  font-size:13px;
+  font-weight:900;
+}
+.simple-doc-table th{
+  font-size:14px !important;
+  padding:10px 7px !important;
+}
+.simple-doc-table td{
+  font-size:14px !important;
+  padding:9px 7px !important;
+  height:38px !important;
+  font-weight:700;
+}
+.doc-summary-strip b,
+.doc-summary-strip span{
+  font-size:13px !important;
+  padding:10px 6px !important;
+  font-weight:900;
+}
+.shipping-box b,
+.shipping-box div{
+  font-size:13px !important;
+  padding:10px !important;
+}
+.simple-note{
+  font-size:13px !important;
+  line-height:1.55;
+}
+.doc-footer{
+  font-size:18px !important;
+  padding:13px 18px !important;
+}
+.doc-footer small{
+  font-size:11px !important;
+}
+.legacy-company-name{
+  position:relative;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-weight:900;
+}
+.legacy-seal{
+  width:44px;
+  height:44px;
+  object-fit:contain;
+  margin:-5px 0;
+}
+#sheet .box b,
+#sheet .box span{
+  font-size:13px;
+}
+#sheet .totalbar{
+  font-size:17px;
+}
+#sheet table th,
+#sheet table td{
+  font-size:13px;
+}
+
+/* 인쇄 시에도 글씨를 크게 유지하면서 A4 안에 맞춤 */
+@media print{
+  #sheet.simple-document{
+    padding:5mm 6mm !important;
+  }
+  .simple-document .doc-top{
+    margin-bottom:10px;
+  }
+  .simple-document .doc-top h1{
+    font-size:36px !important;
+  }
+  .supplier-grid b,
+  .supplier-grid span,
+  .recipient-card .content{
+    font-size:11px !important;
+  }
+  .recipient-card .content strong{
+    font-size:15px !important;
+  }
+  .company-seal{
+    width:46px;
+    height:46px;
+    flex-basis:46px;
+  }
+  .simple-doc-table th,
+  .simple-doc-table td{
+    font-size:11px !important;
+    padding:6px 5px !important;
+    height:30px !important;
+  }
+  .doc-summary-strip b,
+  .doc-summary-strip span,
+  .shipping-box b,
+  .shipping-box div,
+  .simple-note{
+    font-size:10.5px !important;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -122,7 +279,7 @@ table{width:100%;border-collapse:collapse}th{background:var(--n);color:white}#sh
 <div id="bigOrderModal" class="modal hidden"><div style="width:min(1160px,100%)"><div class="toolbar" style="display:flex;justify-content:space-between;margin-bottom:8px"><button class="btn ghost x">닫기</button><div><button id="copyBigOrderText" class="btn soft">내용 복사</button> <button id="saveBigOrderJpg" class="btn quote-blue">정사각형 JPG 저장</button></div></div><div class="modalcard" style="width:100%;margin-bottom:12px"><h2 style="margin-top:0">큰글씨 발주 메시지 직접 작성</h2><label>주문내역 직접 입력<textarea id="bigOrderItemsInput" style="min-height:150px;border:1px solid var(--l);border-radius:8px;padding:12px;resize:vertical;font-size:16px;line-height:1.6" placeholder="한 줄에 한 품목씩 입력하세요.
 예) 알루미늄 방범창 | 1200×1500 | 2개
 예) 스텐 자바라 | SUS201 / H1200 / 5m | 1개"></textarea></label><div style="font-size:12px;color:var(--m);margin-top:5px">입력 형식: 제품명 | 규격·메모 | 수량</div><div class="big-order-setup"><label>주문자<input id="bigOrderName"></label><label>연락처<input id="bigOrderPhone"></label><label>배송방법<select id="bigOrderDeliveryType"><option>화물 착불</option><option>택배 착불</option><option>택배 선불</option><option>직접수령</option><option>협의</option></select></label><label>배송일·요청일<input id="bigOrderDeliveryDate" placeholder="예: 7월 25일 출고 요청"></label></div><label>배송주소 및 배송사항<textarea id="bigOrderDeliveryNote" style="min-height:82px;border:1px solid var(--l);border-radius:8px;padding:10px;resize:vertical" placeholder="배송주소, 현장명, 하차 연락, 요청사항 등을 입력하세요."></textarea></label><button id="refreshBigOrderCard" class="btn quote-blue" style="width:100%;margin-top:12px">내용 반영하기</button></div><div style="overflow:auto;border-radius:12px"><article id="bigOrderCard"></article></div></div></div>
-<div id="quoteModal" class="modal hidden"><div><div class="toolbar" style="display:flex;justify-content:space-between;margin-bottom:8px"><button class="btn ghost x">닫기</button><div><button id="editDocument" class="btn soft">내용 수정</button> <button id="jpg" class="btn green">JPG 저장</button> <button id="print" class="btn primary">PDF/인쇄</button></div></div><article id="sheet"><h1 id="sheetTitle">견 적 서</h1><div class="infogrid"><div id="customerBox" class="box"></div><div class="box"><div><b>상호</b><span>㈜강동자바라</span></div><div><b>대표자</b><span>김영규</span></div><div><b>사업자번호</b><span>221-81-49797</span></div><div><b>대표번호</b><span>1577-6084</span></div><div><b>이메일</b><span>jk0820s@naver.com</span></div><div><b>주소</b><span>경기도 광주시 곤지암읍 구수동길 1-26</span></div></div></div><div class="totalbar"><span id="sheetIntro">아래와 같이 견적합니다.</span><b id="sheetGrand"></b></div><table><thead><tr><th>No.</th><th>제품명</th><th>규격</th><th>수량</th><th>단가</th><th>금액</th><th>비고</th></tr></thead><tbody id="sheetItems"></tbody></table><div class="bottom"><div id="sheetTerms" class="terms"></div><div id="sheetTotals" class="box"></div></div></article></div></div>
+<div id="quoteModal" class="modal hidden"><div><div class="toolbar" style="display:flex;justify-content:space-between;margin-bottom:8px"><button class="btn ghost x">닫기</button><div><button id="editDocument" class="btn soft">내용 수정</button> <button id="jpg" class="btn green">JPG 저장</button> <button id="print" class="btn primary">PDF/인쇄</button></div></div><article id="sheet"><h1 id="sheetTitle">견 적 서</h1><div class="infogrid"><div id="customerBox" class="box"></div><div class="box"><div><b>상호</b><span class="legacy-company-name">㈜강동자바라 <img class="legacy-seal" src="stamp.png" alt="강동자바라 도장"></span></div><div><b>대표자</b><span>김영규</span></div><div><b>사업자번호</b><span>221-81-49797</span></div><div><b>대표번호</b><span>1577-6084</span></div><div><b>이메일</b><span>jk0820s@naver.com</span></div><div><b>주소</b><span>경기도 광주시 곤지암읍 구수동길 1-26</span></div></div></div><div class="totalbar"><span id="sheetIntro">아래와 같이 견적합니다.</span><b id="sheetGrand"></b></div><table><thead><tr><th>No.</th><th>제품명</th><th>규격</th><th>수량</th><th>단가</th><th>금액</th><th>비고</th></tr></thead><tbody id="sheetItems"></tbody></table><div class="bottom"><div id="sheetTerms" class="terms"></div><div id="sheetTotals" class="box"></div></div></article></div></div>
 <div id="toast" class="toast"></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script>
@@ -848,7 +1005,9 @@ function generateSimpleDocument(){
   const isQuote=docSetupType==='quote';
   const total=rows.reduce((a,x)=>a+x.amount,0);
   const qtyTotal=rows.reduce((a,x)=>a+x.qty,0);
-  const vatOn=vatApply.checked;
+  // 견적서는 총액을 부가세 포함 금액으로 보고 자동 분리합니다.
+  // 발주서/거래명세서는 기존 부가세 선택값을 유지합니다.
+  const vatOn=isQuote ? true : vatApply.checked;
   const supply=vatOn?Math.round(total/1.1):total;
   const tax=vatOn?total-supply:0;
   const today=date.value||new Date().toISOString().slice(0,10);
@@ -859,7 +1018,7 @@ function generateSimpleDocument(){
   const managerText=[docManager.value,docPhone.value].filter(Boolean).join(' / ');
   const rowsHtml=rows.map(x=>isOrder
     ?`<tr><td>${today.slice(5).replace('-','/')}</td><td class="left">${x.name}</td><td>${x.qty}</td><td class="left">${x.note||''}</td></tr>`
-    :`<tr><td>${today.slice(5).replace('-','/')}</td><td class="left">${x.name}</td><td>${x.qty}</td><td>${x.unit.toLocaleString()}</td><td>${x.amount.toLocaleString()}</td><td>${vatOn?Math.round(x.amount/11).toLocaleString():'0'}</td></tr>`
+    :(()=>{const lineSupply=vatOn?Math.round(x.amount/1.1):x.amount;const lineTax=vatOn?x.amount-lineSupply:0;return `<tr><td>${today.slice(5).replace('-','/')}</td><td class="left">${x.name}</td><td>${x.qty}</td><td>${x.unit.toLocaleString()}</td><td>${lineSupply.toLocaleString()}</td><td>${lineTax.toLocaleString()}</td></tr>`})()
   ).join('');
   const blankCount=Math.max(0,7-rows.length);
   const blanks=Array.from({length:blankCount},()=>isOrder
@@ -879,7 +1038,7 @@ function generateSimpleDocument(){
         <div class="supplier-grid">
           <b>일련번호</b><span>${docNumber.value||''}</span><b>TEL</b><span>1577-6084</span>
           <b>사업자등록번호</b><span>221-81-49797</span><b>성명</b><span>김영규</span>
-          <b>상호</b><span class="wide">㈜강동자바라</span>
+          <b>상호</b><span class="wide supplier-name">㈜강동자바라 <img class="company-seal" src="stamp.png" alt="강동자바라 도장"></span>
           <b class="last">주소</b><span class="wide last">경기도 광주시 곤지암읍 구수동길 1-26</span>
         </div>
       </div>
@@ -887,7 +1046,7 @@ function generateSimpleDocument(){
     ${isOrder
       ?`<div class="amount-band blue"><span>아래와 같이 발주합니다.</span><span>${total?won(total):'금액 별도 협의'}</span></div>`
       :isQuote
-      ?`<div class="amount-band"><span>아래와 같이 견적합니다.</span><span>총 견적금액 ${won(total)}</span></div>`
+      ?`<div class="amount-band"><span>아래와 같이 견적합니다.</span><span>총 견적금액 ${won(total)} <small>(부가세 포함)</small></span></div>`
       :`<div class="amount-band"><span>금액: ${numberToKoreanAmount(total)} 정</span><span>(₩ ${total.toLocaleString()})</span></div>`}
     <table class="simple-doc-table"><thead><tr>${isOrder
       ?'<th style="width:75px">일자</th><th>품목명(규격)</th><th style="width:85px">수량</th><th style="width:210px">요청메모</th>'
@@ -951,7 +1110,7 @@ async function copyBigOrderCardText(){
 }
 function restoreQuoteSheet(){
   if(sheet.querySelector('#sheetTitle'))return;
-  sheet.className='';sheet.innerHTML=`<h1 id="sheetTitle">견 적 서</h1><div class="infogrid"><div id="customerBox" class="box"></div><div class="box"><div><b>상호</b><span>㈜강동자바라</span></div><div><b>대표자</b><span>김영규</span></div><div><b>사업자번호</b><span>221-81-49797</span></div><div><b>대표번호</b><span>1577-6084</span></div><div><b>이메일</b><span>jk0820s@naver.com</span></div><div><b>주소</b><span>경기도 광주시 곤지암읍 구수동길 1-26</span></div></div></div><div class="totalbar"><span id="sheetIntro">아래와 같이 견적합니다.</span><b id="sheetGrand"></b></div><table><thead><tr><th>No.</th><th>제품명</th><th>규격</th><th>수량</th><th>단가</th><th>금액</th><th>비고</th></tr></thead><tbody id="sheetItems"></tbody></table><div class="bottom"><div id="sheetTerms" class="terms"></div><div id="sheetTotals" class="box"></div></div>`;
+  sheet.className='';sheet.innerHTML=`<h1 id="sheetTitle">견 적 서</h1><div class="infogrid"><div id="customerBox" class="box"></div><div class="box"><div><b>상호</b><span class="legacy-company-name">㈜강동자바라 <img class="legacy-seal" src="stamp.png" alt="강동자바라 도장"></span></div><div><b>대표자</b><span>김영규</span></div><div><b>사업자번호</b><span>221-81-49797</span></div><div><b>대표번호</b><span>1577-6084</span></div><div><b>이메일</b><span>jk0820s@naver.com</span></div><div><b>주소</b><span>경기도 광주시 곤지암읍 구수동길 1-26</span></div></div></div><div class="totalbar"><span id="sheetIntro">아래와 같이 견적합니다.</span><b id="sheetGrand"></b></div><table><thead><tr><th>No.</th><th>제품명</th><th>규격</th><th>수량</th><th>단가</th><th>금액</th><th>비고</th></tr></thead><tbody id="sheetItems"></tbody></table><div class="bottom"><div id="sheetTerms" class="terms"></div><div id="sheetTotals" class="box"></div></div>`;
 }
 let currentDocumentType='quote';
 const documentConfigs={
