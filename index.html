@@ -412,7 +412,7 @@ function gTpl(){
   const sizes=Object.keys(alWindow.widthOptions||{}).map(Number).sort((a,b)=>a-b);
   return `<div class="card">
     <h2>방범창</h2>
-    <p class="desc">알루미늄은 가로·세로를 mm로 직접 입력합니다. 소비자용은 500~2200mm 구간에서 입력값을 10mm 단위로 올림하여 스마트스토어 옵션가격을 적용하고, 2201~3000mm는 2200mm 기준 이후 추가 면적단위당 5,500원의 맞춤견적으로 계산합니다.</p>
+    <p class="desc">알루미늄은 가로·세로를 mm로 직접 입력합니다. 900×900mm를 최소 계산 기준으로 적용하며, 가로 또는 세로가 900mm 미만이면 해당 방향은 900mm로 올려 계산합니다. 소비자용은 2200mm 이하 스마트스토어 옵션가격, 2201~3000mm는 2200mm 기준 이후 추가 면적단위당 5,500원의 맞춤견적으로 계산합니다.</p>
     <div class="tabs" id="gmt">
       <button class="on" data-m="알루미늄">알루미늄 · 스마트스토어</button>
       <button data-m="SUS201">SUS201</button>
@@ -426,10 +426,10 @@ function gTpl(){
       </div>
       <div class="grid g4">
         <label>가로사이즈(mm)
-          <input id="gw" type="number" min="500" max="3000" step="1" value="500" inputmode="numeric" placeholder="500~3000">
+          <input id="gw" type="number" min="1" max="3000" step="1" value="900" inputmode="numeric" placeholder="1~3000">
         </label>
         <label>세로사이즈(mm)
-          <input id="gh" type="number" min="500" max="3000" step="1" value="500" inputmode="numeric" placeholder="500~3000">
+          <input id="gh" type="number" min="1" max="3000" step="1" value="900" inputmode="numeric" placeholder="1~3000">
         </label>
         <label id="assemblyLabel">조립요청
           <select id="gAssembly">
@@ -446,10 +446,10 @@ function gTpl(){
         </label>
       </div>
       <div id="consumerPriceNotice" class="notice">
-        소비자용: 500~2200mm는 10mm 단위 올림 후 스마트스토어 옵션가격 · 2201~3000mm는 2200mm 기준 이후 추가 면적단위당 5,500원 적용
+        소비자용: 최소 계산 기준 900×900mm · 900mm 미만은 900mm로 올림 · 2200mm 이하는 스마트스토어 옵션가격 · 2201~3000mm는 대형 맞춤 계산
       </div>
       <div id="businessPriceNotice" class="notice hidden">
-        업체용: 입력한 가로(mm) × 세로(mm) ÷ 90,000을 올림한 계산칸수 × ${won(alWindow.businessUnitPrice||4000)}
+        업체용: 최소 계산 기준 900×900mm · 900mm 미만은 900mm로 올린 뒤 가로×세로÷90,000 올림 × ${won(alWindow.businessUnitPrice||4000)}
       </div>
     </div>
 
@@ -550,9 +550,8 @@ function configureSusGuardFields(){
 function exactAluminumMm(value){
   const number=Number(value);
   if(!Number.isInteger(number)) return null;
-  const min=(alWindow.minSizeCm||50)*10,
-        max=(alWindow.maxSizeCm||300)*10;
-  if(number<min||number>max) return null;
+  const max=(alWindow.maxSizeCm||300)*10;
+  if(number<1||number>max) return null;
   return number
 }
 function aluminumOptionCm(mm){
@@ -569,14 +568,15 @@ function gcalc(){
     if(alPriceType==='business'){
       const businessW=Number(rawW)||0,
             businessH=Number(rawH)||0,
-            cells=businessW&&businessH?Math.ceil((businessW*businessH)/90000):0,
+            calcW=Math.max(900,businessW),
+            calcH=Math.max(900,businessH),
+            cells=businessW&&businessH?Math.ceil((calcW*calcH)/90000):0,
             rate=alWindow.businessUnitPrice||4000,
             unit=cells*rate,
-            min=(alWindow.minSizeCm||50)*10,
             max=(alWindow.maxSizeCm||300)*10;
       return{
-        mode:'business',w:businessW,h:businessH,q,cells,rate,
-        valid:Number.isInteger(businessW)&&Number.isInteger(businessH)&&businessW>=min&&businessW<=max&&businessH>=min&&businessH<=max,
+        mode:'business',w:businessW,h:businessH,calcW,calcH,q,cells,rate,
+        valid:Number.isInteger(businessW)&&Number.isInteger(businessH)&&businessW>=1&&businessW<=max&&businessH>=1&&businessH<=max,
         unit,amount:unit*q,note:gn.value
       }
     }
@@ -587,18 +587,20 @@ function gcalc(){
         unit:0,amount:0,note:gn.value
       }
     }
-    const optionW=aluminumOptionCm(w),
-          optionH=aluminumOptionCm(h),
-          cells=Math.ceil((w*h)/90000),
+    const calcW=Math.max(900,w),
+          calcH=Math.max(900,h),
+          optionW=aluminumOptionCm(calcW),
+          optionH=aluminumOptionCm(calcH),
+          cells=Math.ceil((calcW*calcH)/90000),
           baseCells=alWindow.baseCells||4,
           extraCells=Math.max(0,cells-baseCells),
           smartMaxMm=(alWindow.smartStoreMaxSizeCm||220)*10,
-          isStoreOption=w<=smartMaxMm&&h<=smartMaxMm,
+          isStoreOption=calcW<=smartMaxMm&&calcH<=smartMaxMm,
           widthExtra=isStoreOption?(alWindow.widthOptions?.[String(optionW)]||0):0,
           heightExtra=isStoreOption?(alWindow.heightOptions?.[String(optionH)]||0):0,
           standardAreaTotal=(alWindow.basePrice||14000)+(extraCells*(alWindow.standardConsumerUnitPrice||4500)),
-          boundaryW=Math.min(w,smartMaxMm),
-          boundaryH=Math.min(h,smartMaxMm),
+          boundaryW=Math.min(calcW,smartMaxMm),
+          boundaryH=Math.min(calcH,smartMaxMm),
           boundaryOptionW=aluminumOptionCm(boundaryW),
           boundaryOptionH=aluminumOptionCm(boundaryH),
           boundaryCells=Math.ceil((boundaryW*boundaryH)/90000),
@@ -612,7 +614,7 @@ function gcalc(){
           assembly=gAssembly.value==='1'?(alWindow.assemblyPrice||0):0,
           unit=(alWindow.basePrice||14000)+areaExtra+assembly;
     return{
-      mode:'smartstore',w,h,optionW,optionH,q,valid:true,
+      mode:'smartstore',w,h,calcW,calcH,optionW,optionH,q,valid:true,
       cells,baseCells,extraCells,areaExtra,assembly,isStoreOption,widthExtra,heightExtra,
       unit,amount:unit*q,
       note:gn.value
@@ -661,12 +663,12 @@ function upG(){
   gm.textContent=guardMat;
   if(c.mode==='smartstore'){
     gDetailLabel.textContent=c.valid?(c.isStoreOption?'옵션 추가금':'맞춤 추가금'):'입력 확인';
-    gc.textContent=c.valid?(c.isStoreOption?`가로 ${c.w}mm→${c.optionW}cm ${won(c.widthExtra)} + 세로 ${c.h}mm→${c.optionH}cm ${won(c.heightExtra)}${c.assembly?' + 조립 '+won(c.assembly):''}`:`${c.cells}단위 · 대형 맞춤단가 ${won(c.areaExtra+c.assembly)}`):'500~3000mm 정수';
+    gc.textContent=c.valid?(c.isStoreOption?`가로 ${c.w}mm${c.calcW!==c.w?'→계산 '+c.calcW+'mm':''}→${c.optionW}cm ${won(c.widthExtra)} + 세로 ${c.h}mm${c.calcH!==c.h?'→계산 '+c.calcH+'mm':''}→${c.optionH}cm ${won(c.heightExtra)}${c.assembly?' + 조립 '+won(c.assembly):''}`:`${c.cells}단위 · 대형 맞춤단가 ${won(c.areaExtra+c.assembly)}`):'1~3000mm 정수 · 900mm 미만은 900mm 계산';
     gr.textContent=c.valid?won(c.unit):'계산 불가';
     gt.textContent=c.valid?won(c.amount):'계산 불가'
   }else if(c.mode==='business'){
     gDetailLabel.textContent='계산칸수';
-    gc.textContent=c.cells+'칸';
+    gc.textContent=(c.calcW!==c.w||c.calcH!==c.h?`${c.w}×${c.h}→${c.calcW}×${c.calcH}mm · `:'')+c.cells+'칸';
     gr.textContent=won(c.unit);
     gt.textContent=won(c.amount)
   }else if(c.mode==='sus201'){
@@ -684,7 +686,7 @@ function upG(){
 function addG(){
   const c=gcalc();
   if(c.mode==='smartstore'&&!c.valid){
-    return alert('소비자용은 가로와 세로를 500~3000mm 사이의 정수로 정확히 입력해주세요. 예: 1234');
+    return alert('가로와 세로를 1~3000mm 사이의 정수로 정확히 입력해주세요. 900mm 미만은 900mm로 계산됩니다.');
   }
   if(!c.w||!c.h)return alert('규격을 입력해주세요.');
   if(c.mode==='smartstore'){
