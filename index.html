@@ -10,7 +10,7 @@
 .nav{display:grid;gap:6px}.nav button{border:0;background:transparent;color:#ffe8f1;text-align:left;padding:13px;border-radius:10px;font-weight:800;cursor:pointer}.nav button.on{background:white;color:var(--n)}.nav button.off{opacity:.45;cursor:not-allowed}.sidefoot{margin-top:auto;display:grid;gap:8px}
 .btn{border:0;border-radius:9px;padding:11px 14px;font-weight:900;cursor:pointer}.sales-manage-btn{background:#7b2cbf;color:#fff;border:1px solid #6421a0}.primary{background:var(--n);color:white}.soft{background:var(--b);color:var(--n)}.ghost{background:#b83f70;color:white}.green{background:#e85b91;color:white}.quote-blue{background:#1565c0;color:white}.message-blue{background:#e8f1ff;color:#0d55a6;border:1px solid #a9c8ee}.order-btn{background:#fff3df;color:#9a5700;border:1px solid #edc684}.statement-btn{background:#eaf8ef;color:#176b38;border:1px solid #9ed2af}
 .big-order-btn{background:#263f8f;color:#fff;border:1px solid #1b2e6c}
-.quick-tools{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;margin-bottom:7px}.quick-tool-btn{padding:10px 18px;border-radius:10px;font-size:14px;box-shadow:0 2px 5px rgba(0,0,0,.08)}.fold-tool-btn{background:#0f7b8f;color:white;border:1px solid #096777}.delivery-tool-btn{background:#ef7c24;color:white;border:1px solid #d96610}.customer-message-tool-btn{background:#6f42c1;color:white;border:1px solid #59359b}
+.quick-tools{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;margin-bottom:7px}.quick-tool-btn{padding:10px 18px;border-radius:10px;font-size:14px;box-shadow:0 2px 5px rgba(0,0,0,.08)}.fold-tool-btn{background:#0f7b8f;color:white;border:1px solid #096777}.delivery-tool-btn{background:#ef7c24;color:white;border:1px solid #d96610}.customer-message-tool-btn{background:#6f42c1;color:white;border:1px solid #59359b}.jabara-order-tool-btn{background:#275e48;color:white;border:1px solid #1c4836}
 .big-order-setup{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:12px 0}
 #bigOrderCard{width:1080px;height:1080px;background:#fff;color:#111;padding:62px 68px;display:flex;flex-direction:column;border:14px solid #173f8f;font-family:Pretendard,"Noto Sans KR",Arial}
 #bigOrderCard .bo-title{display:flex;align-items:center;justify-content:space-between;border-bottom:9px solid #173f8f;padding-bottom:24px;margin-bottom:28px}
@@ -54,6 +54,16 @@ table{width:100%;border-collapse:collapse}th{background:var(--n);color:white}#sh
 @media(max-width:720px){.shell{grid-template-columns:1fr}.side{position:static}.nav{grid-template-columns:repeat(3,1fr)}.sidefoot{grid-template-columns:repeat(3,1fr);margin-top:14px}.g4,.g3,.opts,.result{grid-template-columns:1fr 1fr}.pipe{grid-template-columns:1fr 1fr}.infogrid,.bottom{grid-template-columns:1fr}}
 @media(max-width:480px){.g6,.g4,.g3,.g2,.opts,.result,.dash{grid-template-columns:1fr}.nav{grid-template-columns:1fr 1fr}}
 @media print{body>*:not(#quoteModal){display:none!important}#quoteModal{position:static!important;display:block!important;background:white;padding:0}#quoteModal .toolbar{display:none}#sheet{padding:7mm;min-height:auto}@page{size:A4 portrait;margin:7mm}}
+/* 독립 차양 견적기: 왼쪽 메뉴에서 선택하면 온라인 견적 목록과 혼동되지 않도록 별도 공간에 표시 */
+.layout.awning-view{grid-template-columns:minmax(0,1fr)}
+.layout.awning-view>.quote,.customer.awning-view{display:none}
+.awning-host{padding:16px;min-width:0}
+.awning-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.awning-head h2{margin:0 0 3px}
+.awning-head p{margin:0;color:var(--m);font-size:13px;line-height:1.55}
+.awning-frame{display:block;width:100%;min-height:860px;height:1250px;border:1px solid var(--l);border-radius:12px;background:#fff}
+@media(max-width:720px){.awning-host{padding:10px}.layout.awning-view{padding:12px}}
+
 
 /* ===== 견적서 가독성 개선: 큰 글씨 + 부가세 자동분리 + 도장 ===== */
 .simple-document{
@@ -225,6 +235,7 @@ table{width:100%;border-collapse:collapse}th{background:var(--n);color:white}#sh
   <button data-mod="guard">방범창</button>
   <button data-mod="lexan">렉산</button>
   <button data-mod="security">방범창 자바라</button>
+  <button data-mod="awning">차양 견적기</button>
   <button class="off">난간대 준비중</button>
   <button class="off">폴딩도어 준비중</button>
  </div>
@@ -236,7 +247,7 @@ table{width:100%;border-collapse:collapse}th{background:var(--n);color:white}#sh
  </div>
 </aside>
 <main class="main">
- <header class="top"><div><h1 id="title">대시보드</h1><p id="subtitle">제품을 선택해 통합 견적을 작성하세요.</p></div><div style="display:flex;flex-direction:column;align-items:flex-end;padding:9px 0"><div class="quick-tools"><button id="topCustomerMessage" class="btn quick-tool-btn customer-message-tool-btn" onclick="window.open('https://choi2704.github.io/kd-customer-message/','_blank','noopener')">💬 고객 메시지 작성</button><button id="topFoldCalc" class="btn quick-tool-btn fold-tool-btn">📐 자바라 접힘 계산기</button><button id="topYongdalCalc" class="btn quick-tool-btn delivery-tool-btn">🚚 용달비 계산기</button></div><div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end"><button id="copyMessage" class="btn soft">안내문 복사</button><button id="copyQuoteMessage" class="btn message-blue">견적내용 메시지 복사</button><button id="makeQuote" class="btn quote-blue">견적서 만들기</button><button id="makeOrder" class="btn order-btn">발주서 만들기</button><button id="makeStatement" class="btn statement-btn">거래명세서 만들기</button><button id="makeBigOrderCard" class="btn big-order-btn">큰글씨 발주 메시지</button></div></div></header>
+ <header class="top"><div><h1 id="title">대시보드</h1><p id="subtitle">제품을 선택해 통합 견적을 작성하세요.</p></div><div style="display:flex;flex-direction:column;align-items:flex-end;padding:9px 0"><div class="quick-tools"><button id="topCustomerMessage" class="btn quick-tool-btn customer-message-tool-btn" onclick="window.open('https://choi2704.github.io/kd-customer-message/','_blank','noopener')">💬 고객 메시지 작성</button><button id="topFoldCalc" class="btn quick-tool-btn fold-tool-btn">📐 자바라 접힘 계산기</button><button id="topJabaraOrder" class="btn quick-tool-btn jabara-order-tool-btn" type="button" title="자바라 발주서 자동작성 프로그램을 새 창에서 엽니다">🧾 자바라 발주기</button><button id="topYongdalCalc" class="btn quick-tool-btn delivery-tool-btn">🚚 용달비 계산기</button></div><div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end"><button id="copyMessage" class="btn soft">안내문 복사</button><button id="copyQuoteMessage" class="btn message-blue">견적내용 메시지 복사</button><button id="makeQuote" class="btn quote-blue">견적서 만들기</button><button id="makeOrder" class="btn order-btn">발주서 만들기</button><button id="makeStatement" class="btn statement-btn">거래명세서 만들기</button><button id="makeBigOrderCard" class="btn big-order-btn">큰글씨 발주 메시지</button></div></div></header>
  <section class="customer">
  <div class="grid g6">
   <label>견적일자<input id="date" type="date"></label>
@@ -292,7 +303,7 @@ const KD_LEXAN_PRICE_20260902={"widths":[900,1000,1220,1520],"heights":[2000,300
 const jRates={
   '일반형':{
     '201':{'1200':85000,'1500':120000},
-    '304':{'1200':125000,'1500':170000}
+    '304':{'1200':130000,'1500':175000}
   },
   '고급형':{
     '201':{'1200':140000,'1500':180000},
@@ -331,10 +342,42 @@ function bind(){
     if(+discountRate.value!==v) discountRate.value=v;
     drawList()
   };
-  document.querySelectorAll('.nav button[data-mod]').forEach(b=>b.onclick=()=>render(b.dataset.mod));topFoldCalc.onclick=()=>window.open('fold-calculator.html','_blank','noopener');topYongdalCalc.onclick=()=>window.open('https://choi2704.github.io/yongdal-calculator/','_blank','noopener');document.querySelectorAll('.x').forEach(b=>b.onclick=()=>b.closest('.modal').classList.add('hidden'));makeQuote.onclick=()=>openDocSetup('quote');makeOrder.onclick=()=>openDocSetup('order');makeStatement.onclick=()=>openDocSetup('statement');makeBigOrderCard.onclick=openBigOrderCard;refreshBigOrderCard.onclick=renderBigOrderCard;bigOrderItemsInput.oninput=renderBigOrderCard;bigOrderName.oninput=renderBigOrderCard;bigOrderPhone.oninput=renderBigOrderCard;bigOrderDeliveryType.onchange=renderBigOrderCard;bigOrderDeliveryDate.oninput=renderBigOrderCard;bigOrderDeliveryNote.oninput=renderBigOrderCard;saveBigOrderJpg.onclick=saveBigOrderCard;copyBigOrderText.onclick=copyBigOrderCardText;editDocument.onclick=toggleDocumentEdit;print.onclick=()=>window.print();jpg.onclick=saveJpg;extraBtn.onclick=()=>extraModal.classList.remove('hidden');extraAdd.onclick=addExtra;newQuote.onclick=resetAll;saveQuote.onclick=saveNow;loadQuote.onclick=openSaved;docImportMode.onclick=()=>setDocMode('import');docManualMode.onclick=()=>setDocMode('manual');addDocRow.onclick=()=>addManualDocRow();generateSimpleDoc.onclick=generateSimpleDocument}
+  document.querySelectorAll('.nav button[data-mod]').forEach(b=>b.onclick=()=>render(b.dataset.mod));topFoldCalc.onclick=()=>window.open('fold-calculator.html','_blank','noopener');topJabaraOrder.onclick=()=>window.open('jabara-order.html','_blank','noopener');topYongdalCalc.onclick=()=>window.open('https://choi2704.github.io/yongdal-calculator/','_blank','noopener');document.querySelectorAll('.x').forEach(b=>b.onclick=()=>b.closest('.modal').classList.add('hidden'));makeQuote.onclick=()=>openDocSetup('quote');makeOrder.onclick=()=>openDocSetup('order');makeStatement.onclick=()=>openDocSetup('statement');makeBigOrderCard.onclick=openBigOrderCard;refreshBigOrderCard.onclick=renderBigOrderCard;bigOrderItemsInput.oninput=renderBigOrderCard;bigOrderName.oninput=renderBigOrderCard;bigOrderPhone.oninput=renderBigOrderCard;bigOrderDeliveryType.onchange=renderBigOrderCard;bigOrderDeliveryDate.oninput=renderBigOrderCard;bigOrderDeliveryNote.oninput=renderBigOrderCard;saveBigOrderJpg.onclick=saveBigOrderCard;copyBigOrderText.onclick=copyBigOrderCardText;editDocument.onclick=toggleDocumentEdit;print.onclick=()=>window.print();jpg.onclick=saveJpg;extraBtn.onclick=()=>extraModal.classList.remove('hidden');extraAdd.onclick=addExtra;newQuote.onclick=resetAll;saveQuote.onclick=saveNow;loadQuote.onclick=openSaved;docImportMode.onclick=()=>setDocMode('import');docManualMode.onclick=()=>setDocMode('manual');addDocRow.onclick=()=>addManualDocRow();generateSimpleDoc.onclick=generateSimpleDocument}
 function toast(s){toast.textContent=s;toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),1600)}
-function render(m){mod=m;document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('on',b.dataset.mod===m));const map={dash:['대시보드','제품을 선택해 통합 견적을 작성하세요.'],jabara:['자바라','본체와 하우스를 자동 계산합니다.'],foldcalc:['자바라 접힘계산','주문길이와 높이로 접혔을 때 필요한 공간을 계산합니다.'],ladder:['사다리','최소 3m와 로스 올림을 적용합니다.'],handrail:['핸드레일','파이프 단가와 부속을 계산합니다.'],guard:['방범창','규격별 계산칸수를 자동 산출합니다.'],lexan:['렉산','입력 사이즈보다 큰 원판 규격 기준으로 계산합니다.'],security:['방범창 자바라','평수 반올림과 최소 20평 기준을 적용합니다.']};title.textContent=map[m][0];subtitle.textContent=map[m][1];module.innerHTML=m==='dash'?dashTpl():m==='jabara'?jTpl():m==='foldcalc'?foldCalcTpl():m==='ladder'?lTpl():m==='handrail'?hTpl():m==='guard'?gTpl():m==='lexan'?lexanTpl():securityTpl();module.querySelectorAll('[data-go]').forEach(x=>x.onclick=()=>render(x.dataset.go));if(m==='jabara')bindJ();if(m==='foldcalc')bindFoldCalc();if(m==='ladder')bindL();if(m==='handrail')bindH();if(m==='guard')bindG();if(m==='lexan')bindLexan();if(m==='security')bindSecurity()}
-function dashTpl(){return `<div class="card"><h2>제품 선택</h2><p class="desc">온라인 판매단가로 서로 다른 제품을 한 견적에 함께 추가할 수 있습니다.</p><div class="dash"><div data-go="jabara"><h3>자바라</h3><p>형태·재질·높이·길이·하우스</p></div><div data-go="ladder"><h3>사다리</h3><p>안전망·밴딩·일자형·옵션</p></div><div data-go="handrail"><h3>핸드레일</h3><p>원/사각파이프·규격·두께</p></div><div data-go="guard"><h3>방범창</h3><p>스마트스토어 알루미늄 옵션 · SUS201 · SUS304 · 가격표 2026-09-02</p></div><div data-go="lexan"><h3>렉산</h3><p>원판 규격 기준 · 2T/3T · 색상 선택 · 가격표 2026-09-02</p></div><div data-go="security"><h3>방범창 자바라</h3><p>알루미늄/스텐 · 최소 20평</p></div><div class="disabled"><h3>난간대</h3><p>다음 버전</p></div><div class="disabled"><h3>폴딩도어</h3><p>다음 버전</p></div></div></div>`}
+function render(m){
+  mod=m;
+  document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('on',b.dataset.mod===m));
+  const map={dash:['대시보드','제품을 선택해 통합 견적을 작성하세요.'],jabara:['자바라','본체와 하우스를 자동 계산합니다.'],foldcalc:['자바라 접힘계산','주문길이와 높이로 접혔을 때 필요한 공간을 계산합니다.'],ladder:['사다리','최소 3m와 로스 올림을 적용합니다.'],handrail:['핸드레일','파이프 단가와 부속을 계산합니다.'],guard:['방범창','규격별 계산칸수를 자동 산출합니다.'],lexan:['렉산','입력 사이즈보다 큰 원판 규격 기준으로 계산합니다.'],security:['방범창 자바라','평수 반올림과 최소 20평 기준을 적용합니다.'],awning:['차양 견적기','차양 4종 제작 견적 · 차양 견적 목록은 통합 견적과 별도로 관리됩니다.']};
+  title.textContent=map[m][0];subtitle.textContent=map[m][1];
+  document.querySelector('.layout').classList.toggle('awning-view',m==='awning');
+  document.querySelector('.customer').classList.toggle('awning-view',m==='awning');
+  module.innerHTML=m==='dash'?dashTpl():m==='jabara'?jTpl():m==='foldcalc'?foldCalcTpl():m==='ladder'?lTpl():m==='handrail'?hTpl():m==='guard'?gTpl():m==='lexan'?lexanTpl():m==='security'?securityTpl():awningTpl();
+  module.querySelectorAll('[data-go]').forEach(x=>x.onclick=()=>render(x.dataset.go));
+  if(m==='jabara')bindJ();if(m==='foldcalc')bindFoldCalc();if(m==='ladder')bindL();if(m==='handrail')bindH();if(m==='guard')bindG();if(m==='lexan')bindLexan();if(m==='security')bindSecurity();if(m==='awning')bindAwning();
+}
+function awningTpl(){return `<div class="card awning-host"><div class="awning-head"><div><h2>차양 제작 견적기 v1.3</h2><p>차양 견적은 이 화면에서 독립적으로 계산·저장됩니다. 오른쪽 '온라인 견적목록'과 자동 합산되지 않습니다.</p></div><button id="openAwningWindow" type="button" class="btn soft">새 창에서 열기 ↗</button></div><iframe id="awningFrame" class="awning-frame" title="강동자바라 차양 제작 견적기" src="awning-calculator.html" loading="eager"></iframe></div>`}
+function bindAwning(){
+  document.getElementById('openAwningWindow').onclick=()=>window.open('awning-calculator.html','_blank','noopener');
+  const frame=document.getElementById('awningFrame');
+  frame.addEventListener('load',()=>{
+    try{
+      const doc=frame.contentDocument;
+      if(!doc)return;
+      const syncHeight=()=>{
+        if(!frame.isConnected)return;
+        const height=Math.max(doc.documentElement.scrollHeight,doc.body.scrollHeight);
+        if(Number.isFinite(height)&&height>0)frame.style.height=`${Math.max(860,height+14)}px`;
+      };
+      syncHeight();
+      if(window.ResizeObserver){
+        const observer=new ResizeObserver(syncHeight);
+        observer.observe(doc.body);
+        observer.observe(doc.documentElement);
+      }
+    }catch(err){ /* 다른 도메인에서 열면 기본 iframe 높이 사용 */ }
+  });
+}
+function dashTpl(){return `<div class="card"><h2>제품 선택</h2><p class="desc">온라인 판매단가로 서로 다른 제품을 한 견적에 함께 추가할 수 있습니다.</p><div class="dash"><div data-go="jabara"><h3>자바라</h3><p>형태·재질·높이·길이·하우스</p></div><div data-go="ladder"><h3>사다리</h3><p>안전망·밴딩·일자형·옵션</p></div><div data-go="handrail"><h3>핸드레일</h3><p>원/사각파이프·규격·두께</p></div><div data-go="guard"><h3>방범창</h3><p>스마트스토어 알루미늄 옵션 · SUS201 · SUS304 · 가격표 2026-09-02</p></div><div data-go="lexan"><h3>렉산</h3><p>원판 규격 기준 · 2T/3T · 색상 선택 · 가격표 2026-09-02</p></div><div data-go="security"><h3>방범창 자바라</h3><p>알루미늄/스텐 · 최소 20평</p></div><div data-go="awning"><h3>차양 견적기</h3><p>처마형·평차양·코너형·반원형 · 별도 견적 목록</p></div><div class="disabled"><h3>난간대</h3><p>다음 버전</p></div><div class="disabled"><h3>폴딩도어</h3><p>다음 버전</p></div></div></div>`}
 function foldCalcTpl(){return `<div class="card"><h2>자바라 접힘사이즈 계산기</h2><p class="desc">주문길이를 입력하면 접혔을 때 확보해야 할 공간을 자동 계산합니다. 여유분 100mm와 50mm 단위 올림이 적용됩니다.</p><div class="grid g3"><label>자바라 높이<select id="fcHeight"><option value="1200">높이 1200mm</option><option value="1500">높이 1500mm</option></select></label><label>주문길이(mm)<input id="fcOrder" type="number" min="1" step="1" placeholder="예: 5000"></label><label>계산 기준<input id="fcRule" readonly></label></div><div class="result" style="margin-top:16px"><div><small>기본 접힘폭</small><b id="fcBase">0mm</b></div><div><small>여유분</small><b>+100mm</b></div><div><small>올림 전</small><b id="fcBefore">0mm</b></div><div><small>최종 필요공간</small><b id="fcFinal" style="color:var(--n);font-size:26px">0mm</b></div></div><div class="notice" id="fcExplain" style="margin-top:14px">주문길이를 입력해 주세요.</div><div class="grid g2" style="margin-top:14px"><button id="fcCopy" class="btn primary">계산결과 복사</button><button id="fcReset" class="btn ghost">초기화</button></div></div>`}
 function next50Strict(v){return v>0?(Math.floor(v/50)+1)*50:0}
 function bindFoldCalc(){
