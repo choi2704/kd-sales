@@ -355,7 +355,7 @@ function render(m){
   module.querySelectorAll('[data-go]').forEach(x=>x.onclick=()=>render(x.dataset.go));
   if(m==='jabara')bindJ();if(m==='foldcalc')bindFoldCalc();if(m==='ladder')bindL();if(m==='handrail')bindH();if(m==='guard')bindG();if(m==='lexan')bindLexan();if(m==='security')bindSecurity();if(m==='awning')bindAwning();
 }
-function awningTpl(){return `<div class="card awning-host"><div class="awning-head"><div><h2>차양 제작 견적기 v1.3</h2><p>차양 견적은 이 화면에서 독립적으로 계산·저장됩니다. 오른쪽 '온라인 견적목록'과 자동 합산되지 않습니다.</p></div><button id="openAwningWindow" type="button" class="btn soft">새 창에서 열기 ↗</button></div><iframe id="awningFrame" class="awning-frame" title="강동자바라 차양 제작 견적기" src="awning-calculator.html" loading="eager"></iframe></div>`}
+function awningTpl(){return `<div class="card awning-host"><div class="awning-head"><div><h2>차양 제작 견적기 v1.5</h2><p>차양 견적은 이 화면에서 독립적으로 계산·저장됩니다. 오른쪽 '온라인 견적목록'과 자동 합산되지 않습니다.</p></div><button id="openAwningWindow" type="button" class="btn soft">새 창에서 열기 ↗</button></div><iframe id="awningFrame" class="awning-frame" title="강동자바라 차양 제작 견적기" src="awning-calculator.html" loading="eager"></iframe></div>`}
 function bindAwning(){
   document.getElementById('openAwningWindow').onclick=()=>window.open('awning-calculator.html','_blank','noopener');
   const frame=document.getElementById('awningFrame');
